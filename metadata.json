@@ -1,0 +1,6 @@
+{
+  "name": "Entscheidungsfindung: Fall Stephan & Heike",
+  "description": "Gamifizierte E-Learning-Lernplattform für die generalistische Pflegeausbildung: Partnerschaftliche Entscheidungsfindung im Fall Stephan & Heike (7 Doppelstunden)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
