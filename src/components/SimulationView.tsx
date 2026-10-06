@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { SimulationScenario, DecisionOption } from '../types';
+import { CHARACTER_AVATARS } from '../data/avatarsData';
 import {
   MessageSquare,
   Sparkles,
@@ -30,6 +31,7 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ moduleId, simula
   const chosenOption = currentStep?.options.find((opt) => opt.id === chosenOptionId);
 
   const [selectedOpt, setSelectedOpt] = useState<DecisionOption | null>(chosenOption || null);
+  const [imageError, setImageError] = useState<boolean>(false);
 
   const handleSelectOption = (option: DecisionOption) => {
     setSelectedOpt(option);
@@ -45,85 +47,129 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ moduleId, simula
     setSelectedOpt(null);
   };
 
+  // Determine avatar image URL
+  const getSpeakerAvatarUrl = () => {
+    if (currentStep.speakerAvatar?.startsWith('http')) {
+      return currentStep.speakerAvatar;
+    }
+    const nameLower = currentStep.speaker.toLowerCase();
+    if (nameLower.includes('heike')) return CHARACTER_AVATARS.heike.imageUrl;
+    if (nameLower.includes('stephan')) return CHARACTER_AVATARS.stephan.imageUrl;
+    if (nameLower.includes('leon')) return CHARACTER_AVATARS.sohn2_leon.imageUrl;
+    if (nameLower.includes('lukas')) return CHARACTER_AVATARS.sohn3_lukas.imageUrl;
+    if (nameLower.includes('sohn')) return CHARACTER_AVATARS.sohn1.imageUrl;
+    return CHARACTER_AVATARS.heike.imageUrl;
+  };
+
+  const avatarUrl = getSpeakerAvatarUrl();
+
   return (
     <div className="space-y-6">
       {/* Simulation Stage Header */}
-      <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-          <div className="flex items-center gap-2.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping" />
-            <span className="text-xs font-bold text-teal-400 uppercase tracking-widest">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow relative overflow-hidden">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#E76F51] animate-ping" />
+            <span className="text-xs font-bold text-[#E76F51] uppercase tracking-wider">
               Interaktive Pflege-Simulation • Flaschenhals-Adventure
             </span>
           </div>
-          <span className="text-[11px] font-mono text-slate-400 bg-slate-800/80 px-2.5 py-0.5 rounded-full border border-slate-700">
+          <span className="text-[11px] font-mono text-[#264653] bg-[#264653]/10 px-2.5 py-0.5 rounded-full font-bold">
             DS {moduleId} Fallentscheidung
           </span>
         </div>
 
-        <h2 className="text-lg font-bold text-white mb-2">{simulation.title}</h2>
-        <p className="text-xs text-slate-300 leading-relaxed">{simulation.initialDescription}</p>
+        <h2 className="text-base font-bold text-[#264653] mb-1">{simulation.title}</h2>
+        <p className="text-xs text-[#2B2D42]/80 leading-relaxed">{simulation.initialDescription}</p>
       </div>
 
       {/* Character Dialogue Box (Visual Novel / Chat Interface) */}
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow space-y-4">
         {/* Character Portrait & Tag */}
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center text-2xl shadow-lg border border-teal-400/30">
-            {currentStep.speakerAvatar}
-          </div>
-          <div>
-            <div className="text-sm font-bold text-white flex items-center gap-2">
-              <span>{currentStep.speaker}</span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-teal-300 border border-slate-700 font-normal">
-                {currentStep.speakerRole}
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3.5">
+            <div className="relative shrink-0">
+              {!imageError ? (
+                <img
+                  src={avatarUrl}
+                  alt={currentStep.speaker}
+                  onError={() => setImageError(true)}
+                  className="w-14 h-14 rounded-2xl object-cover border-2 border-[#264653] shadow-md bg-slate-100"
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-2xl bg-[#264653] text-white flex items-center justify-center text-xl font-bold shadow-md">
+                  {currentStep.speaker.charAt(0)}
+                </div>
+              )}
+              <span className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-[9px] font-bold text-white">
+                ✓
               </span>
             </div>
-            <div className="text-[11px] text-slate-400 italic">
-              {currentStep.sceneDescription}
+
+            <div>
+              <div className="text-sm font-bold text-[#264653] flex items-center gap-2">
+                <span>{currentStep.speaker}</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-[#2B2D42] border border-slate-200 font-medium">
+                  {currentStep.speakerRole}
+                </span>
+              </div>
+              <div className="text-[11px] text-[#2B2D42]/70 italic mt-0.5">
+                {currentStep.sceneDescription}
+              </div>
+            </div>
+          </div>
+
+          {/* Stephan companion preview thumbnail */}
+          <div className="hidden sm:flex items-center gap-2 bg-[#F7F9FA] border border-slate-200 px-3 py-1.5 rounded-2xl shrink-0">
+            <img
+              src={CHARACTER_AVATARS.stephan.imageUrl}
+              alt="Stephan"
+              className="w-9 h-9 rounded-xl object-cover border border-slate-300"
+            />
+            <div className="text-left">
+              <div className="text-[10px] font-bold text-[#264653]">Stephan</div>
+              <div className="text-[9px] text-[#2B2D42]/60">Im Rollstuhl / Bett</div>
             </div>
           </div>
         </div>
 
         {/* Speech Bubble */}
-        <div className="relative bg-slate-950/90 border border-teal-500/30 rounded-2xl p-4 shadow-inner">
-          <p className="text-sm text-teal-100 font-medium leading-relaxed">
-            {currentStep.dialogueText}
+        <div className="relative bg-[#F7F9FA] border border-[#264653]/20 rounded-2xl p-4">
+          <p className="text-sm text-[#264653] font-medium leading-relaxed font-serif-reading">
+            „{currentStep.dialogueText}“
           </p>
         </div>
 
         {/* Dilemma Prompt */}
-        <div className="p-3 bg-teal-950/30 border border-teal-800/30 rounded-xl text-xs text-teal-200 flex items-center gap-2">
-          <HelpCircle className="w-4 h-4 text-teal-400 shrink-0" />
-          <span className="font-semibold">{currentStep.dilemmaPrompt}</span>
+        <div className="p-3 bg-[#E76F51]/10 border border-[#E76F51]/20 rounded-xl text-xs text-[#2B2D42] flex items-center gap-2 font-medium">
+          <HelpCircle className="w-4 h-4 text-[#E76F51] shrink-0" />
+          <span><strong>Dilemma-Frage:</strong> {currentStep.dilemmaPrompt}</span>
         </div>
       </div>
 
       {/* 3 Action Cards (Paternalistisch, PEF, Informed) */}
       <div className="space-y-3">
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider px-1 flex items-center justify-between">
-          <span>Wähle deine pflegerische Haltung:</span>
-          <span className="text-[11px] text-teal-400">3 Handlungsoptionen</span>
+        <h3 className="text-xs font-bold text-[#2B2D42]/70 uppercase tracking-wider px-1 flex items-center justify-between">
+          <span>Wählen Sie Ihre pflegerische Haltung:</span>
+          <span className="text-[11px] text-[#264653] font-bold">3 Handlungsoptionen</span>
         </h3>
 
         <div className="grid grid-cols-1 gap-3.5">
-          {currentStep.options.map((option, idx) => {
+          {currentStep.options.map((option) => {
             const isChosen = selectedOpt?.id === option.id;
 
             return (
               <button
                 key={option.id}
                 onClick={() => handleSelectOption(option)}
-                className={`w-full text-left p-4 rounded-2xl border transition-all duration-300 relative group ${
+                className={`w-full text-left p-4 rounded-2xl border transition-all duration-300 relative group cursor-pointer ${
                   isChosen
                     ? option.model === 'pef'
-                      ? 'bg-emerald-950/40 border-emerald-500 ring-2 ring-emerald-500/30 shadow-lg shadow-emerald-950/50'
+                      ? 'bg-emerald-50 border-emerald-500 ring-2 ring-emerald-500/30 shadow-md'
                       : option.model === 'paternalistic'
-                      ? 'bg-rose-950/30 border-rose-500/80 ring-2 ring-rose-500/30 shadow-lg shadow-rose-950/50'
-                      : 'bg-amber-950/30 border-amber-500/80 ring-2 ring-amber-500/30 shadow-lg shadow-amber-950/50'
-                    : 'bg-slate-900/80 border-slate-800 hover:border-slate-700 hover:bg-slate-900 shadow-md'
+                      ? 'bg-rose-50 border-rose-500 ring-2 ring-rose-500/30 shadow-md'
+                      : 'bg-amber-50 border-amber-500 ring-2 ring-amber-500/30 shadow-md'
+                    : 'bg-white border-slate-200 hover:border-[#264653]/40 hover:bg-slate-50 card-soft-shadow'
                 }`}
               >
                 {/* Header Tag of Option */}
@@ -131,31 +177,31 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ moduleId, simula
                   <span
                     className={`text-[11px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
                       option.model === 'pef'
-                        ? 'bg-teal-500/20 text-teal-300 border-teal-500/30'
+                        ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
                         : option.model === 'paternalistic'
-                        ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-                        : 'bg-amber-500/20 text-amber-300 border-amber-500/30'
+                        ? 'bg-rose-100 text-rose-800 border-rose-300'
+                        : 'bg-amber-100 text-amber-800 border-amber-300'
                     }`}
                   >
                     {option.modelLabel}
                   </span>
 
                   {isChosen && (
-                    <span className="flex items-center gap-1 text-[11px] font-bold text-teal-300 font-mono">
-                      <CheckCircle className="w-4 h-4 text-teal-400" />
+                    <span className="flex items-center gap-1 text-[11px] font-bold text-[#264653] font-mono">
+                      <CheckCircle className="w-4 h-4 text-emerald-600" />
                       Ausgewählt
                     </span>
                   )}
                 </div>
 
                 {/* Direct Nurse Dialogue Quote */}
-                <p className="text-xs font-semibold text-white mb-2 leading-relaxed">
-                  {option.quote}
+                <p className="text-xs font-bold text-[#264653] mb-1.5 leading-relaxed font-serif-reading">
+                  „{option.quote}“
                 </p>
 
                 {/* Action summary */}
-                <p className="text-[11px] text-slate-400 leading-normal">
-                  <span className="text-slate-500">Handlung:</span> {option.actionText}
+                <p className="text-[11px] text-[#2B2D42]/80 leading-normal">
+                  <strong className="text-[#2B2D42]">Handlung:</strong> {option.actionText}
                 </p>
               </button>
             );
@@ -165,15 +211,15 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ moduleId, simula
 
       {/* Immediate Consequence & Feedback Panel (when an option is selected) */}
       {selectedOpt && (
-        <div className="bg-slate-900/95 border border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-            <h4 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-teal-400" />
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow space-y-4 animate-in fade-in slide-in-from-bottom-3 duration-300">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
+            <h4 className="text-xs font-bold text-[#264653] uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#E76F51]" />
               <span>Konsequenz deiner Entscheidung</span>
             </h4>
             <button
               onClick={handleReset}
-              className="text-[11px] text-slate-400 hover:text-white flex items-center gap-1 hover:underline"
+              className="text-[11px] text-[#264653] hover:underline flex items-center gap-1 font-semibold"
             >
               <RotateCcw className="w-3.5 h-3.5" />
               Andere Option testen
@@ -181,25 +227,25 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ moduleId, simula
           </div>
 
           {/* Reaction from Patient/Angehörige */}
-          <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 text-xs space-y-1">
-            <span className="text-[10px] font-bold text-teal-400 uppercase">Reaktion von Heike & Stephan:</span>
-            <p className="text-slate-200 italic">{selectedOpt.immediateReaction}</p>
+          <div className="p-3.5 bg-[#F7F9FA] rounded-xl border border-slate-200 text-xs space-y-1">
+            <span className="text-[10px] font-bold text-[#264653] uppercase block">Reaktion von Heike & Stephan:</span>
+            <p className="text-[#2B2D42] italic font-serif-reading">{selectedOpt.immediateReaction}</p>
           </div>
 
           {/* Didactic Rationale */}
-          <div className="p-3.5 bg-teal-950/20 rounded-xl border border-teal-800/30 text-xs space-y-1">
-            <span className="text-[10px] font-bold text-teal-300 uppercase">Pflegepädagogische Einordnung:</span>
-            <p className="text-teal-100/90 leading-relaxed">{selectedOpt.explanation}</p>
+          <div className="p-3.5 bg-[#264653]/5 rounded-xl border border-[#264653]/15 text-xs space-y-1">
+            <span className="text-[10px] font-bold text-[#264653] uppercase block">Pflegepädagogische Einordnung:</span>
+            <p className="text-[#2B2D42] leading-relaxed">{selectedOpt.explanation}</p>
           </div>
 
           {/* Next Step / Password Fragment Alert */}
-          <div className="p-4 rounded-xl bg-gradient-to-r from-teal-950/60 to-emerald-950/60 border border-teal-500/40 flex flex-wrap items-center justify-between gap-3">
+          <div className="p-4 rounded-xl bg-[#264653] text-white flex flex-wrap items-center justify-between gap-3 shadow-md">
             <div>
               <div className="text-xs font-bold text-white flex items-center gap-2">
-                <KeyRound className="w-4 h-4 text-amber-400" />
+                <KeyRound className="w-4 h-4 text-[#E76F51]" />
                 <span>Passwort-Fragment für Musterlösung freigespielt:</span>
               </div>
-              <div className="font-mono text-sm font-bold text-amber-300 tracking-wider mt-0.5">
+              <div className="font-mono text-sm font-bold text-[#E76F51] tracking-wider mt-0.5 bg-white/10 px-2 py-0.5 rounded inline-block">
                 {simulation.passwordFragment}
               </div>
             </div>
@@ -209,7 +255,7 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ moduleId, simula
                 sounds.playClick();
                 setActiveDrawerTab('auswertung');
               }}
-              className="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-teal-500/20 transition-all"
+              className="px-4 py-2 rounded-xl bg-[#E76F51] hover:bg-[#D45D40] text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all"
             >
               <span>Zur Auswertung & Musterlösung</span>
               <ArrowRight className="w-4 h-4" />

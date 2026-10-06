@@ -5,7 +5,6 @@ import {
   HelpCircle,
   CheckCircle2,
   XCircle,
-  Sparkles,
   RotateCcw,
   Award,
   ArrowRight
@@ -18,32 +17,33 @@ interface QuizViewProps {
 }
 
 export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
-  const { moduleStates, saveQuizScore, unlockBadge } = useApp();
-  const state = moduleStates[moduleId];
-  const savedScore = state?.quizScore;
-
+  const { unlockBadge, saveQuizScore } = useApp();
   const [currentIdx, setCurrentIdx] = useState<number>(0);
-  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
-  const [isAnswerChecked, setIsAnswerChecked] = useState<boolean>(false);
-  const [correctCount, setCorrectCount] = useState<number>(savedScore?.score || 0);
-  const [isFinished, setIsFinished] = useState<boolean>(savedScore?.completed || false);
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: string }>({}); // questionId -> optionId
+  const [showExplanation, setShowExplanation] = useState<boolean>(false);
+  const [quizFinished, setQuizFinished] = useState<boolean>(false);
 
-  const question = questions[currentIdx];
+  if (!questions || questions.length === 0) {
+    return (
+      <div className="p-6 bg-white border border-slate-200 rounded-2xl text-center text-xs text-[#2B2D42]/70 card-soft-shadow">
+        Keine Quizfragen für diese Lerneinheit hinterlegt.
+      </div>
+    );
+  }
+
+  const currentQ = questions[currentIdx];
+  const options = currentQ.options || [];
+  const chosenOptionId = selectedAnswers[currentQ.id];
+  const chosenOpt = options.find((opt) => opt.id === chosenOptionId);
+  const isCorrect = !!chosenOpt?.isCorrect;
 
   const handleSelect = (optionId: string) => {
-    if (isAnswerChecked) return;
-    sounds.playSelectOption();
-    setSelectedOptionId(optionId);
-  };
-
-  const handleCheckAnswer = () => {
-    if (!selectedOptionId || !question.options) return;
-    setIsAnswerChecked(true);
-
-    const chosen = question.options.find((o) => o.id === selectedOptionId);
-    if (chosen?.isCorrect) {
+    sounds.playClick();
+    setSelectedAnswers((prev) => ({ ...prev, [currentQ.id]: optionId }));
+    setShowExplanation(true);
+    const opt = options.find((o) => o.id === optionId);
+    if (opt?.isCorrect) {
       sounds.playSuccess();
-      setCorrectCount((prev) => prev + 1);
     } else {
       sounds.playError();
     }
@@ -51,69 +51,68 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
 
   const handleNext = () => {
     sounds.playClick();
+    setShowExplanation(false);
     if (currentIdx + 1 < questions.length) {
       setCurrentIdx((prev) => prev + 1);
-      setSelectedOptionId(null);
-      setIsAnswerChecked(false);
     } else {
-      // Finished
-      const finalScore = correctCount + (question.options?.find((o) => o.id === selectedOptionId)?.isCorrect ? 0 : 0);
-      saveQuizScore(moduleId, correctCount, questions.length);
-      setIsFinished(true);
-      if (correctCount / questions.length >= 0.75) {
-        unlockBadge('badge_quiz_master');
-      }
+      setQuizFinished(true);
+      const totalCorrect = questions.filter((q) => {
+        const selId = selectedAnswers[q.id];
+        return q.options?.find((o) => o.id === selId)?.isCorrect;
+      }).length;
+      saveQuizScore(moduleId, totalCorrect, questions.length);
+      unlockBadge('badge_quiz_master');
+      sounds.playBadgeUnlock();
     }
   };
 
   const handleRestart = () => {
     sounds.playClick();
     setCurrentIdx(0);
-    setSelectedOptionId(null);
-    setIsAnswerChecked(false);
-    setCorrectCount(0);
-    setIsFinished(false);
+    setSelectedAnswers({});
+    setShowExplanation(false);
+    setQuizFinished(false);
   };
 
-  if (isFinished) {
-    const percent = Math.round((correctCount / questions.length) * 100);
-    const isPassed = percent >= 75;
+  const correctTotal = questions.filter((q) => {
+    const selId = selectedAnswers[q.id];
+    return q.options?.find((o) => o.id === selId)?.isCorrect;
+  }).length;
+
+  if (quizFinished) {
+    const percent = Math.round((correctTotal / questions.length) * 100);
 
     return (
-      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 text-center space-y-5">
-        <div
-          className={`w-16 h-16 rounded-3xl mx-auto flex items-center justify-center text-3xl shadow-xl ${
-            isPassed ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
-          }`}
-        >
-          {isPassed ? '🏆' : '📚'}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-5 card-soft-shadow animate-in fade-in duration-300 text-[#2B2D42]">
+        <div className="w-16 h-16 rounded-3xl bg-[#264653] text-white flex items-center justify-center mx-auto shadow-md">
+          <Award className="w-9 h-9 text-[#E76F51]" />
         </div>
 
         <div>
-          <h3 className="text-lg font-bold text-white mb-1">
-            {isPassed ? 'Quiz erfolgreich bestanden!' : 'Guter Versuch!'}
-          </h3>
-          <p className="text-xs text-slate-400">
-            Du hast {correctCount} von {questions.length} Fragen richtig beantwortet ({percent}%).
+          <span className="text-[11px] font-bold text-[#E76F51] uppercase tracking-wider">
+            Wissenssicherung abgeschlossen
+          </span>
+          <h2 className="text-xl font-bold text-[#264653] mt-0.5">Ergebnisse zur Entscheidungsfindung</h2>
+          <p className="text-xs text-[#2B2D42]/70 mt-1 [text-wrap:pretty]">
+            Sie haben {correctTotal} von {questions.length} Fragen richtig beantwortet ({percent}%).
           </p>
         </div>
 
-        <div className="w-full max-w-xs mx-auto h-3 bg-slate-800 rounded-full overflow-hidden">
-          <div
-            className={`h-full transition-all duration-500 ${isPassed ? 'bg-emerald-500' : 'bg-amber-500'}`}
-            style={{ width: `${percent}%` }}
-          />
+        <div className="p-4 bg-[#F7F9FA] rounded-xl border border-slate-200 max-w-sm mx-auto text-xs text-[#2B2D42] space-y-1">
+          {percent >= 70 ? (
+            <p className="text-[#2A9D8F] font-bold [text-wrap:pretty]">
+              Hervorragend! Sie beherrschen die theoretischen Grundlagen der drei Entscheidungsmodelle nach Gunnar Geuter sicher.
+            </p>
+          ) : (
+            <p className="text-amber-800 font-medium [text-wrap:pretty]">
+              Guter Versuch! Wir empfehlen Ihnen, die Vergleichstabelle im vorherigen Reiter nochmals zu studieren.
+            </p>
+          )}
         </div>
-
-        {isPassed && (
-          <div className="p-3 bg-emerald-950/30 border border-emerald-800/40 rounded-xl text-xs text-emerald-200">
-            ✨ Hervorragend! Du beherrschst die theoretischen Grundlagen der drei Entscheidungsmodelle.
-          </div>
-        )}
 
         <button
           onClick={handleRestart}
-          className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold flex items-center gap-2 mx-auto transition-colors"
+          className="px-5 py-2.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs inline-flex items-center gap-2 shadow-sm transition-all cursor-pointer"
         >
           <RotateCcw className="w-4 h-4" />
           <span>Quiz wiederholen</span>
@@ -123,95 +122,120 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
   }
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-5">
-      {/* Header with question progress */}
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow space-y-5 text-[#2B2D42]">
+      {/* Progress & Header */}
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div className="flex items-center gap-2">
-          <HelpCircle className="w-4 h-4 text-teal-400" />
-          <span className="text-xs font-bold text-white uppercase tracking-wider">
-            Wissens-Check: Frage {currentIdx + 1} von {questions.length}
+          <span className="text-xs font-mono font-bold bg-[#264653]/10 text-[#264653] px-2.5 py-0.5 rounded-full">
+            Frage {currentIdx + 1} von {questions.length}
           </span>
+          <span className="text-xs font-bold text-[#E76F51]">Thieme CNE Wissenscheck</span>
         </div>
-        <span className="text-xs font-mono text-teal-400 font-semibold">
-          Punkte: {correctCount}
-        </span>
+
+        <div className="flex gap-1">
+          {questions.map((_, idx) => (
+            <div
+              key={idx}
+              className={`h-2 rounded-full transition-all duration-300 ${
+                idx === currentIdx
+                  ? 'w-6 bg-[#264653]'
+                  : idx < currentIdx
+                  ? 'w-2 bg-[#2A9D8F]'
+                  : 'w-2 bg-slate-200'
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Question Text */}
-      <h3 className="text-sm font-bold text-slate-100 leading-relaxed">
-        {question.question}
-      </h3>
+      <div className="space-y-1">
+        <h3 className="text-sm sm:text-base font-bold text-[#264653] leading-snug">
+          {currentQ.question}
+        </h3>
+      </div>
 
-      {/* Options List */}
+      {/* Answer Options */}
       <div className="space-y-2.5">
-        {question.options?.map((option) => {
-          const isSelected = selectedOptionId === option.id;
-          let optionStyle = 'bg-slate-950/80 border-slate-800 hover:border-slate-700 text-slate-300';
+        {options.map((opt, optIdx) => {
+          const isSelected = chosenOptionId === opt.id;
+          const isThisCorrect = opt.isCorrect;
 
-          if (isSelected) {
-            optionStyle = 'bg-teal-950/40 border-teal-500 text-teal-200 ring-1 ring-teal-500/50';
-          }
+          let btnStyle = 'bg-[#F7F9FA] border-slate-200 hover:border-[#264653]/40 text-[#2B2D42]';
 
-          if (isAnswerChecked) {
-            if (option.isCorrect) {
-              optionStyle = 'bg-emerald-950/60 border-emerald-500 text-emerald-200 font-semibold';
-            } else if (isSelected && !option.isCorrect) {
-              optionStyle = 'bg-rose-950/60 border-rose-500 text-rose-200';
+          if (showExplanation) {
+            if (isThisCorrect) {
+              btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-bold';
+            } else if (isSelected) {
+              btnStyle = 'bg-rose-50 border-rose-500 text-rose-900';
             } else {
-              optionStyle = 'bg-slate-950/40 border-slate-900 text-slate-500 opacity-60';
+              btnStyle = 'bg-slate-50 border-slate-200 opacity-50 text-[#2B2D42]';
             }
           }
 
           return (
             <button
-              key={option.id}
-              disabled={isAnswerChecked}
-              onClick={() => handleSelect(option.id)}
-              className={`w-full text-left p-3.5 rounded-xl border text-xs leading-relaxed transition-all flex items-start justify-between gap-3 ${optionStyle}`}
+              key={opt.id}
+              disabled={showExplanation}
+              onClick={() => handleSelect(opt.id)}
+              className={`w-full text-left p-3.5 rounded-xl border text-xs flex items-center justify-between transition-all cursor-pointer ${btnStyle}`}
             >
-              <span>{option.text}</span>
-              {isAnswerChecked && option.isCorrect && (
-                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              )}
-              {isAnswerChecked && isSelected && !option.isCorrect && (
-                <XCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <div className="flex items-center gap-3">
+                <span className="w-6 h-6 rounded-lg bg-white border border-slate-300 flex items-center justify-center font-mono font-bold text-xs shrink-0 text-[#264653]">
+                  {String.fromCharCode(65 + optIdx)}
+                </span>
+                <span className="leading-relaxed">{opt.text}</span>
+              </div>
+
+              {showExplanation && (
+                <div className="shrink-0 ml-2">
+                  {isThisCorrect ? (
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  ) : isSelected ? (
+                    <XCircle className="w-4 h-4 text-rose-600" />
+                  ) : null}
+                </div>
               )}
             </button>
           );
         })}
       </div>
 
-      {/* Explanation Box (when checked) */}
-      {isAnswerChecked && (
-        <div className="p-3.5 bg-slate-950 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1 animate-in fade-in">
-          <span className="font-bold text-teal-400 uppercase text-[10px]">Didaktische Erläuterung:</span>
-          <p>
-            {question.options?.find((o) => o.id === selectedOptionId)?.explanation ||
-              question.options?.find((o) => o.isCorrect)?.explanation}
-          </p>
+      {/* Explanation Rationale Panel */}
+      {showExplanation && (
+        <div
+          className={`p-4 rounded-xl border text-xs space-y-2 animate-in fade-in duration-200 ${
+            isCorrect
+              ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+              : 'bg-amber-50 border-amber-300 text-amber-900'
+          }`}
+        >
+          <div className="font-bold flex items-center gap-2">
+            {isCorrect ? (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Richtig gelöst!</span>
+              </>
+            ) : (
+              <>
+                <XCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>Nicht ganz korrekt:</span>
+              </>
+            )}
+          </div>
+          <p className="leading-relaxed">{chosenOpt?.explanation || 'Beachte die Schlüsselunterschiede in Bezug auf Informationskontrolle und Verantwortung.'}</p>
+
+          <div className="pt-2 flex justify-end">
+            <button
+              onClick={handleNext}
+              className="px-4 py-2 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
+            >
+              <span>{currentIdx + 1 === questions.length ? 'Quiz beenden' : 'Nächste Frage'}</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       )}
-
-      {/* Actions */}
-      <div className="flex justify-end gap-3 pt-2">
-        {!isAnswerChecked ? (
-          <button
-            disabled={!selectedOptionId}
-            onClick={handleCheckAnswer}
-            className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 disabled:opacity-40 disabled:hover:bg-teal-600 text-white font-bold text-xs shadow-md transition-all"
-          >
-            Antwort prüfen
-          </button>
-        ) : (
-          <button
-            onClick={handleNext}
-            className="px-5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-lg shadow-teal-500/20 transition-all"
-          >
-            <span>{currentIdx + 1 < questions.length ? 'Nächste Frage' : 'Quiz abschließen'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        )}
-      </div>
     </div>
   );
 };

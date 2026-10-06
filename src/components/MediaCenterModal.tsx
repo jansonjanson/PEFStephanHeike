@@ -89,22 +89,42 @@ const MEDIA_LIBRARY: MediaItem[] = [
   {
     id: 'lit1',
     category: 'literature',
-    title: 'CNE Fachartikel: Partizipative Entscheidungsfindung (PEF) in der Pflege',
-    subtitle: 'Thieme Gruppe / CNE Fachfortbildung',
-    source: 'CNE / Pflegeethik',
-    url: 'https://www.thieme.de',
-    durationOrPages: '6 Seiten Fachartikel',
-    description: 'Grundlagen der 3 Entscheidungsmodelle, Rollendefinitionen und pflegeethische Relevanz.',
+    title: 'CNE Fachartikel: Informationen teilen, gemeinsam entscheiden (Thieme)',
+    subtitle: 'Thieme Fachfortbildung • Entscheidungsfindungsmodelle',
+    source: 'CNE / Thieme PDF',
+    url: 'https://github.com/jansonjanson/PEFStephanHeike/raw/main/Informationen%20teilen%20gemeinsam%20entscheiden_Thieme.pdf',
+    durationOrPages: 'Direkt-Download PDF',
+    description: 'Vollständiger Fachartikel zur partizipativen Entscheidungsfindung (PEF), Paternalismus und dem Informed Decision Making Model in der Pflege.',
+  },
+  {
+    id: 'lit1_elearn',
+    category: 'literature',
+    title: 'Zusatzquelle: E-Learning Ressource (ZFG Münster)',
+    subtitle: 'Zentrum für Gesundheitsberufe • Online-Fachquelle',
+    source: 'ZFG Moodle E-Learning',
+    url: 'https://elearn.zfg-ms.de/mod/resource/view.php?id=230710',
+    durationOrPages: 'Online-Ressource',
+    description: 'Offizielle zusätzliche Bereitstellung des CNE-Fachartikels über das Lernportal des ZFG Münster.',
   },
   {
     id: 'lit2',
+    category: 'template',
+    title: 'Arbeitsdokument: 3. Entscheidungen Videosequenzen (.docx)',
+    subtitle: 'Digitale Vorlage zur Situations- & Entscheidungsanalyse',
+    source: 'Word-Vorlage (.docx)',
+    url: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/3.%20Entscheidungsidentifikation.docx',
+    durationOrPages: 'Formatierte Word-Datei',
+    description: 'Offizielle Vorlage zur Beantwortung von: Wer war zu sehen?, Was ist passiert?, Welche Entscheidungen wurden getroffen?',
+  },
+  {
+    id: 'lit3',
     category: 'literature',
     title: 'ABEDL Pflegemodell nach Monika Krohwinkel',
     subtitle: 'Aktivitäten, Beziehungen und existenzielle Erfahrungen des Lebens',
     source: 'Pflegewissenschaft',
     url: 'https://de.wikipedia.org/wiki/Aktivit%C3%A4ten,_Beziehungen_und_existenzielle_Erfahrungen_des_Lebens',
     durationOrPages: 'Strukturierte Übersicht',
-    description: 'Definition und PESR-Operationalisierung der 13 ABEDL-Kategorien.',
+    description: 'Definition und Operationalisierung der 13 ABEDL-Kategorien.',
   },
 ];
 
@@ -125,17 +145,17 @@ export const MediaCenterModal: React.FC = () => {
   });
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl max-h-[90vh] bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-[#2B2D42]/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl max-h-[90vh] bg-white border border-slate-200 rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-[#2B2D42]">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-[#F7F9FA]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center">
-              <Film className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-[#264653] text-white flex items-center justify-center shadow-md">
+              <Film className="w-5 h-5 text-[#E76F51]" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Zentrales Mediencenter (Media Library)</h2>
-              <p className="text-xs text-slate-400">Alle Videosequenzen, CNE Fachartikel und Arbeitsmaterialien</p>
+              <h2 className="text-base font-bold text-[#264653]">Zentrales Mediencenter (Media Library)</h2>
+              <p className="text-xs text-[#2B2D42]/70">Alle Videosequenzen, CNE Fachartikel und Arbeitsmaterialien</p>
             </div>
           </div>
 
@@ -144,14 +164,14 @@ export const MediaCenterModal: React.FC = () => {
               sounds.playClick();
               setActiveModal('none');
             }}
-            className="w-9 h-9 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+            className="w-9 h-9 rounded-xl hover:bg-slate-200 text-slate-400 hover:text-[#2B2D42] flex items-center justify-center transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="p-4 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+        <div className="p-4 bg-white border-b border-slate-100 flex flex-wrap items-center justify-between gap-3">
           {/* Category Tabs */}
           <div className="flex items-center gap-1.5">
             <button
@@ -159,10 +179,10 @@ export const MediaCenterModal: React.FC = () => {
                 sounds.playClick();
                 setFilterCategory('all');
               }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 filterCategory === 'all'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#264653] text-white'
+                  : 'text-[#2B2D42] bg-slate-100 hover:bg-slate-200'
               }`}
             >
               Alle ({MEDIA_LIBRARY.length})
@@ -172,10 +192,10 @@ export const MediaCenterModal: React.FC = () => {
                 sounds.playClick();
                 setFilterCategory('video');
               }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 filterCategory === 'video'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#264653] text-white'
+                  : 'text-[#2B2D42] bg-slate-100 hover:bg-slate-200'
               }`}
             >
               Videos ({MEDIA_LIBRARY.filter((m) => m.category === 'video').length})
@@ -185,10 +205,10 @@ export const MediaCenterModal: React.FC = () => {
                 sounds.playClick();
                 setFilterCategory('literature');
               }}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 filterCategory === 'literature'
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#264653] text-white'
+                  : 'text-[#2B2D42] bg-slate-100 hover:bg-slate-200'
               }`}
             >
               Fachartikel & Quellen ({MEDIA_LIBRARY.filter((m) => m.category === 'literature').length})
@@ -203,7 +223,7 @@ export const MediaCenterModal: React.FC = () => {
               placeholder="Materialien suchen..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+              className="w-full bg-[#F7F9FA] border border-slate-200 rounded-xl pl-9 pr-3 py-1.5 text-xs text-[#2B2D42] placeholder-slate-400 focus:outline-none focus:border-[#264653] focus:bg-white"
             />
           </div>
         </div>
@@ -213,40 +233,40 @@ export const MediaCenterModal: React.FC = () => {
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between hover:border-cyan-500/50 transition-all group"
+              className="bg-[#F7F9FA] border border-slate-200 rounded-2xl p-4 flex flex-col justify-between hover:border-[#264653]/40 transition-all card-soft-shadow group"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span
                     className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
                       item.category === 'video'
-                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                        : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                        ? 'bg-[#264653]/10 text-[#264653]'
+                        : 'bg-[#E76F51]/10 text-[#E76F51]'
                     }`}
                   >
                     {item.source}
                   </span>
                   {item.durationOrPages && (
-                    <span className="text-[11px] font-mono text-slate-400">
+                    <span className="text-[11px] font-mono text-[#2B2D42]/60 font-semibold">
                       {item.durationOrPages}
                     </span>
                   )}
                 </div>
 
-                <h3 className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors leading-snug">
+                <h3 className="text-xs font-bold text-[#264653] group-hover:text-[#E76F51] transition-colors leading-snug">
                   {item.title}
                 </h3>
-                <p className="text-[11px] text-teal-400 font-medium">{item.subtitle}</p>
-                <p className="text-xs text-slate-400 leading-relaxed">{item.description}</p>
+                <p className="text-[11px] text-[#2B2D42]/80 font-medium">{item.subtitle}</p>
+                <p className="text-xs text-[#2B2D42]/70 leading-relaxed">{item.description}</p>
               </div>
 
-              <div className="pt-4 mt-2 border-t border-slate-800/80 flex items-center justify-between">
-                <span className="text-[11px] text-slate-500">Direktlink</span>
+              <div className="pt-4 mt-2 border-t border-slate-200 flex items-center justify-between">
+                <span className="text-[11px] text-[#2B2D42]/50">Direktlink</span>
                 <a
                   href={item.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3.5 py-1.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-cyan-600/20"
+                  className="px-3.5 py-1.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm"
                 >
                   <span>{item.category === 'video' ? 'Video ansehen' : 'Artikel öffnen'}</span>
                   <ExternalLink className="w-3.5 h-3.5" />
@@ -257,11 +277,11 @@ export const MediaCenterModal: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between text-xs text-slate-400">
+        <div className="p-4 border-t border-slate-100 bg-[#F7F9FA] flex items-center justify-between text-xs text-[#2B2D42]/70">
           <span>Alle Ressourcen sind für den Ausbildungsgebrauch freigegeben.</span>
           <button
             onClick={() => setActiveModal('none')}
-            className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs transition-colors"
+            className="px-4 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-[#2B2D42] font-bold text-xs transition-colors"
           >
             Schließen
           </button>

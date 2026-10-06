@@ -18,32 +18,28 @@ export const TimetableModal: React.FC = () => {
     activeModal,
     setActiveModal,
     moduleStates,
-    setActiveModuleId,
-    setIsDrawerOpen,
-    overallProgressPercent,
+    openModule,
   } = useApp();
 
   if (activeModal !== 'timetable') return null;
 
   const handleOpenModule = (id: number) => {
-    sounds.playClick();
     setActiveModal('none');
-    setActiveModuleId(id);
-    setIsDrawerOpen(true);
+    openModule(id);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl max-h-[90vh] bg-slate-900 border border-slate-700 rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 bg-[#2B2D42]/50 backdrop-blur-xs flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl max-h-[90vh] bg-white border border-slate-200 rounded-3xl shadow-2xl flex flex-col justify-between overflow-hidden animate-in fade-in zoom-in-95 duration-200 text-[#2B2D42]">
         {/* Header */}
-        <div className="p-5 border-b border-slate-800 flex items-center justify-between bg-slate-950/60">
+        <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-[#F7F9FA]">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-400 border border-teal-500/30 flex items-center justify-center">
-              <CalendarDays className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-2xl bg-[#264653] text-white flex items-center justify-center shadow-md">
+              <CalendarDays className="w-5 h-5 text-[#E76F51]" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Curriculum & Unterrichts-Timetable</h2>
-              <p className="text-xs text-slate-400">7 Doppelstunden (à 90 Min.) zur partnerschaftlichen Entscheidungsfindung</p>
+              <h2 className="text-base font-bold text-[#264653]">Unterrichtsreihe: 7 Doppelstunden</h2>
+              <p className="text-xs text-[#2B2D42]/70">Curriculare Matrix & Fortschrittsübersicht (je 90 Minuten)</p>
             </div>
           </div>
 
@@ -52,31 +48,13 @@ export const TimetableModal: React.FC = () => {
               sounds.playClick();
               setActiveModal('none');
             }}
-            className="w-9 h-9 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center transition-colors"
+            className="w-9 h-9 rounded-xl hover:bg-slate-200 text-slate-400 hover:text-[#2B2D42] flex items-center justify-center transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Overall Progress Banner */}
-        <div className="px-6 py-4 bg-slate-950/80 border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="text-xs font-bold text-slate-200">Gesamter Lernfortschritt</div>
-            <div className="text-[11px] text-slate-400">Chronologischer Durchlauf von DS 1 bis DS 7</div>
-          </div>
-
-          <div className="flex items-center gap-4 w-full sm:w-64">
-            <div className="flex-1 h-2.5 bg-slate-800 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-teal-500 to-emerald-400 rounded-full transition-all duration-500"
-                style={{ width: `${overallProgressPercent}%` }}
-              />
-            </div>
-            <span className="font-mono font-bold text-teal-400 text-xs">{overallProgressPercent}%</span>
-          </div>
-        </div>
-
-        {/* 7 Doppelstunden List */}
+        {/* Timetable Matrix Grid */}
         <div className="flex-1 overflow-y-auto p-5 space-y-3">
           {MODULES_DATA.map((mod) => {
             const state = moduleStates[mod.id];
@@ -86,57 +64,74 @@ export const TimetableModal: React.FC = () => {
             return (
               <div
                 key={mod.id}
-                className={`border rounded-2xl p-4 transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                className={`p-4 rounded-2xl border transition-all flex flex-col md:flex-row md:items-center justify-between gap-4 ${
                   isCompleted
-                    ? 'bg-slate-950/90 border-emerald-500/40'
+                    ? 'bg-emerald-50/50 border-emerald-300'
                     : isUnlocked
-                    ? 'bg-slate-950/70 border-teal-500/30'
-                    : 'bg-slate-950/40 border-slate-800 opacity-75'
+                    ? 'bg-[#F7F9FA] border-slate-200 hover:border-[#264653]/40'
+                    : 'bg-slate-50 border-slate-200 opacity-80'
                 }`}
               >
-                <div className="flex items-start gap-3.5 min-w-0">
+                {/* Module Info */}
+                <div className="flex items-start gap-3.5">
                   <div
-                    className={`w-10 h-10 rounded-xl flex items-center justify-center font-mono font-bold text-xs shrink-0 ${
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center font-mono font-bold text-sm shrink-0 shadow-xs ${
                       isCompleted
-                        ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                        ? 'bg-emerald-600 text-white'
                         : isUnlocked
-                        ? 'bg-teal-500/20 text-teal-300 border border-teal-500/30'
-                        : 'bg-slate-800 text-slate-500'
+                        ? 'bg-[#264653] text-white'
+                        : 'bg-slate-200 text-slate-500'
                     }`}
                   >
                     DS {mod.id}
                   </div>
 
-                  <div className="space-y-0.5">
+                  <div>
                     <div className="flex items-center gap-2">
-                      <h3 className="text-xs font-bold text-white tracking-wide">{mod.title}</h3>
-                      {isCompleted && (
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold border border-emerald-500/30 flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3" />
-                          Abgeschlossen
-                        </span>
-                      )}
+                      <h3 className="text-sm font-bold text-[#264653]">{mod.title}</h3>
+                      <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-[#2B2D42]">
+                        {mod.timeEstimate}
+                      </span>
                     </div>
-                    <p className="text-[11px] text-teal-400">{mod.subtitle}</p>
-                    <p className="text-xs text-slate-400 line-clamp-1">{mod.locationName}</p>
+
+                    <p className="text-xs text-[#2B2D42]/80 mt-0.5">{mod.subtitle}</p>
+
+                    <div className="flex items-center gap-3 mt-2 text-[11px] text-[#2B2D42]/70">
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3.5 h-3.5 text-[#264653]" />
+                        90 Minuten
+                      </span>
+                      <span>•</span>
+                      <span>Schwerpunkt: <strong className="text-[#264653]">{mod.locationName}</strong></span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 self-end sm:self-center shrink-0">
-                  <div className="flex items-center gap-1 text-[11px] font-mono text-slate-400">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>90 Min.</span>
+                {/* Status and Action */}
+                <div className="flex items-center justify-between md:justify-end gap-3 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-200">
+                  <div>
+                    {isCompleted ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        Abgeschlossen
+                      </span>
+                    ) : isUnlocked ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#264653]/10 text-[#264653] text-xs font-bold">
+                        Bereit / In Arbeit
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-medium">
+                        <Lock className="w-3 h-3" />
+                        Gesperrt
+                      </span>
+                    )}
                   </div>
 
                   <button
                     onClick={() => handleOpenModule(mod.id)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-md ${
-                      isUnlocked
-                        ? 'bg-teal-600 hover:bg-teal-500 text-white shadow-teal-600/20'
-                        : 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                    }`}
+                    className="px-4 py-2 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all"
                   >
-                    <span>{isCompleted ? 'Wiederholen' : isUnlocked ? 'Öffnen' : 'Öffnen'}</span>
+                    <span>Öffnen</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -146,11 +141,11 @@ export const TimetableModal: React.FC = () => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-800 bg-slate-950/60 flex items-center justify-between text-xs text-slate-400">
-          <span>Gesamtumfang: 14 Unterrichtsstunden (7 Doppelstunden)</span>
+        <div className="p-4 border-t border-slate-100 bg-[#F7F9FA] flex items-center justify-between text-xs text-[#2B2D42]/70">
+          <span>Struktur: Blended-Learning-Curriculum mit 7 Doppelstunden</span>
           <button
             onClick={() => setActiveModal('none')}
-            className="px-4 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-medium text-xs transition-colors"
+            className="px-4 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-[#2B2D42] font-bold text-xs transition-colors"
           >
             Schließen
           </button>

@@ -25,7 +25,7 @@ export const INITIAL_BADGES: AchievementBadge[] = [
   {
     id: 'badge_anamnese_profi',
     title: 'Krohwinkel-Spezialist',
-    description: 'Alle 13 ABEDL nach Krohwinkel in einer Pflegeanamnese vollständig mit PESR befüllt.',
+    description: 'Alle 13 ABEDL nach Krohwinkel in einer Pflegeanamnese sorgfältig und detailliert erfasst.',
     icon: 'FileSpreadsheet',
     category: 'documentation',
   },

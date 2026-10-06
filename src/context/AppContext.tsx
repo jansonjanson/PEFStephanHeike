@@ -3,7 +3,6 @@ import { ZusatzdocData, UserModuleState, AchievementBadge } from '../types';
 import { MODULES_DATA } from '../data/curriculumData';
 import { INITIAL_BADGES } from '../data/badgesData';
 import { sounds } from '../utils/soundEffects';
-import confetti from 'canvas-confetti';
 
 interface AppContextType {
   activeModuleId: number | null;
@@ -14,10 +13,15 @@ interface AppContextType {
   setActiveDrawerTab: (tab: 'akte' | 'simulation' | 'auswertung' | 'didaktik') => void;
   
   // Navigation & Modals
-  activeModal: 'none' | 'welcome' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate';
-  setActiveModal: (modal: 'none' | 'welcome' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate') => void;
+  activeModal: 'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm';
+  setActiveModal: (modal: 'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm') => void;
   isOnboardingActive: boolean;
   setIsOnboardingActive: (active: boolean) => void;
+  
+  // Admin Mode
+  isAdminMode: boolean;
+  unlockAllWithAdminPassword: (password: string) => boolean;
+  resetAllProgress: () => void;
   
   // Custom Map Background
   customBgUrl: string;
@@ -27,8 +31,14 @@ interface AppContextType {
   studentName: string;
   setStudentName: (name: string) => void;
 
+  // Success Notification Banner
+  successBanner: string | null;
+  showSuccessBanner: (message: string) => void;
+
   // Module States (local storage)
   moduleStates: { [moduleId: number]: UserModuleState };
+  openModule: (moduleId: number) => void;
+  advanceModuleStep: (moduleId: number, stepNumber: number) => void;
   updateZusatzdoc: (moduleId: number, data: Partial<ZusatzdocData>) => void;
   updateAbedl: (moduleId: number, abedlId: number, field: 'info' | 'p' | 'e' | 's' | 'r', val: string) => void;
   recordSimulationChoice: (moduleId: number, stepId: string, optionId: string, stats: { pefScore: number; paternalisticScore: number; informedScore: number }) => void;
@@ -52,12 +62,14 @@ interface AppContextType {
 }
 
 const STORAGE_KEY = 'pflege_app_stephan_heike_v2';
+const DEFAULT_MAP_URL = 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Map.jpg?raw=true';
 
 const defaultEmptyState = (): { [moduleId: number]: UserModuleState } => {
   const map: { [moduleId: number]: UserModuleState } = {};
   MODULES_DATA.forEach((mod) => {
     map[mod.id] = {
       completed: false,
+      stepProgress: 1, // Step 1 = Video, Step 2 = Doku, Step 3 = Sim, Step 4 = Auswertung
       zusatzdoc: {
         who: '',
         whatHappened: '',
@@ -67,7 +79,7 @@ const defaultEmptyState = (): { [moduleId: number]: UserModuleState } => {
       abedl: {},
       simulationAnswers: {},
       simulationStats: { pef: 0, paternalistic: 0, informed: 0 },
-      unlockedWithPassword: mod.id === 1, // DS 1 unlocked by default
+      unlockedWithPassword: mod.id === 1, // Only DS 1 initially
     };
   });
   return map;
@@ -79,11 +91,40 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [activeDrawerTab, setActiveDrawerTab] = useState<'akte' | 'simulation' | 'auswertung' | 'didaktik'>('akte');
-  const [activeModal, setActiveModal] = useState<'none' | 'welcome' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate'>('welcome');
-  const [isOnboardingActive, setIsOnboardingActive] = useState<boolean>(false);
-  const [customBgUrl, setCustomBgUrl] = useState<string>('');
-  const [studentName, setStudentName] = useState<string>('');
+  const [activeModal, setActiveModal] = useState<'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm'>('none');
+  const [isOnboardingActive, setIsOnboardingActive] = useState<boolean>(true); // Start tutorial automatically on first launch
+  const [hasSeenIntro, setHasSeenIntro] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return !!localStorage.getItem(`${STORAGE_KEY}_seen_intro`);
+    }
+    return false;
+  });
+  const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
+  const [customBgUrl, setCustomBgUrl] = useState<string>(DEFAULT_MAP_URL);
+  const [studentName, setStudentName] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(`${STORAGE_KEY}_student_name`) || '';
+    }
+    return '';
+  });
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [successBanner, setSuccessBanner] = useState<string | null>(null);
+
+  // Success Banner Toast handler
+  const showSuccessBanner = (message: string) => {
+    setSuccessBanner(message);
+    setTimeout(() => {
+      setSuccessBanner((curr) => (curr === message ? null : curr));
+    }, 4500);
+  };
+
+  // Save student name to local storage
+  const handleSetStudentName = (name: string) => {
+    setStudentName(name);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(`${STORAGE_KEY}_student_name`, name);
+    }
+  };
 
   // Load from local storage
   const [moduleStates, setModuleStates] = useState<{ [moduleId: number]: UserModuleState }>(() => {
@@ -135,18 +176,43 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prev.map((b) => {
         if (b.id === badgeId && !b.unlockedAt) {
           sounds.playBadgeUnlock();
-          try {
-            confetti({
-              particleCount: 60,
-              spread: 60,
-              origin: { y: 0.7 },
-            });
-          } catch {}
+          showSuccessBanner(`🏆 Neue Auszeichnung freigeschaltet: „${b.title}“!`);
           return { ...b, unlockedAt: new Date().toISOString() };
         }
         return b;
       })
     );
+  };
+
+  const openModule = (moduleId: number) => {
+    sounds.playClick();
+    setActiveModuleId(moduleId);
+    setIsDrawerOpen(true);
+    setActiveDrawerTab('akte');
+
+    // Pop up case intro with quote & characters ONLY when opening DS 3 for the first time outside tour!
+    if (moduleId === 3 && !hasSeenIntro && !isOnboardingActive) {
+      setActiveModal('welcome');
+      setHasSeenIntro(true);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(`${STORAGE_KEY}_seen_intro`, 'true');
+      }
+    }
+  };
+
+  const advanceModuleStep = (moduleId: number, stepNumber: number) => {
+    sounds.playSuccess();
+    setModuleStates((prev) => {
+      const current = prev[moduleId] || defaultEmptyState()[moduleId];
+      const maxStep = Math.max(current.stepProgress || 1, stepNumber);
+      return {
+        ...prev,
+        [moduleId]: {
+          ...current,
+          stepProgress: maxStep,
+        },
+      };
+    });
   };
 
   const updateZusatzdoc = (moduleId: number, data: Partial<ZusatzdocData>) => {
@@ -168,22 +234,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const updateAbedl = (moduleId: number, abedlId: number, field: 'info' | 'p' | 'e' | 's' | 'r', val: string) => {
     setModuleStates((prev) => {
       const current = prev[moduleId] || defaultEmptyState()[moduleId];
-      const existingEntry = current.abedl[abedlId] || { info: '', pesr: { p: '', e: '', s: '', r: '' } };
-      
-      let updatedEntry = { ...existingEntry };
+      const currentAbedl = current.abedl || {};
+      const currentItem = currentAbedl[abedlId] || { info: '', pesr: { p: '', e: '', s: '', r: '' } };
+
+      let updatedItem = { ...currentItem };
       if (field === 'info') {
-        updatedEntry.info = val;
+        updatedItem.info = val;
       } else {
-        updatedEntry.pesr = {
-          ...updatedEntry.pesr,
+        updatedItem.pesr = {
+          ...updatedItem.pesr,
           [field]: val,
         };
-      }
-
-      // Check if user filled multiple ABEDLs -> reward badge
-      const countFilled = Object.keys({ ...current.abedl, [abedlId]: updatedEntry }).length;
-      if (countFilled >= 5) {
-        unlockBadge('badge_anamnese_profi');
       }
 
       return {
@@ -191,8 +252,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         [moduleId]: {
           ...current,
           abedl: {
-            ...current.abedl,
-            [abedlId]: updatedEntry,
+            ...currentAbedl,
+            [abedlId]: updatedItem,
           },
         },
       };
@@ -208,41 +269,37 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     sounds.playSelectOption();
     setModuleStates((prev) => {
       const current = prev[moduleId] || defaultEmptyState()[moduleId];
-      const newAnswers = {
-        ...current.simulationAnswers,
-        [stepId]: optionId,
-      };
-      const newStats = {
+      const nextStats = {
         pef: current.simulationStats.pef + stats.pefScore,
         paternalistic: current.simulationStats.paternalistic + stats.paternalisticScore,
         informed: current.simulationStats.informed + stats.informedScore,
       };
 
-      if (newStats.pef >= 3) {
-        unlockBadge('badge_pef_champion');
-      }
-
       return {
         ...prev,
         [moduleId]: {
           ...current,
-          simulationAnswers: newAnswers,
-          simulationStats: newStats,
+          stepProgress: Math.max(current.stepProgress || 1, 4),
+          simulationAnswers: {
+            ...current.simulationAnswers,
+            [stepId]: optionId,
+          },
+          simulationStats: nextStats,
         },
       };
     });
+
+    unlockBadge('badge_first_choice');
   };
 
   const saveQuizScore = (moduleId: number, score: number, total: number) => {
     setModuleStates((prev) => {
       const current = prev[moduleId] || defaultEmptyState()[moduleId];
-      if (score / total >= 0.75) {
-        unlockBadge('badge_quiz_master');
-      }
       return {
         ...prev,
         [moduleId]: {
           ...current,
+          stepProgress: Math.max(current.stepProgress || 1, 4),
           quizScore: { score, total, completed: true },
         },
       };
@@ -261,9 +318,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (isMatch) {
       sounds.playSuccess();
-      try {
-        confetti({ particleCount: 80, spread: 80, origin: { y: 0.6 } });
-      } catch {}
+      showSuccessBanner(`🔓 Musterlösung für Doppelstunde ${moduleId} erfolgreich entsperrt!`);
       setModuleStates((prev) => {
         const current = prev[moduleId] || defaultEmptyState()[moduleId];
         return {
@@ -284,35 +339,117 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const markModuleCompleted = (moduleId: number) => {
     sounds.playSuccess();
+    const nextModId = moduleId + 1;
+
     setModuleStates((prev) => {
       const current = prev[moduleId] || defaultEmptyState()[moduleId];
-      return {
+      const nextModCurrent = prev[nextModId] || defaultEmptyState()[nextModId];
+
+      const updated = {
         ...prev,
         [moduleId]: {
           ...current,
           completed: true,
         },
       };
+
+      // Auto-unlock next module
+      if (nextModId <= 7 && nextModCurrent) {
+        updated[nextModId] = {
+          ...nextModCurrent,
+          unlockedWithPassword: true,
+        };
+      }
+
+      return updated;
     });
+
+    if (nextModId <= 7) {
+      showSuccessBanner(`✨ Doppelstunde ${moduleId} abgeschlossen! Doppelstunde ${nextModId} ist jetzt freigeschaltet.`);
+    } else {
+      showSuccessBanner(`🎓 Herzlichen Glückwunsch! Alle 7 Doppelstunden wurden erfolgreich abgeschlossen.`);
+    }
 
     if (moduleId === 1) unlockBadge('badge_ethik_pionier');
     if (moduleId === 7) unlockBadge('badge_grand_master');
   };
 
-  // Aggregated calculations
+  const unlockAllWithAdminPassword = (password: string): boolean => {
+    const clean = password.trim().toLowerCase();
+    if (clean === 'janson') {
+      sounds.playSuccess();
+      showSuccessBanner(`🛡️ Admin-Modus aktiviert: Alle 7 Doppelstunden & Dozenten-Regiepläne freigeschaltet!`);
+
+      // Unlock all modules
+      setModuleStates((prev) => {
+        const next: { [key: number]: UserModuleState } = {};
+        MODULES_DATA.forEach((mod) => {
+          const current = prev[mod.id] || defaultEmptyState()[mod.id];
+          next[mod.id] = {
+            ...current,
+            stepProgress: 4,
+            unlockedWithPassword: true,
+            completed: true,
+          };
+        });
+        return next;
+      });
+
+      // Unlock all badges
+      setBadges((prev) =>
+        prev.map((b) => ({
+          ...b,
+          unlockedAt: b.unlockedAt || new Date().toISOString(),
+        }))
+      );
+
+      setIsAdminMode(true);
+      return true;
+    } else {
+      sounds.playError();
+      return false;
+    }
+  };
+
+  const resetAllProgress = () => {
+    sounds.playClick();
+    const fresh = defaultEmptyState();
+    setModuleStates(fresh);
+    setBadges(INITIAL_BADGES);
+    setIsAdminMode(false);
+    setActiveModuleId(null);
+    setIsDrawerOpen(false);
+    setHasSeenIntro(false);
+    setStudentName('');
+    setIsOnboardingActive(true);
+    showSuccessBanner('Training und Fortschritt wurden vollständig zurückgesetzt. Das Tutorial startet erneut.');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(`${STORAGE_KEY}_badges`);
+      localStorage.removeItem(`${STORAGE_KEY}_seen_tour`);
+      localStorage.removeItem(`${STORAGE_KEY}_seen_intro`);
+      localStorage.removeItem(`${STORAGE_KEY}_student_name`);
+    }
+  };
+
+  // Calculate Scores
   let totalPefScore = 0;
   let totalPaternalisticScore = 0;
   let totalInformedScore = 0;
   let completedCount = 0;
 
-  Object.values(moduleStates).forEach((ms) => {
-    totalPefScore += ms.simulationStats?.pef || 0;
-    totalPaternalisticScore += ms.simulationStats?.paternalistic || 0;
-    totalInformedScore += ms.simulationStats?.informed || 0;
-    if (ms.completed || ms.unlockedWithPassword) completedCount++;
+  Object.values(moduleStates).forEach((st) => {
+    if (st.simulationStats) {
+      totalPefScore += st.simulationStats.pef || 0;
+      totalPaternalisticScore += st.simulationStats.paternalistic || 0;
+      totalInformedScore += st.simulationStats.informed || 0;
+    }
+    if (st.completed) {
+      completedCount++;
+    }
   });
 
-  const overallProgressPercent = Math.min(100, Math.round((completedCount / MODULES_DATA.length) * 100));
+  const overallProgressPercent = Math.round((completedCount / MODULES_DATA.length) * 100);
 
   return (
     <AppContext.Provider
@@ -327,11 +464,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setActiveModal,
         isOnboardingActive,
         setIsOnboardingActive,
+        isAdminMode,
+        unlockAllWithAdminPassword,
+        resetAllProgress,
         customBgUrl,
         setCustomBgUrl,
         studentName,
-        setStudentName,
+        setStudentName: handleSetStudentName,
+        successBanner,
+        showSuccessBanner,
         moduleStates,
+        openModule,
+        advanceModuleStep,
         updateZusatzdoc,
         updateAbedl,
         recordSimulationChoice,
@@ -354,7 +498,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 };
 
 export const useApp = () => {
-  const ctx = useContext(AppContext);
-  if (!ctx) throw new Error('useApp must be used within an AppProvider');
-  return ctx;
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error('useApp must be used within an AppProvider');
+  }
+  return context;
 };

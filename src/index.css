@@ -1,37 +1,69 @@
 @import "tailwindcss";
 
 @layer base {
+  :root {
+    --bg-color: #F7F9FA;
+    --primary-color: #264653;
+    --accent-color: #E76F51;
+    --text-main: #2B2D42;
+  }
+
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #F7F9FA;
+    color: #2B2D42;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  p, li, blockquote, label, span {
+    text-wrap: pretty;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    text-wrap: balance;
+  }
+
+  .font-serif-reading {
+    font-family: 'Lora', Georgia, Cambria, serif;
+    text-wrap: pretty;
   }
 }
 
-/* Custom Sleek Scrollbar */
+/* Custom Soft Medical Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: #EEF2F5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(45, 212, 191, 0.25);
-  border-radius: 9999px;
+  background: #CBD5E1;
+  border-radius: 12px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(45, 212, 191, 0.5);
+  background: #94A3B8;
 }
 
-/* Print Styles for Certificate */
+/* Diffuse soft card shadow token */
+.card-soft-shadow {
+  box-shadow: 0 10px 25px rgba(43, 45, 66, 0.06);
+}
+
+.panel-soft-shadow {
+  box-shadow: -5px 0 35px rgba(43, 45, 66, 0.12);
+}
+
 @media print {
   body {
     background: white !important;
-    color: black !important;
+    color: #2B2D42 !important;
   }
-  aside, header, button {
+  aside, header, button, .no-print {
     display: none !important;
   }
 }

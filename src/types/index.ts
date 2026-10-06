@@ -50,11 +50,26 @@ export interface AbedlItemData {
   };
 }
 
+export interface DecisionMomentItem {
+  title: string;
+  person?: string;
+  description: string;
+}
+
+export interface DecisionMomentsData {
+  derivable: DecisionMomentItem[];
+  probable: DecisionMomentItem[];
+  hypothetical: DecisionMomentItem[];
+  reflectionPrompt: string;
+}
+
 export interface ZusatzdocData {
   who: string;
   whatHappened: string;
   decisionsMade: string;
   ethicalDilemmas: string;
+  decisionMomentsIdentified?: string;
+  decisionMomentsConfirmed?: boolean;
 }
 
 export interface QuizQuestion {
@@ -102,6 +117,8 @@ export interface ModuleData {
   videoTitle?: string;
   videoDuration?: string;
   videoDescription?: string;
+  narrativeSummary?: string;
+  decisionMoments?: DecisionMomentsData;
   mapCoordinates: { x: number; y: number };
   badgeId?: string;
   simulation?: SimulationScenario;
@@ -118,6 +135,7 @@ export interface ModuleData {
 
 export interface UserModuleState {
   completed: boolean;
+  stepProgress?: number; // 1 = Video, 2 = Doku, 3 = Simulation, 4 = Auswertung / Musterlösung
   zusatzdoc: ZusatzdocData;
   abedl: { [key: number]: { info: string; pesr: { p: string; e: string; s: string; r: string } } };
   simulationAnswers: { [stepId: string]: string }; // stepId -> optionId

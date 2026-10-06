@@ -16,19 +16,19 @@ import { saveAs } from 'file-saver';
 import { ZusatzdocData } from '../types';
 
 export const ABEDL_DEFINITIONS = [
-  { id: 1, name: '1. Kommunizieren', desc: 'Sprechen, Mimik, Gestik, Hilfsmittel, Verstehen, Orientierung' },
-  { id: 2, name: '2. Sich bewegen', desc: 'Lageveränderung, Mobilität, Transfer, Lähmungen, Spastik, Tonus' },
-  { id: 3, name: '3. Vitale Funktionen des Lebens aufrechterhalten', desc: 'Atmung, Trachealkanüle, Kreislauf, Thermoregulation, Aspiration' },
-  { id: 4, name: '4. Sich pflegen', desc: 'Körperpflege, Hautzustand, Mundpflege, Haare, Nägel, Intimpflege' },
-  { id: 5, name: '5. Essen und trinken', desc: 'Schluckstörung (Dysphagie), PEG-Sonde, Diät, Flüssigkeitsbedarf' },
-  { id: 6, name: '6. Ausscheiden', desc: 'Kontinenz, Blasen-/Darmmanagement, Inkontinenzhilfen, Obstipation' },
-  { id: 7, name: '7. Sich kleiden', desc: 'An- und Auskleiden, Kleidungsauswahl, Hilfsmittelbedarf' },
-  { id: 8, name: '8. Ruhen und schlafen', desc: 'Schlaf-Wach-Rhythmus, Schlafstörungen, Lagerung zur Nacht' },
-  { id: 9, name: '9. Sich beschäftigen', desc: 'Hobbys, Interessen, Tagesstruktur, kognitive Stimulation' },
-  { id: 10, name: '10. Die eigene Sexualität leben', desc: 'Partnerschaft, Intimität, Schamgefühl, Rollenverständnis' },
-  { id: 11, name: '11. Für eine sichere Umgebung sorgen', desc: 'Sturzrisiko, Notrufsysteme, Orientierungshilfen, Barrierefreiheit' },
-  { id: 12, name: '12. Soziale Bereiche des Lebens sichern', desc: 'Angehörige (Heike), Freunde, soziale Kontakte, Berufsrolle' },
-  { id: 13, name: '13. Mit existenziellen Erfahrungen des Lebens umgehen', desc: 'Krankheitsverarbeitung, Sinnfindung, Ängste, Hoffnung, Ethik' },
+  { id: 1, name: '1. kommunizieren zu können', desc: 'Sprechen, Mimik, Gestik, Hilfsmittel, Verstehen, Orientierung' },
+  { id: 2, name: '2. sich bewegen zu können', desc: 'Lageveränderung, Mobilität, Transfer, Lähmungen, Spastik, Tonus' },
+  { id: 3, name: '3. vitale Funktionen des Lebens aufrecht erhalten zu können', desc: 'Atmung, Trachealkanüle, Kreislauf, Thermoregulation, Aspiration' },
+  { id: 4, name: '4. sich pflegen zu können', desc: 'Körperpflege, Hautzustand, Mundpflege, Haare, Nägel, Intimpflege' },
+  { id: 5, name: '5. sich kleiden zu können', desc: 'An- und Auskleiden, Kleidungsauswahl, Hilfsmittelbedarf' },
+  { id: 6, name: '6. ausscheiden zu können', desc: 'Kontinenz, Blasen-/Darmmanagement, Inkontinenzhilfen, Obstipation' },
+  { id: 7, name: '7. essen und trinken zu können', desc: 'Schluckstörung (Dysphagie), PEG-Sonde, Diät, Flüssigkeitsbedarf' },
+  { id: 8, name: '8. ruhen, schlafen und sich entspannen zu können', desc: 'Schlaf-Wach-Rhythmus, Schlafstörungen, Lagerung zur Nacht' },
+  { id: 9, name: '9. sich beschäftigen, lernen, sich entwickeln zu können', desc: 'Hobbys, Interessen, Tagesstruktur, kognitive Stimulation, Talker' },
+  { id: 10, name: '10. die eigene Sexualität leben zu können', desc: 'Partnerschaft, Intimität, Schamgefühl, Rollenverständnis' },
+  { id: 11, name: '11. für eine sichere / fördernde Umgebung sorgen können', desc: 'Sturzrisiko, Notrufsysteme, Orientierungshilfen, Barrierefreiheit' },
+  { id: 12, name: '12. soziale Beziehungen sichern und gestalten zu können', desc: 'Angehörige (Heike, Söhne), Freunde, soziale Kontakte, Berufsrolle' },
+  { id: 13, name: '13. Mit existentiellen Erfahrungen umgehen und sich entwickeln zu können', desc: 'Krankheitsverarbeitung, Sinnfindung, Ängste, Hoffnung, Ethik' },
 ];
 
 export async function exportNursingDossierDocx(
@@ -40,116 +40,160 @@ export async function exportNursingDossierDocx(
 ) {
   const author = studentName?.trim() || 'Auszubildende/r Pflegefachkraft';
   const currentDate = new Date().toLocaleDateString('de-DE');
+  const situationNum = Math.max(1, moduleNumber - 2); // DS 3 = Situation 1, DS 4 = Situation 2, etc.
 
   const doc = new Document({
     sections: [
       {
         properties: {},
         children: [
-          // Header / Title block
+          // Header / Alexianer Header simulation
           new Paragraph({
-            alignment: AlignmentType.CENTER,
-            heading: HeadingLevel.TITLE,
+            alignment: AlignmentType.RIGHT,
             children: [
               new TextRun({
-                text: 'GENERALISTISCHE PFLEGEAUSBILDUNG',
+                text: 'Alexianer',
                 bold: true,
-                size: 28,
-                color: '0D5C75',
+                size: 24,
+                color: '990000',
               }),
             ],
           }),
           new Paragraph({
-            alignment: AlignmentType.CENTER,
+            alignment: AlignmentType.RIGHT,
             children: [
               new TextRun({
-                text: `Pflegedokumentation & Anamnese – Fall Stephan & Heike (DS ${moduleNumber})`,
-                bold: true,
-                size: 22,
-                color: '333333',
-              }),
-            ],
-          }),
-          new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-              new TextRun({
-                text: `Modul: ${moduleTitle} | Erstellt am: ${currentDate} von: ${author}`,
-                italics: true,
-                size: 18,
+                text: 'ALEXIANER AKADEMIE FÜR PFLEGE',
+                size: 14,
                 color: '666666',
               }),
             ],
           }),
-          new Paragraph({ text: '' }), // spacing
-
-          // SECTION 1: ZUSATZDOC V.2
           new Paragraph({
-            heading: HeadingLevel.HEADING_1,
             children: [
               new TextRun({
-                text: '1. Zusatzdoc V.2 – Situationsanalyse & Entscheidungen',
-                bold: true,
-                size: 24,
-                color: '0D5C75',
+                text: 'CE08 – U2 Partnerschaftliche Entscheidungsfindung\nJ.Rosenow',
+                size: 18,
+                color: '333333',
               }),
             ],
           }),
+          new Paragraph({ text: '' }),
 
+          // Title
+          new Paragraph({
+            alignment: AlignmentType.CENTER,
+            heading: HeadingLevel.HEADING_1,
+            children: [
+              new TextRun({
+                text: `Zusammenfassung Situation ${situationNum}`,
+                bold: true,
+                size: 26,
+                color: '264653',
+              }),
+            ],
+          }),
+          new Paragraph({
+            alignment: AlignmentType.CENTER,
+            children: [
+              new TextRun({
+                text: `Fall Stephan & Heike • Erstellt von: ${author} am ${currentDate}`,
+                italics: true,
+                size: 16,
+                color: '666666',
+              }),
+            ],
+          }),
+          new Paragraph({ text: '' }),
+
+          // Table 1: Entscheidungsprotokoll / 3. Entscheidungsidentifikation (Layout exactly matching PDF)
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: [
               new TableRow({
                 children: [
                   new TableCell({
-                    width: { size: 30, type: WidthType.PERCENTAGE },
-                    shading: { fill: 'E6F4F8', type: ShadingType.CLEAR, color: 'auto' },
-                    children: [new Paragraph({ children: [new TextRun({ text: 'Leitfrage', bold: true, color: '0D5C75' })] })],
+                    width: { size: 38, type: WidthType.PERCENTAGE },
+                    shading: { fill: 'D1E7DD', type: ShadingType.CLEAR, color: 'auto' }, // Soft green matching PDF
+                    children: [
+                      new Paragraph({
+                        alignment: AlignmentType.CENTER,
+                        children: [
+                          new TextRun({
+                            text: 'Wer war zu sehen/zu hören?\n(Personen/Rolle)',
+                            bold: true,
+                            size: 20,
+                            color: '1B4332',
+                          }),
+                        ],
+                      }),
+                    ],
                   }),
                   new TableCell({
-                    width: { size: 70, type: WidthType.PERCENTAGE },
-                    shading: { fill: 'E6F4F8', type: ShadingType.CLEAR, color: 'auto' },
-                    children: [new Paragraph({ children: [new TextRun({ text: 'Dokumentierte Beobachtungen & Analyse', bold: true, color: '0D5C75' })] })],
-                  }),
-                ],
-              }),
-              new TableRow({
-                children: [
-                  new TableCell({
-                    children: [new Paragraph({ children: [new TextRun({ text: 'Wer war zu sehen / zu hören?', bold: true })] })],
-                  }),
-                  new TableCell({
-                    children: [new Paragraph({ text: zusatzdoc.who || '(Keine Angabe)' })],
-                  }),
-                ],
-              }),
-              new TableRow({
-                children: [
-                  new TableCell({
-                    children: [new Paragraph({ children: [new TextRun({ text: 'Was ist passiert?', bold: true })] })],
-                  }),
-                  new TableCell({
-                    children: [new Paragraph({ text: zusatzdoc.whatHappened || '(Keine Angabe)' })],
+                    width: { size: 62, type: WidthType.PERCENTAGE },
+                    children: [
+                      new Paragraph({
+                        children: [new TextRun({ text: zusatzdoc.who || '— Keine Angaben eingetragen —', size: 20 })],
+                      }),
+                    ],
                   }),
                 ],
               }),
               new TableRow({
                 children: [
                   new TableCell({
-                    children: [new Paragraph({ children: [new TextRun({ text: 'Welche Entscheidungen wurden getroffen?', bold: true })] })],
+                    width: { size: 38, type: WidthType.PERCENTAGE },
+                    shading: { fill: 'F3D5EB', type: ShadingType.CLEAR, color: 'auto' }, // Soft lilac/pink matching PDF
+                    children: [
+                      new Paragraph({
+                        alignment: AlignmentType.CENTER,
+                        children: [
+                          new TextRun({
+                            text: 'Was ist passiert?\n(Situation)',
+                            bold: true,
+                            size: 20,
+                            color: '5C1D4E',
+                          }),
+                        ],
+                      }),
+                    ],
                   }),
                   new TableCell({
-                    children: [new Paragraph({ text: zusatzdoc.decisionsMade || '(Keine Angabe)' })],
+                    width: { size: 62, type: WidthType.PERCENTAGE },
+                    children: [
+                      new Paragraph({
+                        children: [new TextRun({ text: zusatzdoc.whatHappened || '— Keine Angaben eingetragen —', size: 20 })],
+                      }),
+                    ],
                   }),
                 ],
               }),
               new TableRow({
                 children: [
                   new TableCell({
-                    children: [new Paragraph({ children: [new TextRun({ text: 'Ethische Dilemmata / Haltungen', bold: true })] })],
+                    width: { size: 38, type: WidthType.PERCENTAGE },
+                    shading: { fill: 'FDE2D2', type: ShadingType.CLEAR, color: 'auto' }, // Soft orange/peach matching PDF
+                    children: [
+                      new Paragraph({
+                        alignment: AlignmentType.CENTER,
+                        children: [
+                          new TextRun({
+                            text: 'Welche Entscheidungen wurden getroffen?\n(Entscheidungen)',
+                            bold: true,
+                            size: 20,
+                            color: '7A3211',
+                          }),
+                        ],
+                      }),
+                    ],
                   }),
                   new TableCell({
-                    children: [new Paragraph({ text: zusatzdoc.ethicalDilemmas || '(Keine Angabe)' })],
+                    width: { size: 62, type: WidthType.PERCENTAGE },
+                    children: [
+                      new Paragraph({
+                        children: [new TextRun({ text: zusatzdoc.decisionMomentsIdentified || zusatzdoc.decisionsMade || '— Keine Angaben eingetragen —', size: 20 })],
+                      }),
+                    ],
                   }),
                 ],
               }),
@@ -159,85 +203,69 @@ export async function exportNursingDossierDocx(
           new Paragraph({ text: '' }),
           new Paragraph({ text: '' }),
 
-          // SECTION 2: CHECKLISTE PFLEGEANAMNESE (13 ABEDL NACH KROHWINKEL)
+          // SECTION 2: CHECKLISTE PFLEGEANAMNESE
           new Paragraph({
             heading: HeadingLevel.HEADING_1,
             children: [
               new TextRun({
-                text: '2. Checkliste Pflegeanamnese (13 ABEDL nach Krohwinkel)',
+                text: 'Checkliste – Pflegeanamnese (13 ABEDL)',
                 bold: true,
                 size: 24,
-                color: '0D5C75',
+                color: '264653',
               }),
             ],
           }),
           new Paragraph({
             children: [
               new TextRun({
-                text: 'Strukturierte Erfassung der pflegerelevanten Informationen sowie PESR-Pflegediagnosen (Problem, Ätiologie, Symptome, Ressourcen).',
+                text: 'ABEDL-einbeziehende Konzepte und Kategorien – Strukturierungsmodell nach Krohwinkel 2013',
                 italics: true,
-                size: 18,
+                size: 16,
                 color: '555555',
               }),
             ],
           }),
           new Paragraph({ text: '' }),
 
+          // Table 2: 13 ABEDL Table matching PDF layout
           new Table({
             width: { size: 100, type: WidthType.PERCENTAGE },
             rows: [
               new TableRow({
                 children: [
                   new TableCell({
-                    width: { size: 25, type: WidthType.PERCENTAGE },
-                    shading: { fill: '0D5C75', type: ShadingType.CLEAR, color: 'auto' },
-                    children: [new Paragraph({ children: [new TextRun({ text: 'ABEDL Kategorie', bold: true, color: 'FFFFFF' })] })],
-                  }),
-                  new TableCell({
                     width: { size: 35, type: WidthType.PERCENTAGE },
-                    shading: { fill: '0D5C75', type: ShadingType.CLEAR, color: 'auto' },
-                    children: [new Paragraph({ children: [new TextRun({ text: 'Pflegerelevante Informationen', bold: true, color: 'FFFFFF' })] })],
+                    shading: { fill: 'E2E8F0', type: ShadingType.CLEAR, color: 'auto' },
+                    children: [new Paragraph({ children: [new TextRun({ text: 'ABEDL Kategorie nach Krohwinkel', bold: true, color: '264653' })] })],
                   }),
                   new TableCell({
-                    width: { size: 40, type: WidthType.PERCENTAGE },
-                    shading: { fill: '0D5C75', type: ShadingType.CLEAR, color: 'auto' },
-                    children: [new Paragraph({ children: [new TextRun({ text: 'PESR Struktur (P - E - S - R)', bold: true, color: 'FFFFFF' })] })],
+                    width: { size: 65, type: WidthType.PERCENTAGE },
+                    shading: { fill: 'E2E8F0', type: ShadingType.CLEAR, color: 'auto' },
+                    children: [new Paragraph({ children: [new TextRun({ text: 'Pflegerelevante Informationen, Befunde & Ressourcen', bold: true, color: '264653' })] })],
                   }),
                 ],
               }),
               ...ABEDL_DEFINITIONS.map((item) => {
-                const entry = abedl[item.id] || { info: '', pesr: { p: '', e: '', s: '', r: '' } };
-                const pesrLines = [
-                  entry.pesr?.p ? `P: ${entry.pesr.p}` : '',
-                  entry.pesr?.e ? `E: ${entry.pesr.e}` : '',
-                  entry.pesr?.s ? `S: ${entry.pesr.s}` : '',
-                  entry.pesr?.r ? `R: ${entry.pesr.r}` : '',
-                ].filter(Boolean);
+                const entry = abedl[item.id] || { info: '' };
 
                 return new TableRow({
                   children: [
                     new TableCell({
                       children: [
                         new Paragraph({
-                          children: [new TextRun({ text: item.name, bold: true, color: '0D5C75' })],
+                          children: [new TextRun({ text: item.name, bold: true, size: 18, color: '264653' })],
                         }),
                         new Paragraph({
-                          children: [new TextRun({ text: item.desc, italics: true, size: 14, color: '777777' })],
+                          children: [new TextRun({ text: item.desc, italics: true, size: 14, color: '666666' })],
                         }),
                       ],
                     }),
                     new TableCell({
                       children: [
                         new Paragraph({
-                          text: entry.info || '— Keine Besonderheiten dokumentiert —',
                           children: [new TextRun({ text: entry.info || '— Keine Eintragung —', size: 18 })],
                         }),
                       ],
-                    }),
-                    new TableCell({
-                      children: pesrLines.length > 0
-                        ? pesrLines.map((line) => new Paragraph({ children: [new TextRun({ text: line, size: 18 })] }))
-                        : [new Paragraph({ children: [new TextRun({ text: '— Keine Pflegediagnose —', italics: true, size: 16, color: '888888' })] })],
                     }),
                   ],
                 });
@@ -246,16 +274,13 @@ export async function exportNursingDossierDocx(
           }),
 
           new Paragraph({ text: '' }),
-          new Paragraph({ text: '' }),
-
-          // Footer note
           new Paragraph({
             alignment: AlignmentType.CENTER,
             children: [
               new TextRun({
-                text: 'Lernplattform Partnerschaftliche Entscheidungsfindung in der Pflege • Fall Stephan & Heike',
+                text: 'Alexianer Akademie für Pflege • Fall Stephan & Heike • Partnerschaftliche Entscheidungsfindung',
                 italics: true,
-                size: 16,
+                size: 14,
                 color: '999999',
               }),
             ],
@@ -266,5 +291,5 @@ export async function exportNursingDossierDocx(
   });
 
   const blob = await Packer.toBlob(doc);
-  saveAs(blob, `Pflegeanamnese_Stephan_Heike_DS${moduleNumber}.docx`);
+  saveAs(blob, `Pflegeanamnese_Situation${situationNum}_DS${moduleNumber}.docx`);
 }
