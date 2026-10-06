@@ -14,7 +14,8 @@ import {
   Crosshair,
   Info,
   CheckCircle,
-  RotateCcw
+  RotateCcw,
+  Lightbulb
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { MODULES_DATA } from '../data/curriculumData';
@@ -277,8 +278,9 @@ export const RoadmapMap: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl px-3.5 py-2 text-[11px] text-[#264653] font-medium pointer-events-auto shadow-sm">
-          💡 Das aktuell spielbare Level pulsiert mit Ping-Effekt auf der Karte.
+        <div className="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl px-3.5 py-2 text-[11px] text-[#264653] font-medium pointer-events-auto shadow-sm flex items-center gap-1.5">
+          <Lightbulb className="w-3.5 h-3.5 text-[#E76F51] shrink-0" />
+          <span>Das aktuell spielbare Level pulsiert mit Ping-Effekt auf der Karte.</span>
         </div>
       </div>
     </div>

@@ -16,6 +16,56 @@ export interface DecisionOption {
   };
 }
 
+export interface AdventureOption {
+  id: string;
+  label: string;
+  model: DecisionModel;
+  quote: string;
+  actionText?: string;
+  scores: {
+    pat: number;
+    pef: number;
+    inf: number;
+  };
+  targetNodeId?: string;
+  targetEndingId?: string;
+}
+
+export interface AdventureNode {
+  id: string;
+  title: string;
+  speaker: string;
+  speakerRole: string;
+  speakerAvatar?: string;
+  sceneDescription: string;
+  dialogueText: string;
+  dilemmaPrompt: string;
+  options: AdventureOption[];
+}
+
+export interface AdventureEnding {
+  id: string;
+  title: string;
+  subtitle: string;
+  badge: string;
+  isRealDocumentaryOutcome?: boolean;
+  resultDescription: string;
+  reflectionText: string;
+}
+
+export interface AdventureData {
+  id: string;
+  title: string;
+  roleProfile: string;
+  leitfrage: string;
+  ausgangslage: string;
+  startNodeId: string;
+  nodes: { [nodeId: string]: AdventureNode };
+  endings: { [endingId: string]: AdventureEnding };
+  passwordFragment: string;
+  finalQuestion: string;
+}
+
 export interface SimulationStep {
   id: string;
   title: string;
@@ -57,10 +107,13 @@ export interface DecisionMomentItem {
 }
 
 export interface DecisionMomentsData {
+  centralQuestion?: string;
+  contextDescription?: string;
   derivable: DecisionMomentItem[];
   probable: DecisionMomentItem[];
   hypothetical: DecisionMomentItem[];
   reflectionPrompt: string;
+  adventureTeaser?: string;
 }
 
 export interface ZusatzdocData {
@@ -69,7 +122,11 @@ export interface ZusatzdocData {
   decisionsMade: string;
   ethicalDilemmas: string;
   decisionMomentsIdentified?: string;
+  derivableInput?: string;
+  probableInput?: string;
+  hypotheticalInput?: string;
   decisionMomentsConfirmed?: boolean;
+  abedlConfirmed?: boolean;
 }
 
 export interface QuizQuestion {
@@ -122,6 +179,7 @@ export interface ModuleData {
   mapCoordinates: { x: number; y: number };
   badgeId?: string;
   simulation?: SimulationScenario;
+  adventure?: AdventureData;
   quiz?: QuizQuestion[];
   teacherGuide: TeacherMaterial;
   sampleSolution: {

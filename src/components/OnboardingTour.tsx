@@ -11,7 +11,8 @@ import {
   Download,
   KeyRound,
   Award,
-  ShieldCheck
+  ShieldCheck,
+  Lightbulb
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -42,11 +43,11 @@ const TOUR_STEPS: TourStep[] = [
     targetId: 'tour-first-node',
     actionRequired: 'close_dossier',
     preferredSide: 'top',
-    tip: 'Über den Button „Positionen anpassen“ können Sie jederzeit die Koordinaten auf der Karte einsehen.',
+    tip: 'Absolvierte Stationen werden grün markiert, das nächste spielbare Level pulsiert auf der Karte.',
   },
   {
     title: '3. Nahtloser Gameloop-Ablauf (Workspace)',
-    description: 'Beim Klick auf eine Station öffnet sich die Einheit. Die Inhalte werden schrittweise von oben nach unten freigeschaltet: 1. Video ➔ 2. Dokumentation ➔ 3. Simulation ➔ 4. Auswertung & Musterlösung.',
+    description: 'Beim Klick auf eine Station öffnet sich die Einheit. Die Inhalte werden schrittweise von oben nach unten freigeschaltet: 1. Video – 2. Dokumentation – 3. Simulation – 4. Auswertung & Musterlösung.',
     icon: FileSpreadsheet,
     targetId: 'tour-dossier',
     actionRequired: 'open_dossier',
@@ -329,8 +330,9 @@ export const OnboardingTour: React.FC = () => {
               {currentStep.description}
             </p>
 
-            <div className="p-2.5 bg-[#F7F9FA] border border-slate-200 rounded-xl text-[11px] text-[#2B2D42]">
-              💡 <strong className="text-[#264653]">Tipp:</strong> {currentStep.tip}
+            <div className="p-2.5 bg-[#F7F9FA] border border-slate-200 rounded-xl text-[11px] text-[#2B2D42] flex items-center gap-1.5">
+              <Lightbulb className="w-3.5 h-3.5 text-[#E76F51] shrink-0" />
+              <span><strong className="text-[#264653]">Tipp:</strong> {currentStep.tip}</span>
             </div>
           </div>
 

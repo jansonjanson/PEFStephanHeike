@@ -7,6 +7,8 @@ import { SimulationView } from './SimulationView';
 import { QuizView } from './QuizView';
 import { TheoryModuleView } from './TheoryModuleView';
 import { DecisionMomentsWorkflow } from './DecisionMomentsWorkflow';
+import { EthicGameView } from './EthicGameView';
+import { FinalEvaluationView } from './FinalEvaluationView';
 import { exportNursingDossierDocx } from '../utils/docxExport';
 import { CHARACTER_AVATARS } from '../data/avatarsData';
 import {
@@ -30,6 +32,7 @@ import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   Star
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
@@ -60,209 +63,239 @@ export const DossierDrawer: React.FC = () => {
 
   if (!isDrawerOpen || activeModuleId === null) return null;
 
-  const currentModule = MODULES_DATA.find((m) => m.id === activeModuleId);
-  if (!currentModule) return null;
-
-  const state = moduleStates[currentModule.id];
-  const stepProgress = state?.stepProgress || 1;
-  const isUnlocked = state?.unlockedWithPassword || currentModule.id === 1;
-  const isCompleted = state?.completed;
-
-  const handlePasswordSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const success = unlockModuleWithPassword(currentModule.id, passwordInput);
-    if (!success) {
-      setPasswordError(true);
-    } else {
-      setPasswordError(false);
-      setPasswordInput('');
-    }
+  const currentModule = MODULES_DATA.find((m) => m.id === activeModuleId) || MODULES_DATA[0];
+  const state = moduleStates[currentModule.id] || {
+    stepProgress: 1,
+    zusatzdoc: {
+      who: '',
+      whatHappened: '',
+      decisionsMade: '',
+      ethicalDilemmas: '',
+    },
+    abedl: {},
+    simulationAnswers: {},
+    simulationStats: { pefScore: 0, paternalisticScore: 0, informedScore: 0, autonomyScore: 0 },
+    unlockedWithPassword: false,
+    completed: false,
   };
 
-  const handleExportDocx = async () => {
+  const stepProgress = state.stepProgress || 1;
+  const isUnlocked = state.unlockedWithPassword || false;
+  const isCompleted = state.completed || false;
+
+  const handleClose = () => {
+    sounds.playClick();
+    setIsDrawerOpen(false);
+  };
+
+  const handleExport = async () => {
     sounds.playClick();
     setIsExporting(true);
     try {
       await exportNursingDossierDocx(
         currentModule.title,
         currentModule.id,
-        state?.zusatzdoc || { who: '', whatHappened: '', decisionsMade: '', ethicalDilemmas: '' },
-        state?.abedl || {},
+        state.zusatzdoc,
+        state.abedl,
         studentName
       );
-    } catch (err) {
-      console.error('Export failed:', err);
+    } catch (e) {
+      console.error('Export error:', e);
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const success = unlockModuleWithPassword(currentModule.id, passwordInput);
+    if (!success) {
+      setPasswordError(true);
+      sounds.playError();
+    } else {
+      setPasswordError(false);
+      setPasswordInput('');
+      sounds.playSuccess();
     }
   };
 
   const proceedToStep = (targetStep: number) => {
     sounds.playSuccess();
     advanceModuleStep(currentModule.id, targetStep);
+
     setTimeout(() => {
-      if (targetStep === 2 && step2Ref.current) {
-        step2Ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else if (targetStep === 3 && step3Ref.current) {
-        step3Ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else if (targetStep === 4 && step4Ref.current) {
-        step4Ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (targetStep === 2) {
+        step2Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (targetStep === 3) {
+        step3Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (targetStep === 4) {
+        step4Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }, 150);
   };
 
   const handleFinishLevelAndReturnToMap = () => {
-    sounds.playSuccess();
+    sounds.playLevelComplete();
     markModuleCompleted(currentModule.id);
-    setIsDrawerOpen(false); // Slides workspace out and returns student to the gaming map!
+    setIsDrawerOpen(false);
   };
+
+  const isStandardGameloop = currentModule.id >= 3 && currentModule.id <= 6;
 
   return (
     <>
-      {/* Background Overlay */}
+      {/* Backdrop */}
       <div
-        className="fixed inset-0 z-40 bg-[#2B2D42]/40 backdrop-blur-xs transition-all duration-300"
-        onClick={() => {
-          sounds.playClick();
-          setIsDrawerOpen(false);
-        }}
+        onClick={handleClose}
+        className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-40 transition-opacity animate-in fade-in duration-300"
       />
 
-      {/* Seamless Vertical Step-by-Step Workspace */}
+      {/* Slide-over Workspace Drawer */}
       <div
         id="tour-dossier"
-        className="fixed top-0 right-0 bottom-0 z-50 w-full md:w-[75%] lg:w-[70%] xl:w-[65%] bg-[#F7F9FA] text-[#2B2D42] border-l border-slate-200 shadow-2xl flex flex-col justify-between transition-transform duration-300 ease-out transform translate-x-0"
+        className="fixed inset-y-0 right-0 z-50 w-full max-w-4xl bg-[#F7F9FA] shadow-2xl flex flex-col border-l border-slate-200 animate-in slide-in-from-right duration-300 ease-out"
       >
-        {/* Header Bar */}
-        <div className="p-4 sm:p-5 bg-[#264653] text-white flex items-center justify-between shadow-md shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-xl bg-[#E76F51] text-white flex items-center justify-center font-mono font-bold text-sm shrink-0 shadow-sm">
-              DS {currentModule.id}
+        {/* Top Header Bar */}
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-[#264653] to-[#1E3640] text-white flex items-center justify-between shadow-md shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center font-bold text-base border border-white/20">
+              {currentModule.id}
             </div>
-            <div className="truncate">
-              <h2 className="text-sm sm:text-base font-bold text-white truncate">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full bg-[#E76F51] text-white">
+                  Doppelstunde {currentModule.id}
+                </span>
+                <span className="text-xs text-slate-300 hidden sm:inline">
+                  {currentModule.timeEstimate}
+                </span>
+              </div>
+              <h1 className="text-sm sm:text-base font-bold text-white leading-tight truncate max-w-md">
                 {currentModule.title}
-              </h2>
-              <p className="text-xs text-white/80 truncate font-medium">{currentModule.subtitle}</p>
+              </h1>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              id="tour-export-btn"
-              onClick={handleExportDocx}
-              disabled={isExporting}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white text-[#264653] hover:bg-slate-100 font-bold text-xs shadow-sm transition-all disabled:opacity-50 cursor-pointer"
-              title="Formulare als Word-Dokument (.docx) exportieren"
-            >
-              <Download className="w-3.5 h-3.5 text-[#E76F51]" />
-              <span className="hidden sm:inline">{isExporting ? 'Exportiert...' : 'Word-Export (.docx)'}</span>
-            </button>
+          <div className="flex items-center gap-2">
+            {/* Word Export Button */}
+            {isStandardGameloop && (
+              <button
+                id="tour-export-btn"
+                onClick={handleExport}
+                disabled={isExporting}
+                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:bg-white/30 text-white font-bold text-xs flex items-center gap-1.5 transition-all border border-white/20 cursor-pointer disabled:opacity-50"
+                title="Erfasste Daten als Word (.docx) exportieren"
+              >
+                <Download className="w-3.5 h-3.5 text-[#E76F51]" />
+                <span className="hidden sm:inline">Word (.docx) Export</span>
+              </button>
+            )}
 
+            {/* Close Button */}
             <button
-              onClick={() => {
-                sounds.playClick();
-                setIsDrawerOpen(false);
-              }}
-              className="w-9 h-9 rounded-xl hover:bg-white/20 text-white/80 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+              onClick={handleClose}
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+              title="Workspace schließen"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Sticky Linear Progress Indicator (Step 1 -> Step 2 -> Step 3 -> Step 4) */}
-        <div className="px-4 py-2.5 bg-white border-b border-slate-200 flex items-center justify-between gap-2 overflow-x-auto shadow-xs shrink-0 text-xs">
-          <div className="flex items-center gap-2 min-w-max">
-            <span className="font-bold text-[#264653] uppercase tracking-wider text-[11px]">Level-Schritte:</span>
+        {/* Sticky Linear Progress Indicator (Step 1 -> Step 2 -> Step 3 -> Step 4) - ONLY FOR DS 3, DS 4, DS 5, DS 6 */}
+        {isStandardGameloop && (
+          <div className="px-4 py-2.5 bg-white border-b border-slate-200 flex items-center justify-between gap-2 overflow-x-auto shadow-xs shrink-0 text-xs">
+            <div className="flex items-center gap-2 min-w-max">
+              <span className="font-bold text-[#264653] uppercase tracking-wider text-[11px]">Level-Schritte:</span>
 
-            {/* Step 1 Chip */}
-            <button
-              onClick={() => {
-                const el = document.getElementById('step-1-video');
-                el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              className={`px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                stepProgress >= 1 ? 'bg-[#264653] text-white' : 'bg-slate-100 text-slate-400'
-              }`}
-            >
-              <Film className="w-3 h-3" />
-              <span>1. Video</span>
-              {stepProgress > 1 && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
-            </button>
-
-            <span className="text-slate-300">➔</span>
-
-            {/* Step 2 Chip */}
-            <button
-              onClick={() => {
-                if (stepProgress >= 2) step2Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              className={`px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
-                stepProgress >= 2
-                  ? 'bg-[#264653] text-white cursor-pointer'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-              }`}
-            >
-              <FileText className="w-3 h-3" />
-              <span>2. Doku & ABEDL</span>
-              {stepProgress > 2 && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
-              {stepProgress < 2 && <Lock className="w-2.5 h-2.5" />}
-            </button>
-
-            <span className="text-slate-300">➔</span>
-
-            {/* Step 3 Chip */}
-            <button
-              onClick={() => {
-                if (stepProgress >= 3) step3Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              className={`px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
-                stepProgress >= 3
-                  ? 'bg-[#264653] text-white cursor-pointer'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-              }`}
-            >
-              <Gamepad2 className="w-3 h-3 text-[#E76F51]" />
-              <span>3. Simulation</span>
-              {stepProgress > 3 && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
-              {stepProgress < 3 && <Lock className="w-2.5 h-2.5" />}
-            </button>
-
-            <span className="text-slate-300">➔</span>
-
-            {/* Step 4 Chip */}
-            <button
-              onClick={() => {
-                if (stepProgress >= 4) step4Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              }}
-              className={`px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
-                stepProgress >= 4
-                  ? 'bg-amber-500 text-white font-bold cursor-pointer'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-              }`}
-            >
-              <CheckSquare className="w-3 h-3" />
-              <span>4. Abschluss</span>
-              {isCompleted && <CheckCircle2 className="w-3 h-3 text-white" />}
-              {stepProgress < 4 && <Lock className="w-2.5 h-2.5" />}
-            </button>
-          </div>
-
-          {/* Dozenten-Regie: Nur sichtbar, wenn Admin-Modus aktiviert ist! */}
-          {isAdminMode && (
-            <div className="flex items-center gap-2 shrink-0">
+              {/* Step 1 Chip */}
               <button
-                onClick={() => setShowTeacherGuide(!showTeacherGuide)}
-                className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold flex items-center gap-1 transition-colors border border-emerald-300 cursor-pointer"
+                onClick={() => {
+                  const el = document.getElementById(`block-1-video-${currentModule.id}`);
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className={`px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  stepProgress >= 1 ? 'bg-[#264653] text-white' : 'bg-slate-100 text-slate-400'
+                }`}
               >
-                <GraduationCap className="w-3.5 h-3.5 text-emerald-700" />
-                <span>Dozenten-Regie (Admin)</span>
-                {showTeacherGuide ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                <Film className="w-3 h-3" />
+                <span>1. Video</span>
+                {stepProgress > 1 && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
+              </button>
+
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+
+              {/* Step 2 Chip */}
+              <button
+                onClick={() => {
+                  if (stepProgress >= 2) step2Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className={`px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  stepProgress >= 2
+                    ? 'bg-[#264653] text-white cursor-pointer'
+                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                }`}
+              >
+                <FileText className="w-3 h-3" />
+                <span>2. Doku &amp; ABEDL</span>
+                {stepProgress > 2 && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
+                {stepProgress < 2 && <Lock className="w-2.5 h-2.5" />}
+              </button>
+
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+
+              {/* Step 3 Chip */}
+              <button
+                onClick={() => {
+                  if (stepProgress >= 3) step3Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className={`px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  stepProgress >= 3
+                    ? 'bg-[#264653] text-white cursor-pointer'
+                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                }`}
+              >
+                <Gamepad2 className="w-3 h-3 text-[#E76F51]" />
+                <span>3. Simulation</span>
+                {stepProgress > 3 && <CheckCircle2 className="w-3 h-3 text-emerald-400" />}
+                {stepProgress < 3 && <Lock className="w-2.5 h-2.5" />}
+              </button>
+
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+
+              {/* Step 4 Chip */}
+              <button
+                onClick={() => {
+                  if (stepProgress >= 4) step4Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className={`px-2.5 py-1 rounded-lg font-semibold flex items-center gap-1.5 transition-all ${
+                  stepProgress >= 4
+                    ? 'bg-amber-500 text-white font-bold cursor-pointer'
+                    : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                }`}
+              >
+                <CheckSquare className="w-3 h-3" />
+                <span>4. Abschluss</span>
+                {isCompleted && <CheckCircle2 className="w-3 h-3 text-white" />}
+                {stepProgress < 4 && <Lock className="w-2.5 h-2.5" />}
               </button>
             </div>
-          )}
-        </div>
+
+            {/* Dozenten-Regie: Nur sichtbar, wenn Admin-Modus aktiviert ist! */}
+            {isAdminMode && (
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => setShowTeacherGuide(!showTeacherGuide)}
+                  className="text-[11px] px-2.5 py-1 rounded-lg bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold flex items-center gap-1 transition-colors border border-emerald-300 cursor-pointer"
+                >
+                  <GraduationCap className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Dozenten-Regie (Admin)</span>
+                  {showTeacherGuide ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Seamless Vertical Scroll Body */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-8">
@@ -296,50 +329,10 @@ export const DossierDrawer: React.FC = () => {
           )}
 
           {/* ========================================================================= */}
-          {/* SPECIAL VIEW FOR DS 1: OFFLINE PRÄSENZUNTERRICHT                          */}
+          {/* SPECIAL VIEW FOR DS 1: ETHIK-SPIEL & PROGRESSIVER AUFBAU                  */}
           {/* ========================================================================= */}
           {currentModule.id === 1 && (
-            <div className="space-y-6">
-              <div className="bg-white border-2 border-[#264653] rounded-2xl p-6 card-soft-shadow space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-[#264653] text-white flex items-center justify-center font-bold text-lg shadow-md">
-                    DS 1
-                  </div>
-                  <div>
-                    <span className="text-[11px] font-bold text-[#E76F51] uppercase tracking-wider block">
-                      Präsenzunterricht (Offline im Klassenverband)
-                    </span>
-                    <h2 className="text-lg font-bold text-[#264653]">
-                      Unsere Entscheidung? – Ethisches Fundament & Selbsterfahrung
-                    </h2>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-[#F7F9FA] rounded-xl border border-slate-200 space-y-3 text-xs text-[#2B2D42] leading-relaxed">
-                  <p>
-                    <strong>Wichtiger didaktischer Hinweis:</strong> Diese Doppelstunde findet vollständig im Klassenverband in Präsenz statt.
-                    Es gibt hierfür keine digitalen Aufgaben in der App.
-                  </p>
-                  <p>
-                    Im Mittelpunkt steht die <strong>Zettel-Streichen-Übung</strong>: Die Lernenden notieren 10 für sie unverzichtbare Dinge auf Kärtchen. Zunächst streichen sie selbst 5 davon, anschließend streicht die/der Sitznachbar/in ohne Rücksprache 2 weitere existentielle Kriterien.
-                  </p>
-                  <p>
-                    Durch diese Übung wird das Gefühl von <em>Fremdbestimmung, Machtlosigkeit und Autonomieverlust</em> am eigenen Leib spürbar – das emotionale Fundament für den weiteren Fall von Stephan und Heike.
-                  </p>
-                </div>
-
-                <div className="pt-3 border-t border-slate-100 flex justify-end">
-                  <button
-                    onClick={handleFinishLevelAndReturnToMap}
-                    className="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-xs shadow-lg shadow-amber-500/30 flex items-center gap-2 cursor-pointer transition-all transform hover:scale-[1.02]"
-                  >
-                    <Star className="w-4 h-4 text-amber-200 fill-current" />
-                    <span>Doppelstunde 1 abschließen & Zurück zur Gaming-Map (DS 2 freischalten)</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <EthicGameView onComplete={handleFinishLevelAndReturnToMap} />
           )}
 
           {/* ========================================================================= */}
@@ -355,7 +348,7 @@ export const DossierDrawer: React.FC = () => {
                   className="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-xs shadow-lg shadow-amber-500/30 flex items-center gap-2 cursor-pointer transition-all transform hover:scale-[1.02]"
                 >
                   <Star className="w-4 h-4 text-amber-200 fill-current" />
-                  <span>Doppelstunde 2 abschließen & Zurück zur Gaming-Map (DS 3 freischalten)</span>
+                  <span>Doppelstunde 2 abschließen &amp; Zurück zur Gaming-Map (DS 3 freischalten)</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
@@ -363,9 +356,19 @@ export const DossierDrawer: React.FC = () => {
           )}
 
           {/* ========================================================================= */}
-          {/* GAMELOOP FLOW FOR DS 3, DS 4, DS 5, DS 6, DS 7                           */}
+          {/* SPECIAL VIEW FOR DS 7: FINALE DOKUMENTATION & METHODISCHES DEBRIEFING     */}
           {/* ========================================================================= */}
-          {currentModule.id >= 3 && (
+          {currentModule.id === 7 && (
+            <FinalEvaluationView
+              module={currentModule}
+              onFinishModule={handleFinishLevelAndReturnToMap}
+            />
+          )}
+
+          {/* ========================================================================= */}
+          {/* STANDARD GAMELOOP FLOW FOR DS 3, DS 4, DS 5, DS 6                         */}
+          {/* ========================================================================= */}
+          {isStandardGameloop && (
             <div className="space-y-8">
               {/* ------------------------------------------------------------------- */}
               {/* CASE HEADER & CHARACTERS                                            */}
@@ -385,43 +388,63 @@ export const DossierDrawer: React.FC = () => {
                     />
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-[#264653]">
-                      Fall Stephan & Heike • {currentModule.title}
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-[#264653]">Heike (42) &amp; Stephan (48)</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-[#2B2D42] font-medium border border-slate-200">
+                        {currentModule.locationName}
+                      </span>
                     </div>
-                    <div className="text-[11px] text-[#2B2D42]/70 font-medium">
-                      Schwerpunkt: {currentModule.locationName}
-                    </div>
+                    <p className="text-[11px] text-[#2B2D42]/70 line-clamp-1">
+                      {currentModule.subtitle}
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setActiveModal('welcome')}
-                    className="text-xs text-[#264653] hover:underline font-semibold flex items-center gap-1 cursor-pointer"
-                  >
-                    <Users className="w-3.5 h-3.5 text-[#E76F51]" />
-                    <span>Charaktere & Fallintro</span>
-                  </button>
+                  <span className="text-[11px] px-3 py-1 rounded-full bg-slate-100 text-slate-700 font-mono flex items-center gap-1.5 border border-slate-200">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Gameloop aktiv
+                  </span>
                 </div>
               </div>
 
               {/* ------------------------------------------------------------------- */}
-              {/* BLOCKS 1 TO 6: DECISION MOMENTS WORKFLOW                            */}
+              {/* BLOCK 1 & 2 & 3: DECISION MOMENTS & ABEDL WORKFLOW                  */}
               {/* ------------------------------------------------------------------- */}
-              <DecisionMomentsWorkflow
-                module={currentModule}
-                onProceedToSimulation={() => proceedToStep(3)}
-              />
+              <div ref={step2Ref}>
+                <DecisionMomentsWorkflow
+                  module={currentModule}
+                  onProceedToSimulation={() => proceedToStep(3)}
+                />
+              </div>
 
               {/* ------------------------------------------------------------------- */}
-              {/* SCHRITT 3: FLASCHENHALS-SIMULATION (DIE ENTSCHEIDUNG)               */}
+              {/* SCHRITT 3: INTERAKTIVE SIMULATION                                   */}
               {/* ------------------------------------------------------------------- */}
-              <section ref={step3Ref} id={`step-3-sim-${currentModule.id}`} className="space-y-4 pt-6 border-t-2 border-dashed border-slate-200">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
-                  <span className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] ${stepProgress >= 3 ? 'bg-[#E76F51] text-white' : 'bg-slate-200 text-slate-500'}`}>
-                    3
-                  </span>
-                  <span>Simulation: Flaschenhals-Adventure & Verzweigungs-Szenario</span>
+              <section ref={step3Ref} className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
+                    <span className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] shadow-xs ${stepProgress >= 3 ? 'bg-[#264653] text-white' : 'bg-slate-200 text-slate-500'}`}>
+                      3
+                    </span>
+                    <span>Schritt 3: Simulation (Flaschenhals-Entscheidung &amp; Dialog)</span>
+                  </div>
+
+                  {stepProgress > 3 ? (
+                    <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-0.5 rounded-full flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      Simulation abgeschlossen
+                    </span>
+                  ) : stepProgress === 3 ? (
+                    <span className="text-[11px] font-bold text-[#E76F51] bg-[#E76F51]/10 border border-[#E76F51]/20 px-3 py-0.5 rounded-full animate-pulse">
+                      Aktiver Schritt
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-slate-400 flex items-center gap-1">
+                      <Lock className="w-3.5 h-3.5" />
+                      Gesperrt
+                    </span>
+                  )}
                 </div>
 
                 {stepProgress < 3 ? (
@@ -429,14 +452,16 @@ export const DossierDrawer: React.FC = () => {
                     <Lock className="w-6 h-6 text-slate-400 mx-auto" />
                     <h4 className="text-xs font-bold text-[#264653]">Simulation noch gesperrt</h4>
                     <p className="text-[11px] text-[#2B2D42]/70 [text-wrap:pretty]">
-                      Bestätigen Sie oben in Block 4 Ihre erfassten Entscheidungsmomente, um die interaktive Entscheidungssimulation freizuschalten.
+                      Schließen Sie oben Block 3 (13 ABEDL und Entscheidungsmomente) ab, um in die Simulation einzutreten.
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-4 animate-in fade-in duration-300">
-                    {currentModule.simulation && (
-                      <SimulationView moduleId={currentModule.id} simulation={currentModule.simulation} />
-                    )}
+                    <SimulationView
+                      moduleId={currentModule.id}
+                      simulation={currentModule.simulation}
+                      onProceedToStep4={() => proceedToStep(4)}
+                    />
 
                     {/* Bestätigungsbutton für Schritt 3 */}
                     <div className="pt-3 border-t border-slate-100 flex justify-end">
@@ -445,7 +470,7 @@ export const DossierDrawer: React.FC = () => {
                         className="px-5 py-2.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
                       >
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        <span>Entscheidung abgeschlossen ➔ Weiter zur Gameloop-Auswertung & Musterlösung</span>
+                        <span>Entscheidung abgeschlossen – Weiter zur Gameloop-Auswertung &amp; Musterlösung</span>
                         <ArrowDown className="w-4 h-4 text-[#E76F51]" />
                       </button>
                     </div>
@@ -461,130 +486,104 @@ export const DossierDrawer: React.FC = () => {
                   <span className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] ${stepProgress >= 4 ? 'bg-amber-500 text-white font-bold' : 'bg-slate-200 text-slate-500'}`}>
                     4
                   </span>
-                  <span>Schritt 4: Auswertung, Gameloop-Statistik & Musterlösung</span>
+                  <span>Schritt 4: Auswertung, Gameloop-Statistik &amp; Musterlösung</span>
                 </div>
 
                 {stepProgress < 4 ? (
                   <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 card-soft-shadow">
                     <Lock className="w-6 h-6 text-slate-400 mx-auto" />
-                    <h4 className="text-xs font-bold text-[#264653]">Schritt 4 gesperrt</h4>
+                    <h4 className="text-xs font-bold text-[#264653]">Auswertung noch gesperrt</h4>
                     <p className="text-[11px] text-[#2B2D42]/70 [text-wrap:pretty]">
-                      Treffen Sie in Schritt 3 eine Entscheidung in der Simulation, um Ihre Auswertung freizuschalten.
+                      Schließen Sie die Simulation in Schritt 3 ab, um die Auswertung und Musterlösung freizuschalten.
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-6 animate-in fade-in duration-300">
-                    {/* Decision Statistics Snapshot */}
-                    {state?.simulationStats && (
-                      <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow space-y-4">
-                        <h3 className="text-xs font-bold text-[#264653] uppercase tracking-wider border-b border-slate-100 pb-2">
-                          Ergebnis: Ihre pflegerische Haltung in dieser Szene
-                        </h3>
-
-                        {/* Percentage calculation */}
-                        {(() => {
-                          const pef = state.simulationStats.pef || 0;
-                          const pat = state.simulationStats.paternalistic || 0;
-                          const inf = state.simulationStats.informed || 0;
-                          const total = pef + pat + inf;
-                          const pefPercent = total > 0 ? Math.round((pef / total) * 100) : 0;
-                          const patPercent = total > 0 ? Math.round((pat / total) * 100) : 0;
-                          const infPercent = total > 0 ? Math.round((inf / total) * 100) : 0;
-
-                          return (
-                            <div className="space-y-3">
-                              <div className="p-3.5 bg-[#F7F9FA] rounded-xl border border-slate-200 text-xs text-[#2B2D42] font-medium [text-wrap:pretty]">
-                                Auswertung: Sie haben in dieser Szene zu <strong className="text-[#2A9D8F] font-bold">{pefPercent}% partizipativ (PEF)</strong>, zu <strong className="text-rose-600 font-bold">{patPercent}% paternalistisch</strong> und zu <strong className="text-amber-600 font-bold">{infPercent}% informed</strong> gehandelt.
-                              </div>
-
-                              <div className="grid grid-cols-3 gap-3 text-center">
-                                <div className="p-3 rounded-xl bg-[#2A9D8F]/10 border border-[#2A9D8F]/20">
-                                  <div className="text-[10px] text-[#2A9D8F] uppercase font-bold">Partizipativ (PEF)</div>
-                                  <div className="text-xl font-bold font-mono text-[#2A9D8F]">{pefPercent}%</div>
-                                </div>
-                                <div className="p-3 rounded-xl bg-rose-50 border border-rose-200">
-                                  <div className="text-[10px] text-rose-600 uppercase font-bold">Paternalistisch</div>
-                                  <div className="text-xl font-bold font-mono text-rose-600">{patPercent}%</div>
-                                </div>
-                                <div className="p-3 rounded-xl bg-amber-50 border border-amber-200">
-                                  <div className="text-[10px] text-amber-700 uppercase font-bold">Informed Consent</div>
-                                  <div className="text-xl font-bold font-mono text-amber-700">{infPercent}%</div>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })()}
-
-                        <p className="text-xs text-[#2B2D42] leading-relaxed">
-                          {currentModule.sampleSolution.decisionAnalysis}
-                        </p>
+                    {/* Gameloop Statistics Summary */}
+                    <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow space-y-4">
+                      <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
+                        <Sparkles className="w-4 h-4 text-[#E76F51]" />
+                        <span>Ihre getroffenen Entscheidungen in diesem Durchlauf:</span>
                       </div>
-                    )}
 
-                    {/* Password Gate for Musterlösung */}
-                    {!isUnlocked ? (
-                      <div className="bg-white border-2 border-[#E76F51]/40 rounded-2xl p-6 card-soft-shadow space-y-4 text-center">
-                        <div className="w-12 h-12 rounded-2xl bg-[#E76F51]/15 text-[#E76F51] flex items-center justify-center mx-auto shadow-sm">
-                          <Lock className="w-6 h-6" />
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-bold text-[#264653]">Offizielle Musterlösung ist geschützt</h3>
-                          <p className="text-xs text-[#2B2D42]/70 max-w-md mx-auto mt-1">
-                            Gib das in Schritt 3 freigespielte Passwort ein (z. B. <span className="font-mono font-bold text-[#264653]">{currentModule.simulation?.passwordFragment}</span>), um die Musterlösung freizuschalten.
-                          </p>
-                        </div>
-
-                        <form onSubmit={handlePasswordSubmit} className="max-w-sm mx-auto space-y-3">
-                          <div className="relative">
-                            <KeyRound className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-                            <input
-                              type="text"
-                              value={passwordInput}
-                              onChange={(e) => {
-                                setPasswordInput(e.target.value);
-                                setPasswordError(false);
-                              }}
-                              placeholder="Passwort eingeben..."
-                              className="w-full bg-[#F7F9FA] border border-slate-300 rounded-xl pl-9 pr-3 py-2.5 text-xs text-[#2B2D42] font-mono tracking-wider uppercase focus:outline-none focus:border-[#264653]"
-                            />
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-center">
+                        <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
+                          <div className="text-base sm:text-lg font-bold text-emerald-800">
+                            {state.simulationStats?.pef || 0}
                           </div>
+                          <div className="text-[10px] text-emerald-900 font-semibold uppercase">PEF-Punkte</div>
+                        </div>
 
-                          {passwordError && (
-                            <p className="text-[11px] text-rose-600 font-medium">
-                              Ungültiges Passwort. Hinweis: {currentModule.sampleSolution.passwordHint}
+                        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                          <div className="text-base sm:text-lg font-bold text-slate-800">
+                            {state.simulationStats?.paternalistic || 0}
+                          </div>
+                          <div className="text-[10px] text-slate-600 font-semibold uppercase">Paternalistisch</div>
+                        </div>
+
+                        <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
+                          <div className="text-base sm:text-lg font-bold text-slate-800">
+                            {state.simulationStats?.informed || 0}
+                          </div>
+                          <div className="text-[10px] text-slate-600 font-semibold uppercase">Informed Consent</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* PASSWORD PROMPT OR UNLOCKED MUSTERLÖSUNG */}
+                    {!isUnlocked ? (
+                      <div className="bg-gradient-to-br from-[#264653] to-[#1E3640] text-white rounded-2xl p-6 sm:p-7 shadow-xl space-y-4 border border-[#264653]">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
+                            <KeyRound className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm sm:text-base font-bold text-white">
+                              Dozenten-Passwort eingeben zur Freischaltung der Musterlösung
+                            </h4>
+                            <p className="text-xs text-slate-300">
+                              Geben Sie das im Unterricht oder der Simulation genannte Passwort ein (z. B. {currentModule.simulation?.passwordFragment || 'KROHWINKEL-1'}).
                             </p>
-                          )}
+                          </div>
+                        </div>
 
+                        <form onSubmit={handlePasswordSubmit} className="flex flex-col sm:flex-row gap-3 pt-2">
+                          <input
+                            type="text"
+                            value={passwordInput}
+                            onChange={(e) => {
+                              setPasswordInput(e.target.value);
+                              setPasswordError(false);
+                            }}
+                            placeholder="Passwort hier eingeben..."
+                            className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 focus:bg-white/20 font-mono uppercase"
+                          />
                           <button
                             type="submit"
-                            className="w-full py-2.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs shadow-sm transition-all cursor-pointer"
+                            className="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md transition-colors"
                           >
-                            Musterlösung entsperren
+                            <Unlock className="w-4 h-4" />
+                            <span>Musterlösung entsperren</span>
                           </button>
                         </form>
+
+                        {passwordError && (
+                          <p className="text-xs text-rose-300 font-medium">
+                            Das eingegebene Passwort ist nicht korrekt. Bitte überprüfen Sie Ihre Eingabe oder fragen Sie Ihre Lehrkraft.
+                          </p>
+                        )}
                       </div>
                     ) : (
-                      /* Unlocked Musterlösung */
-                      <div className="space-y-6">
-                        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-300 flex items-center justify-between">
-                          <div className="flex items-center gap-2.5 text-xs text-emerald-800 font-bold">
-                            <Unlock className="w-4 h-4 text-emerald-600" />
-                            <span>Offizielle Musterlösung freigeschaltet</span>
-                          </div>
-                          <button
-                            onClick={handleExportDocx}
-                            className="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center gap-1 shadow-sm cursor-pointer"
-                          >
-                            <Download className="w-3.5 h-3.5" />
-                            <span>Word-Export (.docx)</span>
-                          </button>
+                      <div className="space-y-6 animate-in fade-in duration-300">
+                        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-xs text-emerald-900 font-bold">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                          <span>Musterlösung erfolgreich entsperrt! Vergleichen Sie Ihre Anamnese-Einträge.</span>
                         </div>
 
-                        {/* Musterlösung Entscheidungen Videosequenzen */}
+                        {/* Musterlösung Zusatzdoc */}
                         <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow space-y-4">
                           <h4 className="text-xs font-bold text-[#264653] uppercase tracking-wider border-b border-slate-100 pb-2">
-                            Musterlösung: Entscheidungen Videosequenzen
+                            Musterlösung: Entscheidungsprotokoll
                           </h4>
 
                           <div className="space-y-3 text-xs">
@@ -597,7 +596,7 @@ export const DossierDrawer: React.FC = () => {
                               <p className="text-[#2B2D42]">{currentModule.sampleSolution.zusatzdoc.whatHappened}</p>
                             </div>
                             <div className="bg-[#F7F9FA] p-3.5 rounded-xl border border-slate-200">
-                              <span className="font-bold text-[#264653] block mb-1">Entscheidungen & Dilemmata</span>
+                              <span className="font-bold text-[#264653] block mb-1">Entscheidungen &amp; Dilemmata</span>
                               <p className="text-[#2B2D42]">{currentModule.sampleSolution.zusatzdoc.decisionsMade}</p>
                             </div>
                           </div>
@@ -618,26 +617,6 @@ export const DossierDrawer: React.FC = () => {
                             ))}
                           </div>
                         </div>
-
-                        {/* Special Evaluation & Certificate for DS 7 */}
-                        {currentModule.id === 7 && (
-                          <div className="p-5 bg-gradient-to-br from-[#264653]/10 to-[#E76F51]/10 rounded-2xl border border-[#264653]/20 space-y-3">
-                            <h4 className="text-sm font-bold text-[#264653] flex items-center gap-2">
-                              <Award className="w-5 h-5 text-[#E76F51]" />
-                              <span>Abschluss-Evaluation & Ethik-Zertifikat</span>
-                            </h4>
-                            <p className="text-xs text-[#2B2D42] [text-wrap:pretty]">
-                              Herzlichen Glückwunsch zum Abschluss aller 7 Doppelstunden! Drucken Sie Ihr offizielles Kompetenz-Zertifikat aus.
-                            </p>
-                            <button
-                              onClick={() => setActiveModal('certificate')}
-                              className="px-4 py-2 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2 shadow-sm cursor-pointer"
-                            >
-                              <Award className="w-4 h-4 text-[#E76F51]" />
-                              <span>Offizielles Abschluss-Zertifikat öffnen</span>
-                            </button>
-                          </div>
-                        )}
                       </div>
                     )}
 
@@ -648,7 +627,7 @@ export const DossierDrawer: React.FC = () => {
                         className="w-full py-4 rounded-2xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-sm shadow-xl shadow-amber-500/30 ring-2 ring-amber-400/50 transition-all transform hover:scale-[1.01] flex items-center justify-center gap-2 cursor-pointer"
                       >
                         <Star className="w-5 h-5 text-amber-100 fill-current" />
-                        <span>Doppelstunde {currentModule.id} abschließen & Zurück zur Gaming-Map</span>
+                        <span>Doppelstunde {currentModule.id} abschließen &amp; Zurück zur Gaming-Map</span>
                         <ArrowRight className="w-5 h-5" />
                       </button>
                     </div>

@@ -101,7 +101,7 @@ export const CertificateModal: React.FC = () => {
             </div>
             <div>
               <span className="text-[10px] text-[#2B2D42]/60 block font-bold uppercase">Leistungsnachweis:</span>
-              <span className="font-semibold text-[#2A9D8F]">100% Curriculum abgeschlossen ✓</span>
+              <span className="font-semibold text-emerald-700">100% Curriculum vollständig abgeschlossen</span>
             </div>
           </div>
 

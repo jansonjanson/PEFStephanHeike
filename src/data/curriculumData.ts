@@ -367,9 +367,11 @@ Getragen wird diese Last von der gesamten Familie. Obwohl Stefan nicht der leibl
 
 Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zukunft aussehen wird, bleibt Heike an Stefans Seite. Mit unerschütterlicher Zärtlichkeit redet sie auf ihn ein, sucht den Blickkontakt und fordert ihn leise auf: „Du musst halt weiter kämpfen, ne? Du machst das auch.“`,
     decisionMoments: {
+      centralQuestion: '„Wie wird Stefans weitere Versorgung nach der Akut- und Reha-Phase organisiert – und welche Konsequenzen hat das für Heikes Existenz und die drei heranwachsenden Söhne?“',
+      contextDescription: 'Stefan überlebt die Notoperation, doch die Prognose lautet Wachkoma. Heike steht vor der schwersten Wahl ihres Lebens: Gibt sie ihren Beruf und ihr bisheriges Leben auf, um ihn im engen, nicht barrierefreien Fachwerkhaus selbst zu pflegen, riskiert sie die Überlastung ihrer Familie, oder wählt sie eine professionelle Unterbringung?',
       derivable: [
         {
-          title: 'Notfallversorgung und chirurgischer Eingriff',
+          title: 'Notfallmedizinische Lebenserhaltung',
           person: 'Ärztliches Team / Chirurgen',
           description: 'Durchführung einer achtstündigen Notoperation zur Akutrettung bei unklarer Überlebensprognose.',
         },
@@ -426,6 +428,7 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
         },
       ],
       reflectionPrompt: 'Welche Konsequenzen hat die Entscheidung, Angehörige und minderjährige Kinder in hochkomplexe körperliche Pflegehandlungen einzubinden, für das gesamte Familiensystem?',
+      adventureTeaser: 'Im kommenden Fall-Adventure erproben Sie in der Rolle der Bezugspflegekraft, wie Sie im ersten Schockmoment Heikes Vertrauen gewinnen und die Weichen zwischen Paternalismus, Partizipation und reiner Informationsvermittlung stellen.',
     },
     mapCoordinates: { x: 42, y: 32 },
     badgeId: 'badge_anamnese_profi',
@@ -611,9 +614,11 @@ In den heranwachsenden Söhnen spiegeln sich die extremen Belastungen der vergan
 
 Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem ihre Geschichte im Fernsehen ausgestrahlt wurde, machen Betroffene Heike darauf aufmerksam, dass der Familie eine Rente zusteht – 1.000 Euro mehr im Monat federn die größte Not ab. Aus Spenden kann sogar ein spezieller Schwimmrollstuhl finanziert werden. Doch der wirkliche Mittelpunkt bleibt der kräftezehrende Weg zurück ins Leben. Als Stefan bei den Gehübungen von Emotionen übermannt wird und zu weinen beginnt, fängt Heike ihn behutsam auf: „Komm her… Nein, jetzt nicht weinen… Lauf, lauf. Mach langsam. Immer erst, wenn der Fuß am Boden ist.“ Ein Schritt nach dem anderen.`,
     decisionMoments: {
+      centralQuestion: '„Wie weit lohnt es sich, bürokratische Grenzen und Dienstwege der Krankenkasse zu durchbrechen, um Stefans tatsächliches Bewusstsein aufzudecken – und wie geht Heike mit der ernüchternden Diagnose um, dass seine alte Persönlichkeit für immer verloren ist?“',
+      contextDescription: 'Für das deutsche Gesundheitssystem ist Stefan als dauerhafter Wachkoma-Patient abgeschrieben, die Krankenkasse verweigert die Kostenübernahme für Spezialisten. Doch Heike kämpft sich bis zum Vorstand durch und erzwingt eine Zweitmeinung in Belgien. Das Ergebnis ist eine Sensation – und ein schwerer Schock zugleich: Stefan ist bei vollem Bewusstsein, aber seine alte Persönlichkeit wird nie zurückkehren.',
       derivable: [
         {
-          title: 'Einholen einer Zweitmeinung im Ausland',
+          title: 'Einholen einer internationalen Zweitmeinung',
           person: 'Heike',
           description: 'Entscheidung zur Suche und Kontaktaufnahme mit einem Koma-Spezialisten in Belgien gegen den Status quo der Erstdiagnose.',
         },
@@ -670,6 +675,7 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
         },
       ],
       reflectionPrompt: 'Wo verläuft die Grenze zwischen fördernder Aktivierung und unvertretbarem Risiko, wenn Patienten wie Stefan ihren eigenen Körper neu erproben?',
+      adventureTeaser: 'Im kommenden Fall-Adventure begleiten Sie das heikle Dilemma um Stefans Wunsch nach oraler Nahrung und Kaffeegeschmack trotz Trachealkanüle: Wie balancieren Sie Aspirationsschutz und Lebensfreude im pflegerischen Dialog aus?',
     },
     mapCoordinates: { x: 58, y: 55 },
     badgeId: 'badge_pef_champion',
@@ -831,9 +837,11 @@ Trotz der Schwäche blitzt Stefans Bewusstsein immer wieder durch. Als Heike ihn
 
 Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege fordert seinen Tribut. Die wochenlange Dauerbelastung am Krankenbett bringt Heikes eigenen Körper zum Zusammenbruch: Mit hohem Fieber erkrankt sie schwer und muss selbst stationär im Krankenhaus aufgenommen werden. Zum ersten Mal zeigt sich schonungslos, wie fragil das gesamte Familiengefüge ist, wenn diejenige wegbricht, die alles zusammenhält.`,
     decisionMoments: {
+      centralQuestion: '„Wie wird auf Stefans Willen (\'nach Hause\') reagiert, wenn sein Zustand instabil ist und Heike durch die chronische Dauerbelastung selbst im Krankenhaus zusammenbricht?“',
+      contextDescription: 'Nach einem lebensgefährlichen Darmdurchbruch und wochenlangem Stillstand verlangt Stefan über mimische Codes: \'Ich will nach Hause!\' Doch Heikes Kräfte sind am Ende – sie bricht mit hohem Fieber zusammen und muss selbst stationär aufgenommen werden. Das Pflegesystem kollabiert.',
       derivable: [
         {
-          title: 'Setzen eines zeitlichen Entwicklungsziels',
+          title: 'Formulierung eines zeitlichen Mobilisationsziels',
           person: 'Heike',
           description: 'Festlegung, dass Stefan bis zum Auszug der Söhne (Schulabschluss/Lehre) selbstständig mobil sein muss.',
         },
@@ -890,6 +898,7 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
         },
       ],
       reflectionPrompt: 'Wie können professionelle Pflegekräfte die nonverbalen Willensbekundungen schwerkranker Menschen validieren, wenn Angehörige und medizinisches Team gegensätzliche Prioritäten setzen?',
+      adventureTeaser: 'Im kommenden Fall-Adventure stehen Sie vor der Situation, dass Stephan bei der Augensteuerung frustriert verweigert: Zwingen Sie ihn autoritär zum Weitermachen oder handeln Sie partizipativ eine Pause mit alternativen Ja/Nein-Kodes aus?',
     },
     mapCoordinates: { x: 74, y: 40 },
     badgeId: 'badge_code_breaker',
@@ -1054,6 +1063,8 @@ Gleichzeitig wirft die unerbittliche Realität lange Schatten auf die Beziehung.
 
 Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufenthalten ist der Pflegeaufwand noch einmal drastisch gestiegen: Alle vier Stunden benötigt Stefan einen neuen Blasenkatheter – rund um die Uhr, ohne Unterbrechung. An erholsamen Schlaf ist nicht zu denken. Selten kommt Heike auf mehr als vier Stunden Ruhe in der Nacht. Doch wenn Stefan nach einer weiteren anstrengenden Stehübung erschöpft vor ihr steht, zählt nur der Augenblick: „Bist du stolz? Kannst du sein. Hast du wirklich gut gemacht.“`,
     decisionMoments: {
+      centralQuestion: '„Wie wird Stefans urologische Versorgung organisiert, ohne Heike durch den nächtlichen 4-Stunden-Rhythmus physisch zu zerstören – und wie viel Verantwortung für Haus und Hof darf den verbleibenden Söhnen nach Lukas\' Auszug aufgebürdet werden?“',
+      contextDescription: 'Lukas zieht für seine Lehre nach Norddeutschland aus, Leon und Philipp müssen neben Schule und Abitur schwere körperliche Arbeiten wie Wocheneinkäufe und Holzhacken übernehmen. Gleichzeitig bestimmt ein unerbittlicher 4-Stunden-Takt Tag und Nacht: Um Stefan vor Infektionen zu schützen, lehnt man einen Dauerkatheter ab und setzt auf das Katheterisieren per Hand – Heike schläft kaum noch vier Stunden am Stück.',
       derivable: [
         {
           title: 'Auszug und Zukunftsplanung der Kinder',
@@ -1113,6 +1124,7 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
         },
       ],
       reflectionPrompt: 'Wie verändert sich die partnerschaftliche Entscheidungsfindung (PEF), wenn aus einer Liebesbeziehung auf Augenhöhe eine chronische 24-Stunden-Pflegeabhängigkeit wird?',
+      adventureTeaser: 'Im kommenden Fall-Adventure führen Sie das entscheidende Entlassungsberatungsgespräch: Wie moderieren Sie Heikes Schuldgefühle und eröffnen reale Lösungen mit ambulanter Intensivpflege, ohne Heike allein zu lassen?',
     },
     mapCoordinates: { x: 86, y: 65 },
     badgeId: 'badge_code_breaker',

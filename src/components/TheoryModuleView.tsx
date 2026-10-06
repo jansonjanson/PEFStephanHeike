@@ -178,7 +178,7 @@ export const TheoryModuleView: React.FC<TheoryModuleViewProps> = ({ moduleId, qu
               className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
             >
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>CNE-Fachartikel gelesen ➔ Weiter zu Schritt 2: Modellvergleich</span>
+              <span>CNE-Fachartikel gelesen – Weiter zu Schritt 2: Modellvergleich</span>
               <ArrowDown className="w-4 h-4 text-[#E76F51]" />
             </button>
           </div>
@@ -355,7 +355,7 @@ export const TheoryModuleView: React.FC<TheoryModuleViewProps> = ({ moduleId, qu
                 className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
               >
                 <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>Modellvergleich verstanden ➔ Weiter zu Schritt 3: Wissens-Quiz</span>
+                <span>Modellvergleich verstanden – Weiter zu Schritt 3: Wissens-Quiz</span>
                 <ArrowDown className="w-4 h-4 text-[#E76F51]" />
               </button>
             </div>

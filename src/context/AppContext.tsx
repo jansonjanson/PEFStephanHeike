@@ -176,7 +176,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prev.map((b) => {
         if (b.id === badgeId && !b.unlockedAt) {
           sounds.playBadgeUnlock();
-          showSuccessBanner(`🏆 Neue Auszeichnung freigeschaltet: „${b.title}“!`);
+          showSuccessBanner(`Neue Auszeichnung freigeschaltet: „${b.title}“!`);
           return { ...b, unlockedAt: new Date().toISOString() };
         }
         return b;
@@ -318,7 +318,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     if (isMatch) {
       sounds.playSuccess();
-      showSuccessBanner(`🔓 Musterlösung für Doppelstunde ${moduleId} erfolgreich entsperrt!`);
+      showSuccessBanner(`Musterlösung für Doppelstunde ${moduleId} erfolgreich entsperrt!`);
       setModuleStates((prev) => {
         const current = prev[moduleId] || defaultEmptyState()[moduleId];
         return {
@@ -365,9 +365,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
 
     if (nextModId <= 7) {
-      showSuccessBanner(`✨ Doppelstunde ${moduleId} abgeschlossen! Doppelstunde ${nextModId} ist jetzt freigeschaltet.`);
+      showSuccessBanner(`Doppelstunde ${moduleId} abgeschlossen! Doppelstunde ${nextModId} ist jetzt freigeschaltet.`);
     } else {
-      showSuccessBanner(`🎓 Herzlichen Glückwunsch! Alle 7 Doppelstunden wurden erfolgreich abgeschlossen.`);
+      showSuccessBanner(`Herzlichen Glückwunsch! Alle 7 Doppelstunden wurden erfolgreich abgeschlossen.`);
     }
 
     if (moduleId === 1) unlockBadge('badge_ethik_pionier');
@@ -378,7 +378,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const clean = password.trim().toLowerCase();
     if (clean === 'janson') {
       sounds.playSuccess();
-      showSuccessBanner(`🛡️ Admin-Modus aktiviert: Alle 7 Doppelstunden & Dozenten-Regiepläne freigeschaltet!`);
+      showSuccessBanner(`Admin-Modus aktiviert: Alle 7 Doppelstunden & Dozenten-Regiepläne freigeschaltet!`);
 
       // Unlock all modules
       setModuleStates((prev) => {

@@ -11,7 +11,8 @@ import {
   HelpCircle,
   KeyRound,
   FileText,
-  ChevronRight
+  ChevronRight,
+  Lightbulb
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -142,8 +143,12 @@ export const TeacherGuideModal: React.FC = () => {
 
                     <p className="text-xs text-[#2B2D42] leading-relaxed">{item.activity}</p>
 
-                    <div className="p-2.5 bg-white rounded-lg border border-slate-200 text-[11px] text-[#2B2D42]/80 italic">
-                      💡 <strong>Didaktischer Kommentar:</strong> {item.didacticNotes}
+                    <div className="p-2.5 bg-white rounded-lg border border-slate-200 text-[11px] text-[#2B2D42]/80">
+                      <div className="flex items-center gap-1.5 font-bold text-[#264653] mb-0.5">
+                        <Lightbulb className="w-3.5 h-3.5 text-[#E76F51]" />
+                        <span>Didaktischer Kommentar:</span>
+                      </div>
+                      <p className="italic">{item.didacticNotes}</p>
                     </div>
                   </div>
                 ))}

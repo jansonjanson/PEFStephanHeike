@@ -99,7 +99,10 @@ export const BadgesModal: React.FC = () => {
 
                   <div className="mt-2 text-[10px] font-mono">
                     {isUnlocked ? (
-                      <span className="text-[#2A9D8F] font-semibold">Freigeschaltet ✓</span>
+                      <span className="text-emerald-700 font-semibold flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                        <span>Freigeschaltet</span>
+                      </span>
                     ) : (
                       <span className="text-slate-400">Gesperrt</span>
                     )}
@@ -112,7 +115,7 @@ export const BadgesModal: React.FC = () => {
 
         {/* Footer */}
         <div className="p-4 border-t border-slate-100 bg-[#F7F9FA] flex items-center justify-between text-xs text-[#2B2D42]/70">
-          <span>Sammle alle Badges, um das Dozenten-Abschlusszertifikat zu vervollständigen.</span>
+          <span>Sammeln Sie alle Badges, um Ihr offizielles Abschlusszertifikat zu vervollständigen.</span>
           <button
             onClick={() => setActiveModal('none')}
             className="px-4 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-[#2B2D42] font-bold text-xs transition-colors"
