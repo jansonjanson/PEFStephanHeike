@@ -118,7 +118,7 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
             <span className="w-6 h-6 rounded-full bg-[#264653] text-white flex items-center justify-center font-mono text-[11px] shadow-xs">
               1
             </span>
-            <span>[Block 1] Video: Filmsequenz anschauen</span>
+            <span>[Block 1] Video: Filmsequenz anschauen &amp; analysieren</span>
           </div>
 
           {module.videoDuration && (
@@ -129,9 +129,24 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
         </div>
 
         {/* High-End Video Launch Card */}
-        <div className="bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white rounded-2xl p-6 shadow-xl relative overflow-hidden border border-[#264653]">
+        <div className="bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white rounded-2xl p-5 sm:p-6 shadow-xl relative overflow-hidden border border-[#264653] space-y-4">
           {/* Subtle decorative background glow */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-[#E76F51]/10 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Arbeitsauftrag 1 Banner */}
+          <div className="p-3.5 bg-white/10 rounded-xl border border-white/15 space-y-1 relative z-10">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#E76F51] text-white font-mono">
+                Arbeitsauftrag 1
+              </span>
+              <span className="text-xs font-bold text-amber-300">
+                Filmsequenz aufmerksam und vollständig ansehen
+              </span>
+            </div>
+            <p className="text-xs text-slate-200 leading-relaxed [text-wrap:pretty]">
+              Öffnen Sie das Video über die Schaltfläche. Achten Sie auf die getroffenen Entscheidungen, die Rollen der Akteure (Ärzte, Pflege, Heike, Kinder) und Stefans Zustand. Kehren Sie nach dem Anschauen hierher zurück.
+            </p>
+          </div>
 
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
             <div className="space-y-2 max-w-xl">
@@ -171,8 +186,8 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
             )}
           </div>
 
-          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
-            <span>Öffnet sich in einem neuen Browser-Tab. Nach dem Anschauen kehren Sie hierher zurück.</span>
+          <div className="pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300 relative z-10">
+            <span>Öffnet sich in einem neuen Browser-Tab. Nach dem Anschauen bearbeiten Sie die unteren Aufgaben.</span>
             <span className="hidden sm:inline text-slate-400 font-mono">Status: Bereit</span>
           </div>
         </div>
@@ -437,7 +452,7 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
                     Auswertung freigeschaltet – siehe Synopse &amp; Expertenabgleich unten in Block 5!
                   </span>
                 ) : (
-                  <span>Klicken Sie auf Bestätigen, um den pädagogischen Musterabgleich (Block 5) freizuschalten.</span>
+                  <span>Klicken Sie auf Bestätigen, um den pädagogischen Expertenabgleich (Block 5) freizuschalten.</span>
                 )}
               </div>
 
@@ -477,7 +492,7 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
                 <span>Pflegepädagogische Würdigung Ihrer Analyse:</span>
               </div>
               <p className="text-xs text-emerald-900 leading-relaxed [text-wrap:pretty]">
-                Vielen Dank für Ihre sorgfältige Auseinandersetzung mit der Situation. Sie haben wesentliche Weichenstellungen und ethische Spannungsfelder im Fall Stephan &amp; Heike auf allen drei Ebenen strukturiert erfasst. Im Folgenden sehen Sie den 1:1 Abgleich Ihrer 3 Eingabefelder mit den Expertenperspektiven.
+                Vielen Dank für Ihre sorgfältige Auseinandersetzung mit der Situation. Sie haben wesentliche Weichenstellungen und ethische Spannungsfelder im Fall Stefan &amp; Heike auf allen drei Ebenen strukturiert erfasst. Im Folgenden sehen Sie den 1:1 Abgleich Ihrer 3 Eingabefelder mit den Expertenperspektiven.
               </p>
             </div>
 
@@ -496,7 +511,7 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
                     <tr className="bg-[#264653] text-white text-[11px] uppercase tracking-wider">
                       <th className="p-3 font-bold w-[24%] sm:w-[22%] border-r border-[#264653]/40">Ebene</th>
                       <th className="p-3 font-bold w-[38%] sm:w-[39%] border-r border-[#264653]/40">Ihre Eingabe (Aus Eingabebox)</th>
-                      <th className="p-3 font-bold w-[38%] sm:w-[39%]">Musterlösung / Expertenperspektive</th>
+                      <th className="p-3 font-bold w-[38%] sm:w-[39%]">Expertenperspektive &amp; Didaktische Leitlinien</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 text-xs text-[#2B2D42]">
@@ -604,34 +619,36 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
               </div>
             </div>
 
-            {/* 3. Zentrale Leitfrage & Impuls für das Fall-Adventure */}
+            {/* 3. Zentrale Leitfrage der Phase (Farblich auffällig und prägnant) */}
             {decisionData.centralQuestion && (
-              <div className="p-4 rounded-xl bg-[#264653]/10 border border-[#264653]/20 space-y-2">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#264653]">
-                  <Compass className="w-4 h-4 text-[#E76F51]" />
-                  <span>Die zentrale Leitfrage dieser Phase:</span>
+              <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#264653] to-[#1E3640] text-white shadow-lg border-2 border-amber-400/40 space-y-3 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+                
+                <div className="relative z-10 flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-amber-400 text-slate-950 flex items-center justify-center font-bold shadow-xs">
+                    <Compass className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest block font-mono">
+                      Schlüsselfrage &amp; Ethischer Fokus
+                    </span>
+                    <h4 className="text-xs sm:text-sm font-bold text-white">
+                      Zentrale Leitfrage dieser Phase
+                    </h4>
+                  </div>
                 </div>
-                <p className="text-xs sm:text-[13px] font-bold text-[#264653] font-serif-reading leading-relaxed">
-                  {decisionData.centralQuestion}
-                </p>
+
+                <div className="relative z-10 p-4 rounded-xl bg-white/10 border border-white/15 backdrop-blur-xs">
+                  <p className="text-xs sm:text-sm font-bold text-amber-300 font-serif-reading leading-relaxed">
+                    {decisionData.centralQuestion}
+                  </p>
+                </div>
+
                 {decisionData.contextDescription && (
-                  <p className="text-xs text-[#2B2D42]/80 leading-relaxed [text-wrap:pretty]">
+                  <p className="relative z-10 text-xs text-slate-200 leading-relaxed [text-wrap:pretty]">
                     {decisionData.contextDescription}
                   </p>
                 )}
-              </div>
-            )}
-
-            {/* Impuls für das Fall-Adventure */}
-            {decisionData.adventureTeaser && (
-              <div className="p-4 rounded-xl bg-gradient-to-r from-[#E76F51]/15 to-[#2A9D8F]/15 border border-[#E76F51]/30 space-y-1.5">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#264653]">
-                  <Lightbulb className="w-4 h-4 text-[#E76F51]" />
-                  <span>Impuls für das kommende Fall-Adventure:</span>
-                </div>
-                <p className="text-xs text-[#2B2D42] leading-relaxed font-medium [text-wrap:pretty]">
-                  {decisionData.adventureTeaser}
-                </p>
               </div>
             )}
           </div>
@@ -659,7 +676,7 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
             onClick={onProceedToSimulation}
             className="px-6 py-3.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.02]"
           >
-            <span>Weiter zur Simulation (Flaschenhals-Adventure)</span>
+            <span>Weiter zur Simulation (Adventure)</span>
             <ArrowRight className="w-4 h-4 text-[#E76F51]" />
           </button>
         </div>

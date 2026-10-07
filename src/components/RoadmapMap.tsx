@@ -15,12 +15,14 @@ import {
   Info,
   CheckCircle,
   RotateCcw,
-  Lightbulb
+  Lightbulb,
+  KeyRound
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { MODULES_DATA } from '../data/curriculumData';
 import { CHARACTER_AVATARS } from '../data/avatarsData';
 import { sounds } from '../utils/soundEffects';
+import { LevelUnlockModal } from './LevelUnlockModal';
 
 const NODE_ICONS: { [key: string]: React.ElementType } = {
   Compass,
@@ -42,6 +44,8 @@ export const RoadmapMap: React.FC = () => {
     setActiveModal,
     successBanner,
   } = useApp();
+
+  const [unlockModalModuleId, setUnlockModalModuleId] = useState<number | null>(null);
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-[#F7F9FA] select-none text-[#2B2D42]">
@@ -102,31 +106,45 @@ export const RoadmapMap: React.FC = () => {
 
       {/* Top Header Floating Glassbar */}
       <header className="absolute top-4 left-20 right-4 z-30 flex items-center justify-between pointer-events-auto">
-        <div className="flex items-center gap-3.5 bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl px-4 py-2 shadow-md">
-          {/* Couple Avatars: Heike & Stephan */}
-          <div className="flex items-center -space-x-2.5 shrink-0" title="Fall Stephan & Heike">
+        <button
+          onClick={() => {
+            sounds.playClick();
+            setActiveModal('welcome');
+          }}
+          className="flex items-center gap-3.5 bg-white/95 hover:bg-amber-50/90 active:bg-amber-100 backdrop-blur-md border border-slate-200 hover:border-amber-300 rounded-2xl px-4 py-2 shadow-md transition-all text-left cursor-pointer group"
+          title="Fall-Einführung, Zitat und alle Charaktere anzeigen"
+        >
+          {/* Couple Avatars: Heike & Stefan */}
+          <div className="flex items-center -space-x-2.5 shrink-0" title="Fall Stefan & Heike">
             <img
               src={CHARACTER_AVATARS.heike.imageUrl}
               alt="Heike"
-              className="w-9 h-9 rounded-full object-cover border-2 border-[#264653] shadow-sm z-10"
+              className="w-9 h-9 rounded-full object-cover border-2 border-[#264653] shadow-sm z-10 group-hover:scale-105 transition-transform"
             />
             <img
               src={CHARACTER_AVATARS.stephan.imageUrl}
-              alt="Stephan"
-              className="w-9 h-9 rounded-full object-cover border-2 border-[#E76F51] shadow-sm z-0"
+              alt="Stefan"
+              className="w-9 h-9 rounded-full object-cover border-2 border-[#E76F51] shadow-sm z-0 group-hover:scale-105 transition-transform"
             />
           </div>
 
           <div>
-            <h1 className="text-xs sm:text-sm font-bold text-[#264653] tracking-tight flex flex-wrap items-center gap-1.5 [text-wrap:balance]">
-              <span>Partnerschaftliche Entscheidungsfindung</span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              <h1 className="text-xs sm:text-sm font-bold text-[#264653] tracking-tight group-hover:text-[#1E3640]">
+                Partnerschaftliche Entscheidungsfindung
+              </h1>
               <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#E76F51]/15 text-[#E76F51] font-semibold shrink-0">
-                Fall Stephan &amp; Heike
+                Fall Stefan &amp; Heike
               </span>
-            </h1>
-            <p className="text-[11px] text-[#2B2D42]/70 font-medium">Gaming-Roadmap • 7 Doppelstunden</p>
+            </div>
+            <div className="flex items-center gap-2 mt-0.5">
+              <p className="text-[11px] text-[#2B2D42]/70 font-medium">Gaming-Roadmap • 7 Doppelstunden</p>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-amber-100 text-amber-900 font-bold flex items-center gap-1 border border-amber-200">
+                <span>Fall-Einführung &amp; Charaktere ➔</span>
+              </span>
+            </div>
           </div>
-        </div>
+        </button>
 
         {/* Action Widgets */}
         <div className="flex items-center gap-2">
@@ -200,7 +218,12 @@ export const RoadmapMap: React.FC = () => {
                 id={mod.id === 1 ? 'tour-first-node' : undefined}
                 onClick={(e) => {
                   e.stopPropagation();
-                  openModule(mod.id);
+                  if (!isUnlocked) {
+                    sounds.playError();
+                    setUnlockModalModuleId(mod.id);
+                  } else {
+                    openModule(mod.id);
+                  }
                 }}
                 className={`group relative flex flex-col items-center focus:outline-none transition-all duration-300 cursor-pointer ${
                   isSelected ? 'scale-110 z-30' : 'hover:scale-105'
@@ -278,11 +301,36 @@ export const RoadmapMap: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl px-3.5 py-2 text-[11px] text-[#264653] font-medium pointer-events-auto shadow-sm flex items-center gap-1.5">
-          <Lightbulb className="w-3.5 h-3.5 text-[#E76F51] shrink-0" />
-          <span>Das aktuell spielbare Level pulsiert mit Ping-Effekt auf der Karte.</span>
+        <div className="flex items-center gap-2 pointer-events-auto">
+          <button
+            onClick={() => {
+              sounds.playClick();
+              setActiveModal('passwordBook');
+            }}
+            className="bg-white/95 backdrop-blur-md border border-amber-300 hover:bg-amber-50 rounded-2xl px-3.5 py-2 text-xs font-bold text-amber-950 shadow-sm flex items-center gap-2 cursor-pointer transition-all hover:scale-105"
+          >
+            <KeyRound className="w-4 h-4 text-amber-600" />
+            <span>Passwortbuch öffnen</span>
+          </button>
+
+          <div className="bg-white/90 backdrop-blur-md border border-slate-200 rounded-2xl px-3.5 py-2 text-[11px] text-[#264653] font-medium shadow-sm hidden sm:flex items-center gap-1.5">
+            <Lightbulb className="w-3.5 h-3.5 text-[#E76F51] shrink-0" />
+            <span>Das aktuell spielbare Level pulsiert mit Ping-Effekt auf der Karte.</span>
+          </div>
         </div>
       </div>
+
+      {/* Level Unlock Modal */}
+      {unlockModalModuleId && (
+        <LevelUnlockModal
+          moduleId={unlockModalModuleId}
+          onClose={() => setUnlockModalModuleId(null)}
+          onSuccess={(modId) => {
+            setUnlockModalModuleId(null);
+            openModule(modId);
+          }}
+        />
+      )}
     </div>
   );
 };

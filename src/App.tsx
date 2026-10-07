@@ -18,6 +18,7 @@ import { TeacherGuideModal } from './components/TeacherGuideModal';
 import { CertificateModal } from './components/CertificateModal';
 import { AdminModal } from './components/AdminModal';
 import { ResetConfirmModal } from './components/ResetConfirmModal';
+import { PasswordBookModal } from './components/PasswordBookModal';
 
 export default function App() {
   return (
@@ -41,6 +42,7 @@ export default function App() {
         <MediaCenterModal />
         <TimetableModal />
         <BadgesModal />
+        <PasswordBookModal />
         <TeacherGuideModal />
         <CertificateModal />
         <AdminModal />

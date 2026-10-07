@@ -40,7 +40,7 @@ export const WelcomeModal: React.FC = () => {
             </div>
             <div>
               <h2 className="text-base font-bold text-[#264653] tracking-tight">
-                Fallstudie Stephan & Heike (Beginn ab DS 3)
+                Fallstudie Stefan & Heike (Beginn ab DS 3)
               </h2>
               <p className="text-xs text-[#E76F51] font-semibold">Start der filmischen Dokumentation & Ethik-Simulation</p>
             </div>
@@ -70,12 +70,12 @@ export const WelcomeModal: React.FC = () => {
             <div className="relative shrink-0 w-32 h-32 sm:w-36 sm:h-36 rounded-2xl overflow-hidden border-2 border-[#264653] shadow-md bg-slate-200">
               <img
                 src={CHARACTER_AVATARS.paar.imageUrl}
-                alt="Heike & Stephan als Paar"
+                alt="Heike & Stefan als Paar"
                 onError={() => setImageError((prev) => ({ ...prev, paar: true }))}
                 className="w-full h-full object-cover filter brightness-95 contrast-105 hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute bottom-0 inset-x-0 bg-[#264653]/85 text-white py-0.5 text-center text-[10px] font-medium">
-                Heike & Stephan
+                Heike & Stefan
               </div>
             </div>
 
@@ -84,7 +84,7 @@ export const WelcomeModal: React.FC = () => {
                 Pädagogische Fallstudie & Ethik-Simulation
               </span>
               <p className="italic text-[#2B2D42] text-xs sm:text-[13px] leading-relaxed font-serif-reading">
-                „Jeder begegnet im Leben Situationen, in denen es darum geht Entscheidungen zu treffen. Manche sind banal und einfach zu treffen - andere sind kompliziert und fast nicht auszusprechen. Jeder von uns stand mindestens einmal im Leben vor einer unbeschreiblich schweren Entscheidung - vielleicht so schwer, dass alle Handlungsalternativen unpassend oder unmöglich wirkten. Heike und Stephan befanden sich vor unzähligen solcher Entscheidungen. Doch während sie sprechen und sich bewegen kann, ist Stephan durch einen Unfall so schwer verändert, dass er sich nicht mehr verbal ausdrücken kann. Wie gelingen so Entscheidungen als Lebenspartner? Wie können alle Parteien einbezogen werden? Hunderte Fragen ergeben sich in diesem Moment. Die folgenden Kapitel und Filmausschnitte skizzieren das Leben von Heike und Stephan und ihren Weg zu Entscheidungen zu finden.“
+                „Jeder begegnet im Leben Situationen, in denen es darum geht Entscheidungen zu treffen. Manche sind banal und einfach zu treffen - andere sind kompliziert und fast nicht auszusprechen. Jeder von uns stand mindestens einmal im Leben vor einer unbeschreiblich schweren Entscheidung - vielleicht so schwer, dass alle Handlungsalternativen unpassend oder unmöglich wirkten. Heike und Stefan befanden sich vor unzähligen solcher Entscheidungen. Doch während sie sprechen und sich bewegen kann, ist Stefan durch einen Unfall so schwer verändert, dass er sich nicht mehr verbal ausdrücken kann. Wie gelingen so Entscheidungen als Lebenspartner? Wie können alle Parteien einbezogen werden? Hunderte Fragen ergeben sich in diesem Moment. Die folgenden Kapitel und Filmausschnitte skizzieren das Leben von Heike und Stefan und ihren Weg zu Entscheidungen zu finden.“
               </p>
             </div>
           </div>

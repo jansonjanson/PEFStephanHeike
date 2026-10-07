@@ -193,7 +193,7 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
                       rows={3}
                       value={entry.info || ''}
                       onChange={(e) => handleInfoChange(cat.id, e.target.value)}
-                      placeholder={`Halten Sie pflegerelevante Beobachtungen, Befunde, Ressourcen und Einschränkungen im Fall Stephan & Heike zu "${cat.name}" fest...`}
+                      placeholder={`Halten Sie pflegerelevante Beobachtungen, Befunde, Ressourcen und Einschränkungen im Fall Stefan & Heike zu "${cat.name}" fest...`}
                       className={`w-full rounded-xl p-3.5 text-xs sm:text-sm text-[#2B2D42] placeholder-slate-400 focus:outline-none transition-all resize-y leading-relaxed font-sans ${
                         hasContent
                           ? 'bg-white border-2 border-emerald-500/50 focus:border-[#264653] focus:ring-2 focus:ring-[#264653]/15'

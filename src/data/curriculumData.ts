@@ -20,13 +20,13 @@ export const MODULES_DATA: ModuleData[] = [
       pedagogicalGoals: [
         'Die Lernenden spüren am eigenen Leib die emotionale Wucht eines fremdbestimmten Kontroll- und Autonomieverlusts.',
         'Sie leiten aus der Selbsterfahrung ethische Kriterien für gelingende Entscheidungen in vulnerablen Pflegesituationen ab.',
-        'Sie vollziehen den Perspektivwechsel zu schwerstbetroffenen Menschen wie Stephan nach Schädel-Hirn-Trauma.',
+        'Sie vollziehen den Perspektivwechsel zu schwerstbetroffenen Menschen wie Stefan nach Schädel-Hirn-Trauma.',
       ],
       schedule: [
         {
           phase: 'Einstieg & Sensibilisierung',
           timeMinutes: 15,
-          activity: 'Begrüßung, Vorstellung des Falls Stephan & Heike. Erläuterung der Bedeutung existenzieller Entscheidungen.',
+          activity: 'Begrüßung, Vorstellung des Falls Stefan & Heike. Erläuterung der Bedeutung existenzieller Entscheidungen.',
           socialForm: 'Plenum',
           media: 'App-Startbildschirm & Zitat Heike',
           didacticNotes: 'Fokus auf emotionale Resonanz legen; keine Vorwegnahme theoretischer Modelle.',
@@ -81,7 +81,7 @@ export const MODULES_DATA: ModuleData[] = [
     },
     sampleSolution: {
       zusatzdoc: {
-        who: 'Stephan (vor dem Unfall gesunder Motorsportler), Heike (Lebenspartnerin), Pflegeteam.',
+        who: 'Stefan (vor dem Unfall gesunder Motorsportler), Heike (Lebenspartnerin), Pflegeteam.',
         whatHappened: 'Schweres Schädel-Hirn-Trauma durch Unfall. Totaler Bruch der bisherigen Lebensbiografie.',
         decisionsMade: 'Notfallmedizinische Maximaltherapie, Übernahme aller Lebensbereiche durch medizinisches Personal.',
         ethicalDilemmas: 'Wer entscheidet, was lebenswert ist? Wie ermittelt man den mutmaßlichen Willen?',
@@ -93,7 +93,7 @@ export const MODULES_DATA: ModuleData[] = [
         },
       },
       decisionAnalysis: 'In DS 1 steht das emotionale Begreifen von Paternalismus und Hilflosigkeit im Präsenzunterricht im Vordergrund.',
-      passwordHint: 'DS 1 ist der Präsenz-Startpunkt. Das Passwort für DS 2 lautet: THEORIE-2026',
+      passwordHint: 'DS 1 ist der Präsenz-Startpunkt. Das Passwort für DS 2 lautet: THEORIE',
     },
     requiredPassword: 'START',
   },
@@ -147,7 +147,7 @@ export const MODULES_DATA: ModuleData[] = [
         {
           phase: 'Nachbesprechung & Falltransfer',
           timeMinutes: 25,
-          activity: 'Auswertung der Quiz-Ergebnisse im Plenum. Wann ist PEF im Fall Stephan & Heike besonders herausfordernd?',
+          activity: 'Auswertung der Quiz-Ergebnisse im Plenum. Wann ist PEF im Fall Stefan & Heike besonders herausfordernd?',
           socialForm: 'Plenum',
           media: 'Vergleichsmatrix (Beamer)',
           didacticNotes: 'Betonen: PEF ist keine einmalige Handlung, sondern ein kontinuierlicher Prozess!',
@@ -302,7 +302,7 @@ export const MODULES_DATA: ModuleData[] = [
       },
       {
         id: 'q6',
-        question: 'Warum birgt das reine Informed Decision Making bei schwerster Erkrankung (wie im Fall Stephan) oft Überlastung für Angehörige?',
+        question: 'Warum birgt das reine Informed Decision Making bei schwerster Erkrankung (wie im Fall Stefan) oft Überlastung für Angehörige?',
         type: 'multiple_choice',
         options: [
           {
@@ -340,9 +340,9 @@ export const MODULES_DATA: ModuleData[] = [
         },
       },
       decisionAnalysis: 'PEF ist das humanistische Leitbild moderner generalistischer Pflege: geteilte Verantwortung auf Augenhöhe.',
-      passwordHint: 'Das Passwort für DS 3 lautet: PEF-ETHIK-3',
+      passwordHint: 'Das Passwort für DS 3 lautet: PARTIZIPATION',
     },
-    requiredPassword: 'THEORIE-2026',
+    requiredPassword: 'THEORIE',
   },
 
   // ==========================================
@@ -358,7 +358,7 @@ export const MODULES_DATA: ModuleData[] = [
     videoUrl: 'https://app.slidepresenter.com/presentations/0888b573-24ee-4ae4-bdd8-44a95bf1c4e0?time=0',
     videoTitle: 'Videosequenz 1: Die Akutphase nach dem Unfall',
     videoDuration: 'ca. 8-10 Min.',
-    videoDescription: 'Stephan liegt nach dem schweren Unfall in der Akutklinik. Heike erlebt den ersten Schock und muss die veränderte Situation begreifen.',
+    videoDescription: 'Stefan liegt nach dem schweren Unfall in der Akutklinik. Heike erlebt den ersten Schock und muss die veränderte Situation begreifen.',
     narrativeSummary: `Ein kurzer Moment auf der Rennstrecke, der ein ganzes Leben in Vorher und Nachher teilt. Im Juli 2013 liegt Stefan bei einem Amateur-Motorradrennen am Nürburgring aussichtsreich auf dem vierten Platz, als ihn die Maschine eines Konkurrenten streift. Mit 48 Jahren steht der durchtrainierte Mann mitten im Leben, hängt auf der Piste regelmäßig Jüngere ab. Stunden später kämpfen Chirurgen im Klinikum Neuwied in einer achtstündigen Notoperation um sein Überleben. Die Diagnose nach dem rettenden Eingriff ist niederschmetternd: schweres Schädel-Hirn-Trauma, Wachkoma. Stefans Augen sind geöffnet, doch laut den Ärzten nimmt er nichts mehr wahr und wird nie wieder erwachen.
 
 Herbst 2014, gut ein Jahr nach der Katastrophe. Für seine Lebensgefährtin Heike, mit der er seit zehn Jahren zusammen ist, war ein Leben ohne ihn nie eine Option. Sie hat ihren Beruf als Physiotherapeutin aufgegeben und pflegt Stefan rund um die Uhr selbst – in einem alten, kaum barrierefreien Fachwerkhaus in der Eifel. Der Alltag ist ein zäher, kräftezehrender Kraftakt: von der mühsamen Sondenernährung per Hand, bei der Heike ihren gesamten Körper einsetzen muss, um die Nahrung durchzudrücken, bis hin zum behutsamen Umlagern gelähmter Gliedmaßen. Professionelle Pflegekräfte gibt es nicht. Mit 700 Euro Pflegegeld und einem monatlichen Gesamtbudget von gerade einmal 1.800 Euro steht die fünfköpfige Familie vor massiven finanziellen Entbehrungen.
@@ -438,7 +438,7 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
       duration: '90 Minuten',
       pedagogicalGoals: [
         'Die Lernenden erfassen systematisch pflegerelevante Daten aus Videosequenz 1 im Entscheidungsprotokoll und den 13 ABEDL.',
-        'Sie analysieren die Kommunikations- und Mobilitätseinschränkungen und identifizieren Ressourcen von Heike und Stephan.',
+        'Sie analysieren die Kommunikations- und Mobilitätseinschränkungen und identifizieren Ressourcen von Heike und Stefan.',
         'In der Simulation erproben sie die 3 Entscheidungsmodelle im Umgang mit Heikes Schock.',
       ],
       schedule: [
@@ -448,7 +448,7 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
           activity: 'Videosequenz 1 (SlidePresenter) gemeinsam oder individuell in der App sichten.',
           socialForm: 'Einzelarbeit / Plenum',
           media: 'SlidePresenter Video 1',
-          didacticNotes: 'Fokus auf Details: Beatmungsschlauch, Heikes Körpersprache, Stephans Augen.',
+          didacticNotes: 'Fokus auf Details: Beatmungsschlauch, Heikes Körpersprache, Stefans Augen.',
         },
         {
           phase: '2. Dokumentation (Formulare)',
@@ -459,7 +459,7 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
           didacticNotes: 'Auf präzise Symptome und Ressourcen achten (Heikes Präsenz).',
         },
         {
-          phase: '3. Simulation (Flaschenhals-Adventure)',
+          phase: '3. Simulation (Adventure)',
           timeMinutes: 20,
           activity: 'Lernende wählen in der Simulation ihre Haltung (Paternalistisch, Partizipativ, Informed Consent).',
           socialForm: 'Einzelarbeit',
@@ -484,7 +484,7 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
         },
       ],
       blackboardSummary: `KERNPUNKTE DS 3 (AKUTPHASE):
-- Wer war zu sehen: Stephan (intubiert/sediert), Heike (schockiert), Pflegekraft.
+- Wer war zu sehen: Stefan (intubiert/sediert), Heike (schockiert), Pflegekraft.
 - Was ist passiert: Erster Besuch nach dem Unfall. Heike steht fassungslos vor den Intensivgeräten.
 - Entscheidungsdilemma: Wie bindet man Angehörige behutsam ein, ohne sie zu überfordern?
 - PEF-Leitlinie: Ängste validieren, Orientierung schenken, schrittweise Co-Entscheidungen ermöglichen.`,
@@ -496,8 +496,8 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
     simulation: {
       id: 'sim_ds3',
       title: 'Simulation: Erste Begegnung auf der Intensivstation',
-      initialDescription: 'Stephan liegt nach dem schweren Schädel-Hirn-Trauma intubiert im Intensivbett. Monitore piepen. Heike betritt zitternd das Zimmer. Sie sind die Bezugspflegekraft.',
-      passwordFragment: 'PEF-ETHIK-3',
+      initialDescription: 'Stefan liegt nach dem schweren Schädel-Hirn-Trauma intubiert im Intensivbett. Monitore piepen. Heike betritt zitternd das Zimmer. Sie sind die Bezugspflegekraft.',
+      passwordFragment: 'AUTONOMIE',
       reflectionQuestions: [
         'Wie wirkt sich Ihre gewählte Haltung auf Heikes Vertrauen in das Pflegeteam aus?',
         'Wie schützt PEF vor Traumatisierung der Angehörigen?',
@@ -508,16 +508,16 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
           title: 'Situation 1: Der erste Schockmoment',
           speaker: 'Heike',
           speakerRole: 'Lebenspartnerin',
-          speakerAvatar: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
+          speakerAvatar: 'https://github.com/jansonjanson/PEFStefanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
           sceneDescription: 'Heike steht mit Tränen in den Augen an der Zimmertür und traut sich kaum an das Bett.',
-          dialogueText: '„Mein Gott... Stephan... Was haben die vielen Schläuche zu bedeuten? Kann er mich überhaupt hören? Ich weiß überhaupt nicht, was ich tun soll... Soll ich lieber draußen warten?“',
+          dialogueText: '„Mein Gott... Stefan... Was haben die vielen Schläuche zu bedeuten? Kann er mich überhaupt hören? Ich weiß überhaupt nicht, was ich tun soll... Soll ich lieber draußen warten?“',
           dilemmaPrompt: 'Wie reagieren Sie als Pflegefachkraft und welches Modell wählen Sie?',
           options: [
             {
               id: 'opt_ds3_paternalistic',
               model: 'paternalistic',
               modelLabel: 'Paternalistisches Modell',
-              quote: '„Frau Heike, bitte treten Sie zurück auf den Flur. Stephan braucht jetzt absolute Ruhe und die Intensivgeräte sind zu kompliziert für Sie. Verlassen Sie sich einfach ganz auf uns.“',
+              quote: '„Frau Heike, bitte treten Sie zurück auf den Flur. Stefan braucht jetzt absolute Ruhe und die Intensivgeräte sind zu kompliziert für Sie. Verlassen Sie sich einfach ganz auf uns.“',
               actionText: 'Heike aus dem Zimmer verweisen, um ungestört medizinische Routinen durchzuführen.',
               immediateReaction: 'Heike weicht verunsichert zurück, fühlt sich wie ein Störfaktor und verlässt mit Tränen den Raum.',
               explanation: 'Paternalistisch: Die Pflegekraft übernimmt die totale Kontrolle und schließt die engste Bezugsperson aus.',
@@ -527,9 +527,9 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
               id: 'opt_ds3_pef',
               model: 'pef',
               modelLabel: 'Partizipative Entscheidungsfindung (PEF)',
-              quote: '„Kommen Sie ganz in Ruhe näher, Frau Heike. Nehmen Sie gern seine Hand. Stephan spürt Ihre Anwesenheit. Die Schläuche unterstützen ihn beim Atmen. Wir entscheiden bei jedem Schritt gemeinsam, wie weit Sie mitwirken möchten. Möchten Sie sich erst setzen oder ihm etwas vertrautes erzählen?“',
+              quote: '„Kommen Sie ganz in Ruhe näher, Frau Heike. Nehmen Sie gern seine Hand. Stefan spürt Ihre Anwesenheit. Die Schläuche unterstützen ihn beim Atmen. Wir entscheiden bei jedem Schritt gemeinsam, wie weit Sie mitwirken möchten. Möchten Sie sich erst setzen oder ihm etwas vertrautes erzählen?“',
               actionText: 'Heike behutsam an das Bett führen, Ängste validieren, Orientierung geben und gemeinsam Schritte absprechen.',
-              immediateReaction: 'Heike atmet tief durch und fasst vorsichtig Stephans Hand. Ihre Anspannung weicht spürbar.',
+              immediateReaction: 'Heike atmet tief durch und fasst vorsichtig Stefans Hand. Ihre Anspannung weicht spürbar.',
               explanation: 'Partizipativ (PEF): Gleichberechtigte Einbeziehung, emotionale Sicherheit und geteilte Handlungsplanung auf Augenhöhe.',
               statsImpact: { pefScore: 1, paternalisticScore: 0, informedScore: 0, autonomyScore: 1 },
             },
@@ -539,7 +539,7 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
               modelLabel: 'Informed Consent / Konsumenten-Modell',
               quote: '„Hier sind die Informationsbroschüren über SHT Grad III und Beatmungsmedizin. Sie können entscheiden, ob Sie die Basale Stimulation selbst durchführen oder ob wir das machen sollen. Lesen Sie sich das durch und sagen Sie mir Bescheid.“',
               actionText: 'Heike Informationsmaterial aushändigen und die Entscheidung über Pflegemaßnahmen ihr allein überlassen.',
-              immediateReaction: 'Heike hält die Papiere mit zittrigen Händen, blickt hilflos zwischen Fachbegriffen und Stephan hin und her und wirkt völlig überfordert.',
+              immediateReaction: 'Heike hält die Papiere mit zittrigen Händen, blickt hilflos zwischen Fachbegriffen und Stefan hin und her und wirkt völlig überfordert.',
               explanation: 'Informed Consent: Reine Faktenübermittlung ohne emotionale Begleitung überfordert Angehörige in akuten Krisen.',
               statsImpact: { pefScore: 0, paternalisticScore: 0, informedScore: 1, autonomyScore: 0 },
             },
@@ -549,8 +549,8 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
     },
     sampleSolution: {
       zusatzdoc: {
-        who: 'Stephan (nach schwerem SHT, intubiert/beatmet, sediert), Heike (Lebenspartnerin), Bezugspflegekraft, Intensivarzt.',
-        whatHappened: 'Stephan wurde nach dem schweren Unfall aufgenommen. Heike besucht ihn zum ersten Mal und erlebt die Entfremdung durch die Intensivmedizin.',
+        who: 'Stefan (nach schwerem SHT, intubiert/beatmet, sediert), Heike (Lebenspartnerin), Bezugspflegekraft, Intensivarzt.',
+        whatHappened: 'Stefan wurde nach dem schweren Unfall aufgenommen. Heike besucht ihn zum ersten Mal und erlebt die Entfremdung durch die Intensivmedizin.',
         decisionsMade: 'Beginn der vorsichtigen Kontaktaufnahme (Basale Stimulation), Absprache zur Einbindung Heikes in die Pflege.',
         ethicalDilemmas: 'Wann schützt Schonung vor Belastung und wann wird sie zur Ausgrenzung der wichtigsten Bezugsperson?',
       },
@@ -577,7 +577,7 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
         },
         12: {
           info: 'Heike ist die wichtigste soziale Bezugsperson, leidet unter akuter Schockbelastung.',
-          pesr: 'P: Gefahr der Überlastung der Lebenspartnerin. E: Lebensbedrohliche Erkrankung des Partners. S: Weinen, Rückzugsgedanken. R: Ausgeprägte Liebe zu Stephan.',
+          pesr: 'P: Gefahr der Überlastung der Lebenspartnerin. E: Lebensbedrohliche Erkrankung des Partners. S: Weinen, Rückzugsgedanken. R: Ausgeprägte Liebe zu Stefan.',
         },
         13: {
           info: 'Existenzielle Grenzerfahrung: Konfrontation mit potenzieller Behinderung und Lebensplanverlust.',
@@ -585,9 +585,9 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
         },
       },
       decisionAnalysis: 'In der Akutphase muss die Pflegekraft partizipativ vorgehen: Heike Raum geben, Orientierung schenken und als Co-Expertin einbinden.',
-      passwordHint: 'Das Passwort für DS 4 lautet: AUTONOMIE-8',
+      passwordHint: 'Das Passwort für DS 4 lautet: AUTONOMIE',
     },
-    requiredPassword: 'PEF-ETHIK-3',
+    requiredPassword: 'PARTIZIPATION',
   },
 
   // ==========================================
@@ -596,14 +596,14 @@ Trotz aller medizinischen Prognosen und der bleiernen Ungewissheit, wie die Zuku
   {
     id: 4,
     title: 'Spezialklinik und das veränderte Zuhause',
-    subtitle: 'Videosequenz 2 • Trachealkanüle, Weaning & Schlucktraining',
+    subtitle: 'Videosequenz 2 • PEG-Ernährung, Dysphagie & neue Gehversuche',
     locationName: '4. Spezialklinik und verändertes Zuhause',
     icon: 'HeartPulse',
     timeEstimate: '90 Minuten',
     videoUrl: 'https://app.slidepresenter.com/presentations/e8dfe12a-167b-4d55-824a-6c0053c887b4',
     videoTitle: 'Videosequenz 2: Der Kampf um Atmung und erste Nahrung',
     videoDuration: 'ca. 10 Min.',
-    videoDescription: 'Stephan hat eine Trachealkanüle erhalten. Es geht um Weaning, das Schlucken und die Entscheidung über eine PEG-Magensonde.',
+    videoDescription: 'Stefan hat nach der Not-OP kein Tracheostoma, wird jedoch über eine PEG-Magensonde versorgt. Heike kämpft um eine spezialisierte Zweitmeinung in Belgien und erste Gehversuche daheim.',
     narrativeSummary: `Ein Jahr nach dem Unfall sind die sichtbaren Fortschritte winzig, fast unmerklich für die Außenwelt. Doch Heike spürt genau, dass Stefan da ist. Mit unendlicher Geduld und ihrer Erfahrung als Physiotherapeutin fordert sie ihn heraus: „Kopf hoch… Traust du dich zu stehen?“ Jeder Muskelkrampf, jeder mühsame Versuch, die Füße auf den Boden zu stellen, ist ein zäher Kampf gegen den eigenen Körper. Heike will sich mit dem Stillstand nicht abfinden und stößt im Internet auf einen renommierten Koma-Spezialisten in Belgien. Doch das System stellt sich quer: Die Krankenkasse lehnt die Kostenübernahme ab – bei einem diagnostizierten Wachkoma-Patienten sieht man schlicht keine Veranlassung für teure Spezialuntersuchungen. Erst als Heike sich hartnäckig bis zum Direktor der Kasse durchkämpft, lenken die Behörden nach monatelanger Verzögerung ein.
 
 Die Reise nach Belgien bringt die Wende, doch sie ist bittersüß. Die Ärzte stellen fest: Stefan ist gar nicht mehr im Wachkoma – er ist bei vollem Bewusstsein. Gleichzeitig folgt der nächste schwere Schlag der Mediziner: Seine Persönlichkeit werde nie mehr die alte sein, sprechen oder laufen werde er nie wieder. Eine Diagnose, die Heike zutiefst niederschmettert. Vor allem der Verlust der Nähe schmerzt: nie wieder ein gesprochenes „Ich liebe dich“, nie wieder von ihm fest in den Arm genommen zu werden, obwohl sie spürt, wie sehr er es will.
@@ -675,16 +675,16 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
         },
       ],
       reflectionPrompt: 'Wo verläuft die Grenze zwischen fördernder Aktivierung und unvertretbarem Risiko, wenn Patienten wie Stefan ihren eigenen Körper neu erproben?',
-      adventureTeaser: 'Im kommenden Fall-Adventure begleiten Sie das heikle Dilemma um Stefans Wunsch nach oraler Nahrung und Kaffeegeschmack trotz Trachealkanüle: Wie balancieren Sie Aspirationsschutz und Lebensfreude im pflegerischen Dialog aus?',
+      adventureTeaser: 'Im kommenden Fall-Adventure begleiten Sie das heikle Dilemma um Stefans Wunsch nach oraler Nahrung und Kaffeegeschmack trotz Schluckstörung: Wie balancieren Sie Aspirationsschutz und Lebensfreude im pflegerischen Dialog aus?',
     },
     mapCoordinates: { x: 58, y: 55 },
     badgeId: 'badge_pef_champion',
     teacherGuide: {
       doppelstunde: 4,
-      topic: 'Gameloop 2: Trachealkanüle, Dysphagie und ethische Entscheidungen zur enteralen Ernährung (PEG)',
+      topic: 'Gameloop 2: Zweitmeinung Belgien, Dysphagie und ethische Entscheidungen zur Mobilisation',
       duration: '90 Minuten',
       pedagogicalGoals: [
-        'Die Lernenden erfassen die ABEDL 3 (Vitale Funktionen) und ABEDL 7 (Essen & Trinken) unter Bedingungen einer Trachealkanüle.',
+        'Die Lernenden erfassen die ABEDL 3 (Vitale Funktionen) und ABEDL 7 (Essen & Trinken) unter Bedingungen von Dysphagie und PEG-Versorgung.',
         'Sie analysieren die Risiken zwischen Aspirationspneumonie und Lebensqualität durch Geschmackserlebnisse.',
         'In der Simulation navigieren sie den Konflikt zwischen Risikominimierung und Heikes Wunsch nach oralen Reizen.',
       ],
@@ -692,10 +692,10 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
         {
           phase: '1. Video ansehen',
           timeMinutes: 15,
-          activity: 'Videosequenz 2 sichten. Beobachtungsfokus: Trachealkanüle, Hustenreflex, Frustration.',
+          activity: 'Videosequenz 2 sichten. Beobachtungsfokus: Schluckreflex, Mimik, Frustration.',
           socialForm: 'Einzelarbeit',
           media: 'SlidePresenter Video 2',
-          didacticNotes: 'Auf mimische Reaktionen von Stephan beim Absaugen achten.',
+          didacticNotes: 'Auf mimische Reaktionen von Stefan beim Absaugen achten.',
         },
         {
           phase: '2. Dokumentation (Formulare)',
@@ -703,10 +703,10 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
           activity: 'Befüllen von Entscheidungsprotokoll und Checkliste_Pflegeanamnese (ABEDL 3 und 7).',
           socialForm: 'Partnerarbeit',
           media: 'Digitale Formulare',
-          didacticNotes: 'Beobachtungen präzise erfassen: Schluckstörung (Dysphagie), Trachealkanüle, Wunsch nach Geschmacksempfinden.',
+          didacticNotes: 'Beobachtungen präzise erfassen: Schluckstörung (Dysphagie), PEG-Sonde, Wunsch nach Geschmacksempfinden.',
         },
         {
-          phase: '3. Simulation (Flaschenhals-Adventure)',
+          phase: '3. Simulation (Adventure)',
           timeMinutes: 20,
           activity: 'Lernende wählen im Mini-Adventure die Haltung zum Thema Schluckversuche vs. Sondenernährung.',
           socialForm: 'Einzelarbeit',
@@ -732,7 +732,7 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
       ],
       blackboardSummary: `DILEMMA: PEG-SONDE & SCHLUCKVERSUCHE:
 - Furcht vor Aspiration vs. Wunsch nach normalem Geschmack.
-- PEF-Lösung: Logopädische FEES-Diagnostik, strukturierte therapeutische Geschmacksproben unter Schutz der blockierten Kanüle, geteilte Entscheidung mit Heike über Sondennutzung.`,
+- PEF-Lösung: Logopädische FEES-Diagnostik, strukturierte therapeutische Geschmacksproben unter sorgfältigem Aspirationsschutz, geteilte Entscheidung mit Heike über Sondennutzung.`,
       reflectionPrompts: [
         'Warum ist der Verzicht auf jede orale Kost für wache Patienten oft eine psychische Qual?',
         'Wie bindet PEF Logopädie, Pflege, Arzt und Angehörige an einen runden Tisch?',
@@ -740,22 +740,22 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
     },
     simulation: {
       id: 'sim_ds4',
-      title: 'Simulation: Das Dilemma um Nahrung und Trachealkanüle',
-      initialDescription: 'Stephan blickt traurig auf den Kaffeebecher in Heikes Hand. Er hat Durst. Die Trachealkanüle liegt noch, der Schluckreflex ist unvollständig. Der Stationsarzt rät zur reinen PEG-Sondenernährung.',
-      passwordFragment: 'AUTONOMIE-8',
+      title: 'Simulation: Das Dilemma um orale Geschmackserlebnisse',
+      initialDescription: 'Stefan blickt traurig auf den Kaffeebecher in Heikes Hand. Er hat Durst. Der Schluckreflex ist unvollständig, Stefan wird über die PEG ernährt. Der Stationsarzt rät zur reinen PEG-Sondenernährung.',
+      passwordFragment: 'PARTNERSCHAFT',
       reflectionQuestions: [
         'Wie haben Sie das Sicherheitsbedürfnis (Aspirationsschutz) mit dem Lebensqualitätsbedürfnis ausbalanciert?',
-        'Welche Rolle spielt Heikes Fachwissen über Stephans Vorlieben?',
+        'Welche Rolle spielt Heikes Fachwissen über Stefans Vorlieben?',
       ],
       steps: [
         {
           id: 'step_ds4_1',
-          title: 'Situation: Darf Stephan einen Tropfen Kaffee schmecken?',
+          title: 'Situation: Darf Stefan einen Tropfen Kaffee schmecken?',
           speaker: 'Heike',
           speakerRole: 'Lebenspartnerin',
-          speakerAvatar: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
-          sceneDescription: 'Heike hält eine kleine Tasse Kaffee. Stephan fixiert sie mit den Augen und leckt sich über die Lippen.',
-          dialogueText: '„Stephan liebt seinen Kaffee so sehr. Kann ich ihm nicht nur einen Tropfen auf die Zunge tupfen? Der Arzt meinte streng, das sei lebensgefährlich. Aber Stephan schaut mich so flehend an... Was sollen wir tun?“',
+          speakerAvatar: 'https://github.com/jansonjanson/PEFStefanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
+          sceneDescription: 'Heike hält eine kleine Tasse Kaffee. Stefan fixiert sie mit den Augen und leckt sich über die Lippen.',
+          dialogueText: '„Stefan liebt seinen Kaffee so sehr. Kann ich ihm nicht nur einen Tropfen auf die Zunge tupfen? Der Arzt meinte streng, das sei lebensgefährlich. Aber Stefan schaut mich so flehend an... Was sollen wir tun?“',
           dilemmaPrompt: 'Welche Haltung nehmen Sie als Pflegefachkraft ein?',
           options: [
             {
@@ -764,7 +764,7 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
               modelLabel: 'Paternalistisches Modell',
               quote: '„Nein, auf keinen Fall! Der Arzt hat ein striktes Schluckverbot verhängt. Stellen Sie die Tasse sofort weg. Wenn er aspiriert, bekommen wir hier riesige Probleme.“',
               actionText: 'Striktes Verbot aussprechen, die Kaffeetasse entfernen und auf ärztliche Anordnung pochen.',
-              immediateReaction: 'Heike zieht eingeschüchtert die Hand zurück. Stephan wendet enttäuscht den Blick ab und schließt resigniert die Augen.',
+              immediateReaction: 'Heike zieht eingeschüchtert die Hand zurück. Stefan wendet enttäuscht den Blick ab und schließt resigniert die Augen.',
               explanation: 'Paternalistisch: Rein risikoaverse Verbote ohne Erklärung erzeugen Frustration und schließen Lebensqualität kategorisch aus.',
               statsImpact: { pefScore: 0, paternalisticScore: 1, informedScore: 0, autonomyScore: -1 },
             },
@@ -772,9 +772,9 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
               id: 'opt_ds4_pef',
               model: 'pef',
               modelLabel: 'Partizipative Entscheidungsfindung (PEF)',
-              quote: '„Ich verstehe Ihren Wunsch so gut, Frau Heike. Die Gefahr des Verschluckens in die Lunge ist real, aber wir können gemeinsam mit der Logopädin sichere Geschmacksproben planen. Ich hole einen Schaumstofftupfer: Wir benetzen nur leicht seine Lippen mit dem Kaffeearoma, während die Kanüle sicher geblockt ist, und beobachten seine Reaktion gemeinsam.“',
+              quote: '„Ich verstehe Ihren Wunsch so gut, Frau Heike. Die Gefahr des Verschluckens in die Lunge ist real, aber wir können gemeinsam mit der Logopädin sichere Geschmacksproben planen. Ich hole einen Schaumstofftupfer: Wir benetzen nur leicht seine Lippen mit dem Kaffeearoma, unter sorgfältigem Aspirationsschutz, und beobachten seine Reaktion gemeinsam.“',
               actionText: 'Risiken transparent benennen, aber gemeinsam mit Heike und Logopädie eine sichere, basale Geschmackserfahrung ermöglichen.',
-              immediateReaction: 'Heike lächelt erleichtert. Als der Kaffeeduft Stephans Lippen berührt, entspannen sich seine Gesichtszüge spürbar.',
+              immediateReaction: 'Heike lächelt erleichtert. Als der Kaffeeduft Stefans Lippen berührt, entspannen sich seine Gesichtszüge spürbar.',
               explanation: 'Partizipativ (PEF): Wissenschaftlich fundierte Risikoabwägung kombiniert mit existenzieller Fürsorge und partnerschaftlicher Durchführung.',
               statsImpact: { pefScore: 1, paternalisticScore: 0, informedScore: 0, autonomyScore: 1 },
             },
@@ -794,14 +794,14 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
     },
     sampleSolution: {
       zusatzdoc: {
-        who: 'Stephan (Trachealkanüle, Dysphagie), Heike, Pflegefachkraft, Logopädin, Stationsarzt.',
-        whatHappened: 'Diskussion um Weaning-Fortschritte, orales Schlucktraining vs. PEG-Versorgung. Heike wünscht sich Lebensqualität für Stephan.',
+        who: 'Stefan (Dysphagie, PEG-Sondenernährung), Heike, Pflegefachkraft, Logopädin, Stationsarzt.',
+        whatHappened: 'Diskussion um Weaning-Fortschritte, orales Schlucktraining vs. PEG-Versorgung. Heike wünscht sich Lebensqualität für Stefan.',
         decisionsMade: 'Durchführung einer FEES-Diagnostik. Strukturierte basale Geschmacksstimulation mit Kaffee-Tupfer unter Aufsicht.',
         ethicalDilemmas: 'Sicherheit (Vermeidung von Lungenentzündung) vs. Wohlbefinden und basale Lebensfreude (Geschmackssinn).',
       },
       abedl: {
         3: {
-          info: 'Trachealkanüle mit Cuff. Weaning-Versuche mit Sprechventil in Phasen. Sekretabsaugung subglottisch.',
+          info: 'PEG-Magensonde, Schluckstörung (Dysphagie) ohne Tracheostoma. Mundpflege und gezielte basale Stimulation.',
           pesr: 'P: Eingeschränkte Spontanatmung und Sekretretention. E: Zerebrale Parese der Atemmuskulatur. S: Rasselnde Atemgeräusche. R: Gute Sauerstoffsättigung bei Weaning-Intervallen.',
         },
         7: {
@@ -810,9 +810,9 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
         },
       },
       decisionAnalysis: 'Gute Pflegepraxis findet den Korridor zwischen Sicherheit und Autonomie durch interprofessionelle PEF.',
-      passwordHint: 'Das Passwort für DS 5 lautet: PARTNER-4',
+      passwordHint: 'Das Passwort für DS 5 lautet: PARTNERSCHAFT',
     },
-    requiredPassword: 'AUTONOMIE-8',
+    requiredPassword: 'AUTONOMIE',
   },
 
   // ==========================================
@@ -828,7 +828,7 @@ Im Jahr 2015 hellt sich zumindest die finanzielle Lage vorsichtig auf: Nachdem i
     videoUrl: 'https://app.slidepresenter.com/presentations/46eba7a7-3e4d-4c70-ad6c-e9e1b6bb584a?time=0',
     videoTitle: 'Videosequenz 3: Auf dem Weg zur Verständigung',
     videoDuration: 'ca. 11 Min.',
-    videoDescription: 'Stephan ist in der Frühreha. Es wird versucht, mit Augensteuerungs-Computern (Talker) und Buchstabentafeln eine Brücke zur Kommunikation zu bauen.',
+    videoDescription: 'Stefan ist in der Frühreha. Es wird versucht, mit Augensteuerungs-Computern (Talker) und Buchstabentafeln eine Brücke zur Kommunikation zu bauen.',
     narrativeSummary: `August 2015: Zum ersten Mal seit Wochen sitzt die Familie wieder gemeinsam am Tisch im Fachwerkhaus in der Eifel. Drei Wochen lang waren die Söhne im Ferienlager – drei Wochen, in denen Heike die Pflege rund um die Uhr völlig allein stemmen musste. Es war ein beklemmender Vorgeschmack auf das, was unweigerlich kommen wird. Lukas und Leon werden in wenigen Jahren mit der Schule fertig sein und für Ausbildung oder Studium das Eifeldorf verlassen. Heike weiß, wie knapp das Zeitfenster ist: Bis die Jungs flügge werden, muss Stefan wieder selbstständig auf die Beine kommen. „Bis dahin muss der Stefan ans Laufen gekommen sein und sich selber sicher bewegen können… Mit Rollator oder auch ohne. Das schaffst du, oder?“ Stefan nickt – ein stilles Versprechen, für das beide jeden Tag kämpfen.
 
 Ein knappes Jahr später, im Sommer 2016, zerbricht dieser Traum jäh. Ein Magengeschwür durchbricht Stefans Zwölffingerdarm-Wand; wieder schwebt er in akuter Lebensgefahr und überlebt nur um Haaresbreite im Krankenhaus. Die Folgen des Eingriffs sind verheerend: Stefan wirkt apathisch, schweißgebadet, reagiert kaum noch auf Ansprache und bricht den Blickkontakt ab. Seine Lunge ist voller Schleim, der ständig abgesaugt werden muss. Durch das wochenlange Liegen auf der Intensivstation sind fast alle mühsam antrainierten motorischen Fähigkeiten wieder verloren gegangen – ein furchtbarer Rückschlag, der Heike an die Grenze der Verzweiflung bringt: „Ich weiß nicht, wie lange wir für diesen Kraftaufbau brauchen. Ich weiß gar nichts im Moment.“
@@ -893,12 +893,12 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
           description: 'Entscheidung zur Entlastung Heikes nach Stefans Stabilisierung, um ihren Zusammenbruch zu verhindern.',
         },
         {
-          title: 'Tracheotomie-Entscheidung',
-          description: 'Bei wiederkehrendem Schleim und Absaugbedarf: Legen eines Tracheostomas zur Atemwegssicherung vs. konservatives orales Absaugen.',
+          title: 'PEG- und Ernährungsentscheidung',
+          description: 'Bei wiederkehrendem Schleim und Absaugbedarf: Vollständige enterale PEG-Ernährung vs. vorsichtige basale Geschmacksstimulation.',
         },
       ],
       reflectionPrompt: 'Wie können professionelle Pflegekräfte die nonverbalen Willensbekundungen schwerkranker Menschen validieren, wenn Angehörige und medizinisches Team gegensätzliche Prioritäten setzen?',
-      adventureTeaser: 'Im kommenden Fall-Adventure stehen Sie vor der Situation, dass Stephan bei der Augensteuerung frustriert verweigert: Zwingen Sie ihn autoritär zum Weitermachen oder handeln Sie partizipativ eine Pause mit alternativen Ja/Nein-Kodes aus?',
+      adventureTeaser: 'Im kommenden Fall-Adventure stehen Sie vor der Situation, dass Stefan bei der Augensteuerung frustriert verweigert: Zwingen Sie ihn autoritär zum Weitermachen oder handeln Sie partizipativ eine Pause mit alternativen Ja/Nein-Kodes aus?',
     },
     mapCoordinates: { x: 74, y: 40 },
     badgeId: 'badge_code_breaker',
@@ -918,7 +918,7 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
           activity: 'Videosequenz 3 analysieren. Fokus: Augenbewegungen, Frustration beim Tippen, Therapeutenverhalten.',
           socialForm: 'Einzelarbeit',
           media: 'SlidePresenter Video 3',
-          didacticNotes: 'Achten auf Stephans Erschöpfung nach nur 5 Minuten Computerarbeit.',
+          didacticNotes: 'Achten auf Stefans Erschöpfung nach nur 5 Minuten Computerarbeit.',
         },
         {
           phase: '2. Dokumentation (Formulare)',
@@ -929,9 +929,9 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
           didacticNotes: 'Ressourcen herausarbeiten: Intellektuelles Verständnis ist vorhanden!',
         },
         {
-          phase: '3. Simulation (Flaschenhals-Adventure)',
+          phase: '3. Simulation (Adventure)',
           timeMinutes: 20,
-          activity: 'Simulation: Stephan verweigert frustriert den Talker nach wiederholten Fehlkalibrierungen.',
+          activity: 'Simulation: Stefan verweigert frustriert den Talker nach wiederholten Fehlkalibrierungen.',
           socialForm: 'Einzelarbeit',
           media: 'Chat-Komponente',
           didacticNotes: 'Wie reagiert die Pflegekraft auf Wut und Verweigerung?',
@@ -959,16 +959,16 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
 - PEF: Pausen aushandeln, Frustration validieren, alternative Ja/Nein-Kodes (z.B. Blinzeln) etablieren.`,
       reflectionPrompts: [
         'Wie fühlt es sich an, wenn das Denken schneller ist als die technische Eingabe?',
-        'Wie kann Heike als Übersetzerin für Stephans Mikro-Mimik einbezogen werden?',
+        'Wie kann Heike als Übersetzerin für Stefans Mikro-Mimik einbezogen werden?',
       ],
     },
     simulation: {
       id: 'sim_ds5',
       title: 'Simulation: Der Abbruch beim Kommunikationstraining',
-      initialDescription: 'Stephan sitzt im Therapiestuhl vor dem Augensteuerungs-Monitor. Die Kalibrierung schlägt zum dritten Mal fehl. Er schließt wütend die Augen, dreht den Kopf weg und atmet heftig durch die Kanüle. Die Ergotherapeutin möchte die Stunde abbrechen.',
-      passwordFragment: 'PARTNER-4',
+      initialDescription: 'Stefan sitzt im Therapiestuhl vor dem Augensteuerungs-Monitor. Die Kalibrierung schlägt zum dritten Mal fehl. Er schließt wütend die Augen, dreht den Kopf weg und atmet heftig vor Anstrengung. Die Ergotherapeutin möchte die Stunde abbrechen.',
+      passwordFragment: 'KROHWINKEL',
       reflectionQuestions: [
-        'Wie haben Sie Stephans nonverbale Verweigerung interpretiert?',
+        'Wie haben Sie Stefans nonverbale Verweigerung interpretiert?',
         'Wie schaffen Sie Raum für Autonomie, ohne den Reha-Fortschritt aufzugeben?',
       ],
       steps: [
@@ -977,8 +977,8 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
           title: 'Situation: Wut und Erschöpfung am Bildschirm',
           speaker: 'Heike',
           speakerRole: 'Lebenspartnerin',
-          speakerAvatar: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
-          sceneDescription: 'Heike streicht Stephan über die Schulter. Stephan presst die Lippen zusammen und verweigert jeden Blickkontakt zum Bildschirm.',
+          speakerAvatar: 'https://github.com/jansonjanson/PEFStefanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
+          sceneDescription: 'Heike streicht Stefan über die Schulter. Stefan presst die Lippen zusammen und verweigert jeden Blickkontakt zum Bildschirm.',
           dialogueText: '„Er ist fix und fertig. Heute geht einfach gar nichts mehr. Wenn wir ihn jetzt zwingen, hasst er das Gerät für immer. Aber wenn er es nicht lernt, kann er uns nie wieder sagen, was er denkt... Was sollen wir jetzt tun?“',
           dilemmaPrompt: 'Welche Reaktion wählen Sie?',
           options: [
@@ -986,9 +986,9 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
               id: 'opt_ds5_paternalistic',
               model: 'paternalistic',
               modelLabel: 'Paternalistisches Modell',
-              quote: '„Herr Stephan, jetzt reißen Sie sich bitte zusammen! Ohne Fleiß kein Preis. Wir haben nur diesen Therapie-Slot und wenn Sie jetzt streiken, verlieren Sie den Reha-Platz. Noch 10 Minuten durchziehen!“',
-              actionText: 'Stephan autoritär zum Weitermachen drängen, um das vorgegebene Therapiepensum zu erfüllen.',
-              immediateReaction: 'Stephan spannt den gesamten Oberkörper spastisch an, sein Puls schießt hoch und er verweigert jegliche Kooperation.',
+              quote: '„Herr Stefan, jetzt reißen Sie sich bitte zusammen! Ohne Fleiß kein Preis. Wir haben nur diesen Therapie-Slot und wenn Sie jetzt streiken, verlieren Sie den Reha-Platz. Noch 10 Minuten durchziehen!“',
+              actionText: 'Stefan autoritär zum Weitermachen drängen, um das vorgegebene Therapiepensum zu erfüllen.',
+              immediateReaction: 'Stefan spannt den gesamten Oberkörper spastisch an, sein Puls schießt hoch und er verweigert jegliche Kooperation.',
               explanation: 'Paternalistisch: Zwang und Missachtung von Erschöpfungsgrenzen zerstören die Motivation und verstärken Spastiken.',
               statsImpact: { pefScore: 0, paternalisticScore: 1, informedScore: 0, autonomyScore: -1 },
             },
@@ -996,9 +996,9 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
               id: 'opt_ds5_pef',
               model: 'pef',
               modelLabel: 'Partizipative Entscheidungsfindung (PEF)',
-              quote: '„Stephan, ich sehe, wie anstrengend das heute ist und wie wütend die Technik macht. Lass uns die Augensteuerung für heute beiseite schieben. Stephan, blinzle einmal für Ja: Möchtest du heute lieber mit Heike und der Buchstabentafel arbeiten oder einfach eine halbe Stunde Musik hören und ausruhen?“',
-              actionText: 'Frustration anerkennen, Druck herausnehmen und über einfache Ja/Nein-Signale Stephans Entscheidung für den Rest des Tages einholen.',
-              immediateReaction: 'Stephan öffnet die Augen, schaut die Pflegekraft dankbar an und blinzelt zweimal bewusst für die Pause mit Musik.',
+              quote: '„Stefan, ich sehe, wie anstrengend das heute ist und wie wütend die Technik macht. Lass uns die Augensteuerung für heute beiseite schieben. Stefan, blinzle einmal für Ja: Möchtest du heute lieber mit Heike und der Buchstabentafel arbeiten oder einfach eine halbe Stunde Musik hören und ausruhen?“',
+              actionText: 'Frustration anerkennen, Druck herausnehmen und über einfache Ja/Nein-Signale Stefans Entscheidung für den Rest des Tages einholen.',
+              immediateReaction: 'Stefan öffnet die Augen, schaut die Pflegekraft dankbar an und blinzelt zweimal bewusst für die Pause mit Musik.',
               explanation: 'Partizipativ (PEF): Echte Selbstbestimmung bedeutet auch das Recht, eine Pause einzufordern. Wertschätzender Einbezug stärkt die Selbstwirksamkeit.',
               statsImpact: { pefScore: 1, paternalisticScore: 0, informedScore: 0, autonomyScore: 1 },
             },
@@ -1008,7 +1008,7 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
               modelLabel: 'Informed Consent / Konsumenten-Modell',
               quote: '„Die Krankenkasse zahlt den Talker nur bei dokumentierter Nutzung von 45 min täglich. Wenn wir abbrechen, sinkt die Bewilligungswahrscheinlichkeit um 60%. Entscheiden Sie beide, ob Sie abbrechen wollen.“',
               actionText: 'Verwaltungsrichtlinien und Quoten aufzählen und die Entscheidung ohne Hilfestellung dem Paar überlassen.',
-              immediateReaction: 'Heike gerät in schwere Gewissensbisse zwischen Stephans Qual und bürokratischem Verlust des Hilfsmittels.',
+              immediateReaction: 'Heike gerät in schwere Gewissensbisse zwischen Stefans Qual und bürokratischem Verlust des Hilfsmittels.',
               explanation: 'Informed Consent: Das Reduzieren von existenziellen Pflegeentscheidungen auf bürokratische Kennzahlen verfehlt den humanistischen Pflegeauftrag.',
               statsImpact: { pefScore: 0, paternalisticScore: 0, informedScore: 1, autonomyScore: 0 },
             },
@@ -1018,7 +1018,7 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
     },
     sampleSolution: {
       zusatzdoc: {
-        who: 'Stephan (in Frührehabilitation), Heike, Pflegefachkraft, Ergotherapeutin, Logopädin.',
+        who: 'Stefan (in Frührehabilitation), Heike, Pflegefachkraft, Ergotherapeutin, Logopädin.',
         whatHappened: 'Einsatz von High-Tech-Kommunikationshilfen (Eyetracker/Talker). Grenzen der Belastbarkeit und Frustrationsbewältigung bei motorischer Ermüdung.',
         decisionsMade: 'Einigung auf flexible Therapieintervalle (max. 15 min Talker), Ergänzung durch Niedrigschwellen-Tools (Partner-unterstütztes Scanning mit Buchstabentafel).',
         ethicalDilemmas: 'Fördern und Fordern (Reha-Potential ausschöpfen) vs. Recht auf Erholung und Würde im Scheitern.',
@@ -1034,9 +1034,9 @@ Doch die Heimkehr muss warten, denn das System der aufopferungsvollen Pflege for
         },
       },
       decisionAnalysis: 'Partizipative Zielvereinbarungen (Goal Attainment Scaling) verhindern Überforderung und stärken die Patientenautonomie.',
-      passwordHint: 'Das Passwort für DS 6 lautet: KROHWINKEL-7',
+      passwordHint: 'Das Passwort für DS 6 lautet: KROHWINKEL',
     },
-    requiredPassword: 'PARTNER-4',
+    requiredPassword: 'PARTNERSCHAFT',
   },
 
   // ==========================================
@@ -1135,13 +1135,13 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
       pedagogicalGoals: [
         'Die Lernenden erfassen ABEDL 10 (Sexualität/Partnerschaft), ABEDL 11 (Sichere Umgebung/Umbau) und ABEDL 12 (Soziale Beziehungen).',
         'Sie erkennen den schmerzhaften Rollenwandel von Heike: von der Liebespartnerin zur 24/7-Pflegekraft.',
-        'In der Simulation moderieren sie das existenzielle Gespräch zwischen Heikes Loyalität, Stephans Wünschen und professionellen Hilfen.',
+        'In der Simulation moderieren sie das existenzielle Gespräch zwischen Heikes Loyalität, Stefans Wünschen und professionellen Hilfen.',
       ],
       schedule: [
         {
           phase: '1. Video ansehen',
           timeMinutes: 15,
-          activity: 'Sichten von Videosequenz 4. Beobachtungsfokus: Heikes Erschöpfung, Tränen, Stephans Blick.',
+          activity: 'Sichten von Videosequenz 4. Beobachtungsfokus: Heikes Erschöpfung, Tränen, Stefans Blick.',
           socialForm: 'Einzelarbeit',
           media: 'SlidePresenter Video 4',
           didacticNotes: 'Die seelische Zerrissenheit Heikes verdeutlichen.',
@@ -1155,7 +1155,7 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
           didacticNotes: 'Fokus auf Überlastung der pflegenden Angehörigen und partnerschaftliche Entlastungsmöglichkeiten.',
         },
         {
-          phase: '3. Simulation (Flaschenhals-Adventure)',
+          phase: '3. Simulation (Adventure)',
           timeMinutes: 20,
           activity: 'Simulation: Das Beratungsgespräch zur Entlassung. Heimunterbringung vs. Intensivpflegedienst zu Hause.',
           socialForm: 'Einzelarbeit',
@@ -1192,10 +1192,10 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
       id: 'sim_ds6',
       title: 'Simulation: Das Entlassungsgespräch – Heim oder Daheim?',
       initialDescription: 'Die Entlassung aus der Rehaklinik steht in 3 Wochen an. Heike sitzt mit tiefen Augenringen im Besprechungszimmer. Der Sozialdienst drängt auf eine Entscheidung für ein Pflegeheim. Heike bricht in Tränen aus.',
-      passwordFragment: 'KROHWINKEL-7',
+      passwordFragment: 'FINALE',
       reflectionQuestions: [
         'Wie gelingt es, Heike vor Selbstaufgabe zu schützen, ohne ihre Wünsche zu übergehen?',
-        'Wie wurde Stephan in diese Zukunftsentscheidung einbezogen?',
+        'Wie wurde Stefan in diese Zukunftsentscheidung einbezogen?',
       ],
       steps: [
         {
@@ -1203,7 +1203,7 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
           title: 'Situation: Heikes Tränen und Schuldgefühle',
           speaker: 'Heike',
           speakerRole: 'Lebenspartnerin',
-          speakerAvatar: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
+          speakerAvatar: 'https://github.com/jansonjanson/PEFStefanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
           sceneDescription: 'Heike vergräbt das Gesicht in den Händen. Auf dem Tisch liegen Prospekte von Schwerstpflegeheimen.',
           dialogueText: '„Wenn ich ihn in ein Heim gebe, breche ich mein Versprechen. Ich fühle mich wie eine Verräterin! Aber wenn ich ihn nach Hause hole und ganz alleine pflegen muss, gehe ich kaputt... Ich schlafe seit Wochen keine Nacht mehr durch. Was ist die richtige Entscheidung?“',
           dilemmaPrompt: 'Wie führen Sie das Beratungsgespräch nach den Grundsätzen der PEF?',
@@ -1222,8 +1222,8 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
               id: 'opt_ds6_pef',
               model: 'pef',
               modelLabel: 'Partizipative Entscheidungsfindung (PEF)',
-              quote: '„Frau Heike, Sie sind keine Verräterin – Sie kämpfen seit Monaten heldenhaft. Es gibt nicht nur Schwarz oder Weiß. Wir können ein häusliches Versorgungsnetz mit einem ambulanten Intensivpflegedienst aufbauen, sodass Sie Partnerin bleiben dürfen und die schwere medizinische Pflege in professionellen Händen liegt. Lassen Sie uns gemeinsam mit Stephan die Optionen und Grenzen durchgehen.“',
-              actionText: 'Schuldgefühle abbauen, Hybridmodelle (ambulante 1:1-Intensivpflege zu Hause) eröffnen und Stephan partizipativ einbinden.',
+              quote: '„Frau Heike, Sie sind keine Verräterin – Sie kämpfen seit Monaten heldenhaft. Es gibt nicht nur Schwarz oder Weiß. Wir können ein häusliches Versorgungsnetz mit einem ambulanten Intensivpflegedienst aufbauen, sodass Sie Partnerin bleiben dürfen und die schwere medizinische Pflege in professionellen Händen liegt. Lassen Sie uns gemeinsam mit Stefan die Optionen und Grenzen durchgehen.“',
+              actionText: 'Schuldgefühle abbauen, Hybridmodelle (ambulante 1:1-Intensivpflege zu Hause) eröffnen und Stefan partizipativ einbinden.',
               immediateReaction: 'Heike blickt überrascht auf. Ein Hoffnungsschimmer kehrt zurück; sie fühlt sich verstanden und entlastet.',
               explanation: 'Partizipativ (PEF): Eröffnung realer Handlungsalternativen jenseits falscher Dichotomien; Schutz der Partnerrolle bei gleichzeitiger Versorgungssicherheit.',
               statsImpact: { pefScore: 1, paternalisticScore: 0, informedScore: 0, autonomyScore: 1 },
@@ -1244,10 +1244,10 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
     },
     sampleSolution: {
       zusatzdoc: {
-        who: 'Heike, Stephan, Bezugspflegekraft, Sozialdienst, ambulanter Intensivpflegedienst.',
+        who: 'Heike, Stefan, Bezugspflegekraft, Sozialdienst, ambulanter Intensivpflegedienst.',
         whatHappened: 'Vorbereitung der Entlassung nach monatelanger Klinik- und Rehapflege. Auseinandersetzung mit Wohnraumanpassung, Umbauarbeiten und Pflegebelastung.',
         decisionsMade: 'Entscheidung für die Rückkehr in eine barrierefreie Wohnung mit Unterstützung eines spezialisierten ambulanten 24h-Intensivpflegedienstes.',
-        ethicalDilemmas: 'Schutz der pflegenden Angehörigen vor Burnout vs. Stephans existentieller Wunsch nach häuslicher Geborgenheit.',
+        ethicalDilemmas: 'Schutz der pflegenden Angehörigen vor Burnout vs. Stefans existentieller Wunsch nach häuslicher Geborgenheit.',
       },
       abedl: {
         10: {
@@ -1256,7 +1256,7 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
         },
         11: {
           info: 'Notwendigkeit barrierefreier Wohnraumanpassung (Pflegebett, Deckenlifter, Notstromaggregat für Beatmung/Absaugung).',
-          pesr: 'P: Sicherheitsrisiko bei technischer Notfallsituation zu Hause. E: Abhängigkeit von Beatmungsgeräten. S: Angst vor Stromausfall oder Kanülenfehllage. R: Installation professioneller Notfallketten.',
+          pesr: 'P: Sicherheitsrisiko bei technischer Notfallsituation zu Hause. E: Abhängigkeit von Beatmungsgeräten. S: Angst vor Notfallsituationen oder Sondenfehllage. R: Installation professioneller Notfallketten.',
         },
         12: {
           info: 'Soziales Umfeld bricht teilweise weg. Freunde ziehen sich aus Überforderung zurück.',
@@ -1264,9 +1264,9 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
         },
       },
       decisionAnalysis: 'PEF ist der Schlüssel für nachhaltige Entlassungen: Nur wenn Angehörige gestärkt und professionell entlastet werden, gelingt Häuslichkeit.',
-      passwordHint: 'Für das Finale in DS 7: FINALE-HEIKE-STEPHAN',
+      passwordHint: 'Für das Finale in DS 7: FINALE',
     },
-    requiredPassword: 'KROHWINKEL-7',
+    requiredPassword: 'KROHWINKEL',
   },
 
   // ==========================================
@@ -1282,7 +1282,7 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
     videoUrl: 'https://app.slidepresenter.com/presentations/87e3e111-e072-4b05-a384-5af77b284961?time=0',
     videoTitle: 'Videosequenz 5: Das Finale – Leben mit der Entscheidung',
     videoDuration: 'ca. 12 Min.',
-    videoDescription: 'Videosequenz 5 und die bewegende Originaldokumentation über Stephan und Heikes Alltag zu Hause. Reflexion des gesamten Lernwegs.',
+    videoDescription: 'Videosequenz 5 und die bewegende Originaldokumentation über Stefan und Heikes Alltag zu Hause. Reflexion des gesamten Lernwegs.',
     mapCoordinates: { x: 92, y: 30 },
     badgeId: 'badge_grand_master',
     teacherGuide: {
@@ -1306,7 +1306,7 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
         {
           phase: '2. Murmelphase & Gefühlsreflexion',
           timeMinutes: 15,
-          activity: 'Paarweiser Austausch: Was hat mich am Fall Stephan & Heike am tiefsten berührt? Wo habe ich meine eigene Haltung verändert?',
+          activity: 'Paarweiser Austausch: Was hat mich am Fall Stefan & Heike am tiefsten berührt? Wo habe ich meine eigene Haltung verändert?',
           socialForm: 'Partnerarbeit',
           media: 'Reflexionskarten',
           didacticNotes: 'Emotionale Entlastung und Validierung der Lernenden.',
@@ -1328,19 +1328,19 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
           didacticNotes: 'Feierlicher Abschluss der Unterrichtsreihe.',
         },
       ],
-      blackboardSummary: `DAS VERMÄCHTNIS VON HEIKE & STEPHAN:
+      blackboardSummary: `DAS VERMÄCHTNIS VON HEIKE & STEFAN:
 1. Partnerschaftliche Entscheidungsfindung ist kein Methoden-Katalog, sondern eine innere Haltung.
 2. Auch bei schwerster Kommunikationsbehinderung bleibt der Mensch Träger unantastbarer Würde und individueller Werte.
 3. Angehörige sind keine Besucher, sondern elementare Partner im Pflegeprozess.
 4. Pflegekräfte sind Anwälte der Autonomie in Momenten existenzieller Verwundbarkeit.`,
       reflectionPrompts: [
-        'Was nehmen Sie aus dieser 7-teiligen Reise für Ihre eigene Haltung als Pflegefachkraft mit?',
-        'Welcher Satz von Heike oder welche Reaktion von Stephan wird Ihnen in Erinnerung bleiben?',
+        'Was nehmen Sie aus dieser Reise für Ihre eigene Haltung als Pflegefachkraft mit?',
+        'Welcher Satz von Heike oder welche Reaktion von Stefan wird Ihnen in Erinnerung bleiben?',
       ],
     },
     sampleSolution: {
       zusatzdoc: {
-        who: 'Heike, Stephan, Pflegeteam, Gemeinschaft.',
+        who: 'Heike, Stefan, Pflegeteam, Gemeinschaft.',
         whatHappened: 'Rückblick auf den gesamten Weg von der Notaufnahme über Intensivstation und Reha bis in das neu gestaltete Leben zu Hause.',
         decisionsMade: 'Gemeinsame Akzeptanz des neuen Lebensabschnitts bei maximaler Wahrung von Würde, Selbstbestimmung und geteilter Partnerschaft.',
         ethicalDilemmas: 'Wie bleibt Liebe lebendig, wenn das Schicksal alle bisherigen Lebenspläne umwirft?',
@@ -1352,8 +1352,8 @@ Die körperliche Zeche dafür zahlt vor allem Heike. Seit den letzten Klinikaufe
         },
       },
       decisionAnalysis: 'Das Finale zeigt: PEF führt zu nachhaltigen, von allen getragenen Entscheidungen, die Menschen auch in dunkelsten Zeiten Halt geben.',
-      passwordHint: 'Zertifikat freigeschaltet!',
+      passwordHint: 'Zertifikat & Meister-Status freigeschaltet!',
     },
-    requiredPassword: 'FINALE-HEIKE-STEPHAN',
+    requiredPassword: 'FINALE',
   },
 ];

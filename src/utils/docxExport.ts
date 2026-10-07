@@ -18,7 +18,7 @@ import { ZusatzdocData } from '../types';
 export const ABEDL_DEFINITIONS = [
   { id: 1, name: '1. kommunizieren zu können', desc: 'Sprechen, Mimik, Gestik, Hilfsmittel, Verstehen, Orientierung' },
   { id: 2, name: '2. sich bewegen zu können', desc: 'Lageveränderung, Mobilität, Transfer, Lähmungen, Spastik, Tonus' },
-  { id: 3, name: '3. vitale Funktionen des Lebens aufrecht erhalten zu können', desc: 'Atmung, Trachealkanüle, Kreislauf, Thermoregulation, Aspiration' },
+  { id: 3, name: '3. vitale Funktionen des Lebens aufrecht erhalten zu können', desc: 'Atmung, Kreislauf, Thermoregulation, Aspiration' },
   { id: 4, name: '4. sich pflegen zu können', desc: 'Körperpflege, Hautzustand, Mundpflege, Haare, Nägel, Intimpflege' },
   { id: 5, name: '5. sich kleiden zu können', desc: 'An- und Auskleiden, Kleidungsauswahl, Hilfsmittelbedarf' },
   { id: 6, name: '6. ausscheiden zu können', desc: 'Kontinenz, Blasen-/Darmmanagement, Inkontinenzhilfen, Obstipation' },
@@ -97,7 +97,7 @@ export async function exportNursingDossierDocx(
             alignment: AlignmentType.CENTER,
             children: [
               new TextRun({
-                text: `Fall Stephan & Heike • Erstellt von: ${author} am ${currentDate}`,
+                text: `Fall Stefan & Heike • Erstellt von: ${author} am ${currentDate}`,
                 italics: true,
                 size: 16,
                 color: '666666',
@@ -278,7 +278,7 @@ export async function exportNursingDossierDocx(
             alignment: AlignmentType.CENTER,
             children: [
               new TextRun({
-                text: 'Alexianer Akademie für Pflege • Fall Stephan & Heike • Partnerschaftliche Entscheidungsfindung',
+                text: 'Alexianer Akademie für Pflege • Fall Stefan & Heike • Partnerschaftliche Entscheidungsfindung',
                 italics: true,
                 size: 14,
                 color: '999999',

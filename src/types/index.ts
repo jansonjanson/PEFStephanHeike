@@ -206,6 +206,15 @@ export interface UserModuleState {
   unlockedWithPassword: boolean;
 }
 
+export interface PasswordBookEntry {
+  moduleId: number; // Modul, für das das Passwort gilt
+  password: string; // Einzelnes Wort in Großbuchstaben
+  unlockedAt: string;
+  sourceModuleId: number; // Modul, in dem es freigespielt wurde
+  title: string;
+  description: string;
+}
+
 export interface AchievementBadge {
   id: string;
   title: string;

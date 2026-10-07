@@ -68,7 +68,7 @@ export const ZusatzdocForm: React.FC<ZusatzdocFormProps> = ({ moduleId }) => {
           rows={3}
           value={data.who}
           onChange={(e) => handleChange('who', e.target.value)}
-          placeholder="z.B. Stephan (Patient, beatmet), Heike (Lebenspartnerin), Pflegekraft, Stationsarzt..."
+          placeholder="z.B. Stefan (Patient, beatmet), Heike (Lebenspartnerin), Pflegekraft, Stationsarzt..."
           className="w-full bg-[#F7F9FA] border border-slate-200 rounded-xl p-3 text-xs text-[#2B2D42] placeholder-slate-400 focus:outline-none focus:border-[#264653] focus:bg-white transition-all resize-y"
         />
       </div>
@@ -98,7 +98,7 @@ export const ZusatzdocForm: React.FC<ZusatzdocFormProps> = ({ moduleId }) => {
           rows={3}
           value={data.decisionsMade}
           onChange={(e) => handleChange('decisionsMade', e.target.value)}
-          placeholder="Wurden Entscheidungen paternalistisch über Stephans/Heikes Kopf hinweg gefällt oder partizipativ gemeinsam beraten?"
+          placeholder="Wurden Entscheidungen paternalistisch über Stefans/Heikes Kopf hinweg gefällt oder partizipativ gemeinsam beraten?"
           className="w-full bg-[#F7F9FA] border border-slate-200 rounded-xl p-3 text-xs text-[#2B2D42] placeholder-slate-400 focus:outline-none focus:border-[#264653] focus:bg-white transition-all resize-y"
         />
       </div>

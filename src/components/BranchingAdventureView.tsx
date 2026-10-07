@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
+import React, { useState, useEffect } from 'react';
+import { useApp, LEVEL_PASSWORDS } from '../context/AppContext';
 import { AdventureData, AdventureNode, AdventureOption, AdventureEnding } from '../types';
 import { CHARACTER_AVATARS } from '../data/avatarsData';
 import {
@@ -7,15 +7,12 @@ import {
   RotateCcw,
   CheckCircle2,
   ArrowRight,
-  ShieldAlert,
-  Compass,
   Scale,
-  Award,
-  BookOpen,
-  MessageSquareQuote,
   Check,
   Flag,
-  HelpCircle
+  KeyRound,
+  Copy,
+  BookMarked
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -30,7 +27,13 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
   adventure,
   onProceedToStep4,
 }) => {
-  const { moduleStates, recordSimulationChoice } = useApp();
+  const {
+    moduleStates,
+    recordSimulationChoice,
+    awardPasswordForNextModule,
+    setActiveModal,
+    showSuccessBanner,
+  } = useApp();
 
   const [currentNodeId, setCurrentNodeId] = useState<string>(adventure.startNodeId);
   const [accumulatedScores, setAccumulatedScores] = useState<{ pat: number; pef: number; inf: number }>({
@@ -41,11 +44,22 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
   const [chosenHistory, setChosenHistory] = useState<{ nodeId: string; option: AdventureOption }[]>([]);
   const [reachedEndingId, setReachedEndingId] = useState<string | null>(null);
   const [reflectionNote, setReflectionNote] = useState<string>('');
+  const [copiedPassword, setCopiedPassword] = useState<boolean>(false);
 
   const currentNode: AdventureNode | undefined = adventure.nodes[currentNodeId];
   const currentEnding: AdventureEnding | undefined = reachedEndingId
     ? adventure.endings[reachedEndingId]
     : undefined;
+
+  const nextModuleId = moduleId + 1;
+  const nextPasswordDef = LEVEL_PASSWORDS[nextModuleId];
+
+  // Auto-award password when ending is reached
+  useEffect(() => {
+    if (reachedEndingId) {
+      awardPasswordForNextModule(moduleId);
+    }
+  }, [reachedEndingId, moduleId]);
 
   const handleSelectOption = (option: AdventureOption) => {
     sounds.playSelectOption();
@@ -85,6 +99,17 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
     setAccumulatedScores({ pat: 0, pef: 0, inf: 0 });
     setChosenHistory([]);
     setReachedEndingId(null);
+    setCopiedPassword(false);
+  };
+
+  const handleCopyPassword = (pwd: string) => {
+    sounds.playSelectOption();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(pwd);
+    }
+    setCopiedPassword(true);
+    showSuccessBanner(`Passwort „${pwd}“ in die Zwischenablage kopiert!`);
+    setTimeout(() => setCopiedPassword(false), 3000);
   };
 
   // Determine avatar
@@ -168,7 +193,7 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
               {chosenHistory.length > 0 && (
                 <button
                   onClick={handleRestart}
-                  className="text-xs text-slate-500 hover:text-[#264653] flex items-center gap-1 font-semibold p-1.5 rounded-lg hover:bg-slate-100 transition-colors"
+                  className="text-xs text-slate-500 hover:text-[#264653] flex items-center gap-1 font-semibold p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
                   title="Szenario von Beginn an neu starten"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -178,66 +203,72 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
             </div>
 
             {/* Scene Setting */}
-            <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-[#2B2D42]/80 italic">
+            <div className="p-3.5 bg-slate-50 border-l-4 border-[#264653] rounded-r-xl text-xs text-[#2B2D42] leading-relaxed [text-wrap:pretty]">
+              <strong className="text-[#264653] block mb-0.5">Szene:</strong>
               {currentNode.sceneDescription}
             </div>
 
-            {/* Speech Bubble */}
-            <div className="p-4.5 bg-gradient-to-r from-slate-50 to-white rounded-2xl border-l-4 border-[#264653] shadow-xs space-y-1">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#264653] mb-1">
-                <MessageSquareQuote className="w-4 h-4 text-[#E76F51]" />
-                <span>O-Ton / Situations-Dialog:</span>
-              </div>
-              <p className="text-xs sm:text-sm font-serif text-[#2B2D42] leading-relaxed [text-wrap:pretty]">
+            {/* Spoken Dialogue */}
+            <div className="p-4 bg-[#F7F9FA] rounded-2xl border border-slate-200 space-y-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                Direkte Aussage von {currentNode.speaker}:
+              </span>
+              <p className="text-sm font-serif italic text-[#1E3640] leading-relaxed [text-wrap:pretty]">
                 {currentNode.dialogueText}
               </p>
             </div>
 
             {/* Dilemma Prompt */}
-            <div className="pt-2 flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
-              <Compass className="w-4 h-4 text-[#E76F51]" />
-              <span>{currentNode.dilemmaPrompt}</span>
+            <div className="pt-2">
+              <h4 className="text-xs font-bold text-[#264653] uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-[#E76F51]" />
+                <span>{currentNode.dilemmaPrompt}</span>
+              </h4>
             </div>
 
-            {/* Action Cards (Options) */}
+            {/* Options List */}
             <div className="space-y-3 pt-1">
-              {currentNode.options.map((opt) => {
-                const isPef = opt.model === 'pef';
-                const isPat = opt.model === 'paternalistic';
+              {currentNode.options.map((opt, idx) => {
+                const optColors = [
+                  {
+                    border: 'border-blue-200 hover:border-blue-400 hover:bg-blue-50/40',
+                    badge: 'bg-blue-100 text-blue-900 border border-blue-200',
+                  },
+                  {
+                    border: 'border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50/40',
+                    badge: 'bg-emerald-100 text-emerald-900 border border-emerald-200',
+                  },
+                  {
+                    border: 'border-amber-200 hover:border-amber-400 hover:bg-amber-50/40',
+                    badge: 'bg-amber-100 text-amber-900 border border-amber-200',
+                  },
+                ][idx % 3];
+
+                const cleanLabel = opt.label.split('[')[0].trim();
 
                 return (
                   <button
                     key={opt.id}
                     onClick={() => handleSelectOption(opt)}
-                    className={`w-full text-left p-4 sm:p-5 rounded-2xl border-2 transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-xs space-y-2 ${
-                      isPef
-                        ? 'border-emerald-300 bg-emerald-50/40 hover:bg-emerald-50 hover:border-emerald-500'
-                        : isPat
-                        ? 'border-slate-300 bg-slate-50/70 hover:bg-slate-100 hover:border-[#264653]'
-                        : 'border-amber-300 bg-amber-50/40 hover:bg-amber-50 hover:border-amber-500'
-                    }`}
+                    className={`w-full text-left p-4 rounded-2xl border-2 transition-all bg-white shadow-xs hover:shadow-md cursor-pointer group space-y-2.5 ${optColors.border}`}
                   >
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`w-2.5 h-2.5 rounded-full ${
-                            isPef ? 'bg-emerald-500' : isPat ? 'bg-[#264653]' : 'bg-amber-500'
-                          }`}
-                        />
-                        <span className="text-xs font-bold text-[#264653]">
-                          {opt.label}
-                        </span>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-[#264653]" />
+                    <div className="flex items-center justify-between">
+                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full font-mono ${optColors.badge}`}>
+                        {cleanLabel}
+                      </span>
+                      <span className="text-[11px] font-bold text-[#264653] group-hover:text-[#E76F51] flex items-center gap-1">
+                        <span>Auswählen</span>
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                      </span>
                     </div>
 
-                    <p className="text-xs sm:text-[13px] text-[#2B2D42] font-serif leading-relaxed [text-wrap:pretty]">
+                    <p className="text-xs sm:text-[13px] text-[#2B2D42] font-medium leading-relaxed [text-wrap:pretty]">
                       {opt.quote}
                     </p>
 
                     {opt.actionText && (
-                      <p className="text-[11px] text-slate-600 bg-white/80 p-2 rounded-lg border border-slate-200 font-sans">
-                        <strong className="text-slate-800">Handlungsauswirkung:</strong> {opt.actionText}
+                      <p className="text-[11px] text-slate-500 italic border-t border-slate-100 pt-1.5">
+                        Handlung: {opt.actionText}
                       </p>
                     )}
                   </button>
@@ -249,7 +280,7 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* REACHED ENDING SCENARIO & COMPREHENSIVE PEDAGOGICAL EVALUATION            */}
+      {/* ENDING SCREEN WITH PROMINENT PASSWORD REWARD BOX                         */}
       {/* ========================================================================= */}
       {reachedEndingId && currentEnding && (
         <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -287,7 +318,7 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
 
               <button
                 onClick={handleRestart}
-                className="text-xs text-slate-500 hover:text-[#264653] flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors"
+                className="text-xs text-slate-500 hover:text-[#264653] flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Szenario erneut spielen</span>
@@ -313,6 +344,78 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
                 {currentEnding.reflectionText}
               </p>
             </div>
+
+            {/* ========================================================================= */}
+            {/* PROMINENTE PASSWORT-BELOHNUNGSBOX (IMMER HERVORRAGEND SICHTBAR)             */}
+            {/* ========================================================================= */}
+            {nextPasswordDef && nextModuleId <= 7 && (
+              <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white border-2 border-emerald-400/80 shadow-xl relative overflow-hidden space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-[#E76F51] text-slate-950 flex items-center justify-center shadow-lg shrink-0">
+                      <KeyRound className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-400 text-emerald-950 font-mono">
+                          Level-Passwort freigespielt
+                        </span>
+                        <span className="text-xs text-emerald-200 flex items-center gap-1 font-medium">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                          Im Passwortbuch gespeichert
+                        </span>
+                      </div>
+                      <h4 className="text-sm sm:text-base font-bold text-white mt-1">
+                        Passwort für Doppelstunde {nextModuleId}:
+                      </h4>
+                      <p className="text-xs text-slate-300">
+                        {nextPasswordDef.title}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Password Badge & Copy Button */}
+                  <div className="flex items-center gap-2 self-start sm:self-center">
+                    <div className="px-5 py-2.5 rounded-2xl bg-black/50 border-2 border-amber-400 font-mono text-base sm:text-lg font-extrabold text-amber-300 tracking-wider flex items-center gap-2 shadow-inner">
+                      <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+                      <span>{nextPasswordDef.password}</span>
+                    </div>
+
+                    <button
+                      onClick={() => handleCopyPassword(nextPasswordDef.password)}
+                      className="px-4 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer transform hover:scale-105"
+                      title="Passwort in die Zwischenablage kopieren"
+                    >
+                      {copiedPassword ? (
+                        <>
+                          <Check className="w-4 h-4 text-emerald-800" />
+                          <span>Kopiert!</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4" />
+                          <span>Kopieren</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300">
+                  <span>
+                    Geben Sie <strong>{nextPasswordDef.password}</strong> beim Klick auf Doppelstunde {nextModuleId} ein, um das nächste Level zu betreten.
+                  </span>
+
+                  <button
+                    onClick={() => setActiveModal('passwordBook')}
+                    className="text-amber-300 hover:text-amber-200 font-bold flex items-center gap-1 cursor-pointer underline"
+                  >
+                    <BookMarked className="w-3.5 h-3.5" />
+                    <span>Zum Passwortbuch</span>
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* ========================================================================= */}
             {/* AUSWERTUNG & DIMENSIONEN (PAT vs. PEF vs. INF)                            */}
@@ -396,7 +499,7 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
                   className="px-6 py-3.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
                 >
                   <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Entscheidung abschließen &amp; weiter zu Schritt 4 (Auswertung &amp; Musterlösung)</span>
+                  <span>Entscheidung abschließen &amp; weiter zu Schritt 4 (Auswertung &amp; Besprechung)</span>
                   <ArrowRight className="w-4 h-4 text-[#E76F51]" />
                 </button>
               )}

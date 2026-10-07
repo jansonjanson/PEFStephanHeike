@@ -37,7 +37,7 @@ export const AdminModal: React.FC = () => {
       setSuccessMessage('Alle 7 Doppelstunden, Musterlösungen und Badges wurden erfolgreich freigeschaltet!');
       setInputPassword('');
     } else {
-      setErrorMessage('Ungültiges Admin-Passwort. (Tipp: Das Passwort lautet "Janson")');
+      setErrorMessage('Ungültiges Admin-Passwort. Bitte überprüfen Sie Ihre Eingabe.');
     }
   };
 
@@ -91,8 +91,8 @@ export const AdminModal: React.FC = () => {
             </label>
             <div className="relative">
               <input
-                type="text"
-                placeholder="Passwort eingeben (z. B. Janson)..."
+                type="password"
+                placeholder="Admin-Passwort eingeben..."
                 value={inputPassword}
                 onChange={(e) => {
                   setInputPassword(e.target.value);
@@ -102,7 +102,7 @@ export const AdminModal: React.FC = () => {
               />
             </div>
             <p className="text-[11px] text-[#2B2D42]/70 mt-1">
-              Mit dem Passwort <strong className="text-[#264653] font-mono">Janson</strong> werden sofort alle 7 Doppelstunden, Musterlösungen und Erfolge freigeschaltet.
+              Mit dem Dozierenden-Passwort werden sofort alle 7 Doppelstunden, Musterlösungen und Erfolge freigeschaltet.
             </p>
           </div>
 

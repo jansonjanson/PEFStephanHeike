@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
-import { useApp } from '../context/AppContext';
 import { QuizQuestion } from '../types';
+import { useApp, LEVEL_PASSWORDS } from '../context/AppContext';
 import {
-  HelpCircle,
   CheckCircle2,
   XCircle,
+  ArrowRight,
   RotateCcw,
+  Sparkles,
   Award,
-  ArrowRight
+  KeyRound,
+  Copy,
+  Check,
+  BookMarked
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -17,51 +21,50 @@ interface QuizViewProps {
 }
 
 export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
-  const { unlockBadge, saveQuizScore } = useApp();
+  const { saveQuizScore, awardPasswordForNextModule, setActiveModal, showSuccessBanner } = useApp();
   const [currentIdx, setCurrentIdx] = useState<number>(0);
-  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: string }>({}); // questionId -> optionId
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: string }>({});
   const [showExplanation, setShowExplanation] = useState<boolean>(false);
   const [quizFinished, setQuizFinished] = useState<boolean>(false);
-
-  if (!questions || questions.length === 0) {
-    return (
-      <div className="p-6 bg-white border border-slate-200 rounded-2xl text-center text-xs text-[#2B2D42]/70 card-soft-shadow">
-        Keine Quizfragen für diese Lerneinheit hinterlegt.
-      </div>
-    );
-  }
+  const [copiedPassword, setCopiedPassword] = useState<boolean>(false);
 
   const currentQ = questions[currentIdx];
-  const options = currentQ.options || [];
-  const chosenOptionId = selectedAnswers[currentQ.id];
-  const chosenOpt = options.find((opt) => opt.id === chosenOptionId);
-  const isCorrect = !!chosenOpt?.isCorrect;
+  const options = currentQ?.options || [];
+  const selectedOptId = currentQ ? selectedAnswers[currentQ.id] : undefined;
 
-  const handleSelect = (optionId: string) => {
-    sounds.playClick();
-    setSelectedAnswers((prev) => ({ ...prev, [currentQ.id]: optionId }));
+  const nextModuleId = moduleId + 1;
+  const nextPasswordDef = LEVEL_PASSWORDS[nextModuleId];
+
+  const handleSelectOption = (optId: string) => {
+    if (showExplanation) return;
+    sounds.playSelectOption();
+    setSelectedAnswers((prev) => ({ ...prev, [currentQ.id]: optId }));
     setShowExplanation(true);
-    const opt = options.find((o) => o.id === optionId);
-    if (opt?.isCorrect) {
+
+    const isCorrect = options.find((o) => o.id === optId)?.isCorrect;
+    if (isCorrect) {
       sounds.playSuccess();
     } else {
       sounds.playError();
     }
   };
 
-  const handleNext = () => {
+  const handleNextQuestion = () => {
     sounds.playClick();
     setShowExplanation(false);
+
     if (currentIdx + 1 < questions.length) {
-      setCurrentIdx((prev) => prev + 1);
+      setCurrentIdx(currentIdx + 1);
     } else {
-      setQuizFinished(true);
-      const totalCorrect = questions.filter((q) => {
+      // Calculate final score
+      const correctCount = questions.filter((q) => {
         const selId = selectedAnswers[q.id];
         return q.options?.find((o) => o.id === selId)?.isCorrect;
       }).length;
-      saveQuizScore(moduleId, totalCorrect, questions.length);
-      unlockBadge('badge_quiz_master');
+
+      saveQuizScore(moduleId, correctCount, questions.length);
+      awardPasswordForNextModule(moduleId);
+      setQuizFinished(true);
       sounds.playBadgeUnlock();
     }
   };
@@ -72,6 +75,17 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
     setSelectedAnswers({});
     setShowExplanation(false);
     setQuizFinished(false);
+    setCopiedPassword(false);
+  };
+
+  const handleCopyPassword = (pwd: string) => {
+    sounds.playSelectOption();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(pwd);
+    }
+    setCopiedPassword(true);
+    showSuccessBanner(`Passwort „${pwd}“ in die Zwischenablage kopiert!`);
+    setTimeout(() => setCopiedPassword(false), 3000);
   };
 
   const correctTotal = questions.filter((q) => {
@@ -83,20 +97,86 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
     const percent = Math.round((correctTotal / questions.length) * 100);
 
     return (
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-5 card-soft-shadow animate-in fade-in duration-300 text-[#2B2D42]">
-        <div className="w-16 h-16 rounded-3xl bg-[#264653] text-white flex items-center justify-center mx-auto shadow-md">
-          <Award className="w-9 h-9 text-[#E76F51]" />
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-6 card-soft-shadow animate-in fade-in duration-300 text-[#2B2D42]">
+        <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-[#264653] to-[#2A9D8F] text-white flex items-center justify-center mx-auto shadow-lg">
+          <Award className="w-9 h-9 text-amber-300" />
         </div>
 
         <div>
           <span className="text-[11px] font-bold text-[#E76F51] uppercase tracking-wider">
-            Wissenssicherung abgeschlossen
+            Wissenssicherung erfolgreich absolviert
           </span>
           <h2 className="text-xl font-bold text-[#264653] mt-0.5">Ergebnisse zur Entscheidungsfindung</h2>
           <p className="text-xs text-[#2B2D42]/70 mt-1 [text-wrap:pretty]">
             Sie haben {correctTotal} von {questions.length} Fragen richtig beantwortet ({percent}%).
           </p>
         </div>
+
+        {/* Prominente Passwort-Belohnungsbox für DS 3 */}
+        {nextPasswordDef && (
+          <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white border-2 border-emerald-400 shadow-xl text-left space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-[#E76F51] text-slate-950 flex items-center justify-center shadow-md shrink-0">
+                  <KeyRound className="w-6 h-6" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-400 text-emerald-950 font-mono">
+                      Level-Passwort freigespielt
+                    </span>
+                    <span className="text-xs text-emerald-200 flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      Im Passwortbuch gespeichert
+                    </span>
+                  </div>
+                  <h4 className="text-sm font-bold text-white mt-1">
+                    Passwort für Doppelstunde {nextModuleId}:
+                  </h4>
+                  <p className="text-xs text-slate-300">
+                    {nextPasswordDef.title}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 self-start sm:self-center">
+                <div className="px-4 py-2 rounded-xl bg-black/50 border-2 border-amber-400 font-mono text-base font-extrabold text-amber-300 tracking-wider flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+                  <span>{nextPasswordDef.password}</span>
+                </div>
+
+                <button
+                  onClick={() => handleCopyPassword(nextPasswordDef.password)}
+                  className="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+                  title="Passwort kopieren"
+                >
+                  {copiedPassword ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-800" />
+                      <span>Kopiert!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4" />
+                      <span>Kopieren</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
+              <span>Geben Sie das Passwort beim Öffnen von Doppelstunde 3 ein.</span>
+              <button
+                onClick={() => setActiveModal('passwordBook')}
+                className="text-amber-300 hover:text-amber-200 font-bold flex items-center gap-1 underline cursor-pointer"
+              >
+                <BookMarked className="w-3.5 h-3.5" />
+                <span>Passwortbuch öffnen</span>
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="p-4 bg-[#F7F9FA] rounded-xl border border-slate-200 max-w-sm mx-auto text-xs text-[#2B2D42] space-y-1">
           {percent >= 70 ? (
@@ -158,18 +238,16 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
       {/* Answer Options */}
       <div className="space-y-2.5">
         {options.map((opt, optIdx) => {
-          const isSelected = chosenOptionId === opt.id;
-          const isThisCorrect = opt.isCorrect;
-
-          let btnStyle = 'bg-[#F7F9FA] border-slate-200 hover:border-[#264653]/40 text-[#2B2D42]';
+          const isSelected = selectedOptId === opt.id;
+          let btnStyle = 'border-slate-200 hover:border-slate-300 bg-white text-[#2B2D42]';
 
           if (showExplanation) {
-            if (isThisCorrect) {
-              btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-900 font-bold';
-            } else if (isSelected) {
-              btnStyle = 'bg-rose-50 border-rose-500 text-rose-900';
+            if (opt.isCorrect) {
+              btnStyle = 'border-emerald-500 bg-emerald-50 text-emerald-900 font-semibold';
+            } else if (isSelected && !opt.isCorrect) {
+              btnStyle = 'border-rose-500 bg-rose-50 text-rose-900 line-through';
             } else {
-              btnStyle = 'bg-slate-50 border-slate-200 opacity-50 text-[#2B2D42]';
+              btnStyle = 'border-slate-200 bg-slate-50 text-slate-400 opacity-60';
             }
           }
 
@@ -177,60 +255,47 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
             <button
               key={opt.id}
               disabled={showExplanation}
-              onClick={() => handleSelect(opt.id)}
-              className={`w-full text-left p-3.5 rounded-xl border text-xs flex items-center justify-between transition-all cursor-pointer ${btnStyle}`}
+              onClick={() => handleSelectOption(opt.id)}
+              className={`w-full text-left p-3.5 rounded-xl border-2 transition-all flex items-start justify-between gap-3 text-xs sm:text-[13px] leading-relaxed cursor-pointer disabled:cursor-default ${btnStyle}`}
             >
-              <div className="flex items-center gap-3">
-                <span className="w-6 h-6 rounded-lg bg-white border border-slate-300 flex items-center justify-center font-mono font-bold text-xs shrink-0 text-[#264653]">
+              <div className="flex items-start gap-2.5">
+                <span className="w-5 h-5 rounded-full bg-slate-100 border border-slate-300 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                   {String.fromCharCode(65 + optIdx)}
                 </span>
-                <span className="leading-relaxed">{opt.text}</span>
+                <span>{opt.text}</span>
               </div>
 
               {showExplanation && (
-                <div className="shrink-0 ml-2">
-                  {isThisCorrect ? (
+                <span className="shrink-0 mt-0.5">
+                  {opt.isCorrect ? (
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                   ) : isSelected ? (
                     <XCircle className="w-4 h-4 text-rose-600" />
                   ) : null}
-                </div>
+                </span>
               )}
             </button>
           );
         })}
       </div>
 
-      {/* Explanation Rationale Panel */}
+      {/* Explanation Box */}
       {showExplanation && (
-        <div
-          className={`p-4 rounded-xl border text-xs space-y-2 animate-in fade-in duration-200 ${
-            isCorrect
-              ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
-              : 'bg-amber-50 border-amber-300 text-amber-900'
-          }`}
-        >
-          <div className="font-bold flex items-center gap-2">
-            {isCorrect ? (
-              <>
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Richtig gelöst!</span>
-              </>
-            ) : (
-              <>
-                <XCircle className="w-4 h-4 text-rose-600 shrink-0" />
-                <span>Nicht ganz korrekt:</span>
-              </>
-            )}
+        <div className="p-4 bg-[#F7F9FA] rounded-xl border border-slate-200 space-y-2 animate-in fade-in duration-200 text-xs">
+          <div className="flex items-center gap-1.5 font-bold text-[#264653]">
+            <Sparkles className="w-4 h-4 text-[#E76F51]" />
+            <span>Erklärung &amp; Pflegeethischer Kontext:</span>
           </div>
-          <p className="leading-relaxed">{chosenOpt?.explanation || 'Beachte die Schlüsselunterschiede in Bezug auf Informationskontrolle und Verantwortung.'}</p>
+          <p className="text-[#2B2D42]/80 leading-relaxed [text-wrap:pretty]">
+            {options.find((o) => o.isCorrect)?.explanation || 'Richtig! Diese Antwort spiegelt das fundierte Verständnis der Theorie wider.'}
+          </p>
 
           <div className="pt-2 flex justify-end">
             <button
-              onClick={handleNext}
+              onClick={handleNextQuestion}
               className="px-4 py-2 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"
             >
-              <span>{currentIdx + 1 === questions.length ? 'Quiz beenden' : 'Nächste Frage'}</span>
+              <span>{currentIdx + 1 < questions.length ? 'Nächste Frage' : 'Quiz abschließen & Auswertung'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { ModuleData } from '../types';
 import {
@@ -9,19 +9,19 @@ import {
   Sparkles,
   Trophy,
   CheckCircle2,
-  FileCheck,
   HeartPulse,
   Scale,
-  Compass,
-  Download,
   Users,
-  MessageSquare,
-  BookOpen,
   Check,
   Printer,
-  ChevronRight,
-  ShieldCheck,
-  Lightbulb
+  Lock,
+  ArrowDown,
+  ArrowRight,
+  Star,
+  Lightbulb,
+  Stethoscope,
+  User,
+  Heart
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -30,24 +30,69 @@ interface FinalEvaluationViewProps {
   onFinishModule: () => void;
 }
 
+const EXAMPLE_MOMENTS = [
+  {
+    id: 'loyalitaet',
+    title: 'Heikes unerschütterliche Loyalität',
+    quote: '„Für mich war ein Leben ohne ihn nie eine Option.“',
+    description: 'Die Gratwanderung zwischen tiefer Liebe, Fürsorge und existenzieller Selbstaufgabe im Fachwerkhaus.',
+  },
+  {
+    id: 'autonomie',
+    title: 'Stefans nonverbaler Kampf um Autonomie',
+    quote: '„Der mühsame Knopfdruck an der Kaffeemaschine & das Blinzeln beim Gehtraining.“',
+    description: 'Wie kleinste Willensäußerungen den Begriff von Lebensqualität und Würde neu definieren.',
+  },
+  {
+    id: 'teamwork',
+    title: 'Zusammenhalt der drei Söhne',
+    quote: '„Gemeinsam den Vater stützen, wenn das Leben aus den Fugen gerät.“',
+    description: 'Die Rolle von Angehörigen und Kindern als gleichberechtigte Partner im Pflegeprozess.',
+  },
+];
+
 export const FinalEvaluationView: React.FC<FinalEvaluationViewProps> = ({
   module,
   onFinishModule,
 }) => {
-  const { badges, setActiveModal, studentName } = useApp();
+  const { badges, setActiveModal, moduleStates, advanceModuleStep } = useApp();
+  const state = moduleStates[module.id];
+  const stepProgress = state?.stepProgress || 1; // 1 = Video/Resonanz, 2 = 3 Modelle Praxis, 3 = Top 3 Erkenntnisse & Abschluss
 
-  const [manifesto, setManifesto] = useState({
-    principle1: 'Patientenautonomie ist auch bei schwerster Kommunikationsbehinderung aktiv zu erkunden und zu achten.',
-    principle2: 'Angehörige sind unverzichtbare Partner auf Augenhöhe, bedürfen jedoch aktiver Entlastung vor Überlastung.',
-    principle3: 'Partizipative Entscheidungsfindung (PEF) leitet mein tägliches pflegerisches Handeln als Grundhaltung.',
+  // Schritt 1 State
+  const [selectedMomentId, setSelectedMomentId] = useState<string>('loyalitaet');
+  const [customMomentText, setCustomMomentText] = useState<string>('');
+  const [resonanceNote, setResonanceNote] = useState<string>('');
+
+  // Schritt 2 State: Wo setze ich die 3 Modelle ein?
+  const [modelUsePat, setModelUsePat] = useState<string>(
+    'In vital bedrohlichen Akut-Notfällen (z. B. plötzliche Reanimation, Koma-Notfall, akute Bewusstlosigkeit), wo keine Zeit zum Aushandeln bleibt.'
+  );
+  const [modelUsePef, setModelUsePef] = useState<string>(
+    'Im regulären Pflegealltag, bei Reha-Zielen, Hilfsmittelauswahl, Wahl des Versorgungsorts (stationär vs. ambulant) und individueller Pflegeplanung.'
+  );
+  const [modelUseInf, setModelUseInf] = useState<string>(
+    'Bei rein formalen oder rechtlichen Optionen, standardisierten Leistungsansprüchen und wenn urteilsfähige Patienten nach voller Aufklärung autonom entscheiden wollen.'
+  );
+
+  // Schritt 3 State: Top 3 Erkenntnisse zur Entscheidungsfindung
+  const [topInsights, setTopInsights] = useState({
+    insight1: 'Echte Partizipation erfordert das aktive Erforschen von Patientenwerten – auch und besonders bei nonverbaler Kommunikation.',
+    insight2: 'Paternalismus schützt kurzfristig, überfordert aber langfristig und entmündigt die Lebenswelt der Betroffenen.',
+    insight3: 'Angehörige sind elementare Partner auf Augenhöhe; ihre Ressourcen müssen durch professionelle Netzwerke geschützt werden.',
   });
 
-  const [activeDebriefTab, setActiveDebriefTab] = useState<'resonance' | 'transfer' | 'caregiver' | 'manifesto'>('resonance');
-  const [manifestoSaved, setManifestoSaved] = useState<boolean>(false);
+  const step2Ref = useRef<HTMLDivElement>(null);
+  const step3Ref = useRef<HTMLDivElement>(null);
 
-  const handleSaveManifesto = () => {
+  const handleAdvanceStep = (nextStep: number) => {
     sounds.playSuccess();
-    setManifestoSaved(true);
+    advanceModuleStep(module.id, nextStep);
+
+    setTimeout(() => {
+      if (nextStep === 2) step2Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (nextStep === 3) step3Ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
   };
 
   const unlockedBadgesCount = badges.filter((b) => !!b.unlockedAt).length;
@@ -55,15 +100,15 @@ export const FinalEvaluationView: React.FC<FinalEvaluationViewProps> = ({
   return (
     <div className="space-y-8 text-[#2B2D42]">
       {/* ========================================================================= */}
-      {/* [BLOCK 1] VIDEO-PLAYER: HOCHWERTIGE SCHALTFLÄCHE (SLIDEPRESENTER)         */}
+      {/* [SCHRITT 1] VIDEO 5 & 1. EMOTIONALER RESONANZRAUM                         */}
       {/* ========================================================================= */}
-      <section id="final-video" className="space-y-3">
+      <section id="ds7-step-1" className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
             <span className="w-6 h-6 rounded-full bg-[#264653] text-white flex items-center justify-center font-mono text-[11px] shadow-xs">
               1
             </span>
-            <span>[Block 1] Finale Dokumentation: Leben mit der Entscheidung</span>
+            <span>Schritt 1: Videosequenz 5 &amp; Emotionaler Resonanzraum</span>
           </div>
 
           <span className="text-[11px] font-mono text-[#2B2D42]/70 bg-white border border-slate-200 px-2.5 py-1 rounded-full shadow-xs">
@@ -71,7 +116,7 @@ export const FinalEvaluationView: React.FC<FinalEvaluationViewProps> = ({
           </span>
         </div>
 
-        {/* High-End Video Launch Card */}
+        {/* Video Launch Card */}
         <div className="bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white rounded-2xl p-6 sm:p-7 shadow-xl relative overflow-hidden border border-[#264653]">
           <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -87,7 +132,7 @@ export const FinalEvaluationView: React.FC<FinalEvaluationViewProps> = ({
               </div>
 
               <h2 className="text-base sm:text-xl font-bold text-white [text-wrap:balance]">
-                Videosequenz 5: Das Vermächtnis von Stephan &amp; Heike
+                Videosequenz 5: Das Vermächtnis von Stefan &amp; Heike
               </h2>
 
               <p className="text-xs sm:text-[13px] text-slate-200/90 leading-relaxed [text-wrap:pretty]">
@@ -114,336 +159,391 @@ export const FinalEvaluationView: React.FC<FinalEvaluationViewProps> = ({
           </div>
 
           <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-300">
-            <span>Öffnet sich in einem neuen Browser-Tab. Kehren Sie anschließend für die Nachbesprechung hierher zurück.</span>
-            <span className="hidden sm:inline text-amber-300 font-mono">Status: Bereit für Auswertung</span>
+            <span>Öffnet sich in einem neuen Browser-Tab. Kehren Sie anschließend für die Auswertungsschritte hierher zurück.</span>
+          </div>
+        </div>
+
+        {/* 1. Emotionaler Resonanzraum Card with Custom or Example Selection */}
+        <div className="bg-white border-2 border-[#264653]/20 rounded-2xl p-5 sm:p-6 card-soft-shadow space-y-5 animate-in fade-in duration-300">
+          <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
+            <h4 className="text-xs sm:text-sm font-bold text-emerald-950 flex items-center gap-2">
+              <HeartPulse className="w-4 h-4 text-emerald-600" />
+              <span>Gefühlsreflexion &amp; Schlüsselsituation: Welcher Augenblick hat Sie am stärksten berührt?</span>
+            </h4>
+            <p className="text-xs text-emerald-900 leading-relaxed [text-wrap:pretty]">
+              Wählen Sie eine der beispielhaften Schlüsselsituationen aus oder formulieren Sie eine ganz eigene Situation aus der gemeinsamen Reise von Stefan und Heike.
+            </p>
+          </div>
+
+          {/* Situation Cards Selection */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {EXAMPLE_MOMENTS.map((mom) => (
+              <button
+                key={mom.id}
+                type="button"
+                onClick={() => {
+                  setSelectedMomentId(mom.id);
+                  sounds.playClick();
+                }}
+                className={`p-4 rounded-xl border-2 text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  selectedMomentId === mom.id
+                    ? 'bg-emerald-50/90 border-emerald-500 shadow-md ring-2 ring-emerald-300/40'
+                    : 'bg-slate-50 hover:bg-slate-100 border-slate-200'
+                }`}
+              >
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">
+                      Beispiel
+                    </span>
+                    {selectedMomentId === mom.id && (
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    )}
+                  </div>
+                  <h5 className="text-xs font-bold text-[#264653]">{mom.title}</h5>
+                  <p className="italic text-[11px] text-slate-700 font-serif-reading">
+                    {mom.quote}
+                  </p>
+                  <p className="text-[11px] text-[#2B2D42]/70">
+                    {mom.description}
+                  </p>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Custom Situation Input */}
+          <div className="space-y-2 pt-1 border-t border-slate-100">
+            <div className="flex items-center gap-2">
+              <Lightbulb className="w-4 h-4 text-[#E76F51]" />
+              <label className="text-xs font-bold text-[#264653]">
+                Eigene Schlüsselsituation auswählen oder ergänzen:
+              </label>
+            </div>
+            <textarea
+              rows={2}
+              value={customMomentText}
+              onChange={(e) => setCustomMomentText(e.target.value)}
+              placeholder="Haben Sie einen anderen Moment oder eine eigene Szene im Kopf? Beschreiben Sie diesen Augenblick kurz..."
+              className="w-full bg-[#F4F7F8] border border-slate-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-[#264653] focus:bg-white resize-y leading-relaxed"
+            />
+          </div>
+
+          {/* Reflection Note */}
+          <div className="space-y-1.5">
+            <label className="text-xs font-bold text-[#264653] block">
+              Ihre persönlichen Notizen zur emotionalen Resonanz:
+            </label>
+            <textarea
+              rows={3}
+              value={resonanceNote}
+              onChange={(e) => setResonanceNote(e.target.value)}
+              placeholder="Wie bewerten Sie diese Situation aus pflegeethischer Sicht? Was hat Sie daran nachdenklich gestimmt?"
+              className="w-full bg-[#F4F7F8] border border-slate-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-[#264653] focus:bg-white resize-y leading-relaxed"
+            />
+          </div>
+
+          <div className="pt-2 flex justify-end">
+            <button
+              onClick={() => handleAdvanceStep(2)}
+              className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
+            >
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <span>Schritt 1 bestätigen &amp; Weiter zu Schritt 2 (Praxiseinsatz der 3 Modelle)</span>
+              <ArrowDown className="w-4 h-4 text-[#E76F51]" />
+            </button>
           </div>
         </div>
       </section>
 
       {/* ========================================================================= */}
-      {/* [BLOCK 2] METHODISCHE NACHBESPRECHUNG (4 INTERAKTIVE REFLEXIONS-DIMENSIONEN)*/}
+      {/* [SCHRITT 2] 2. EINSATZ DER DREI MODELLE IN DER PFLEGEPRAXIS               */}
       {/* ========================================================================= */}
-      <section className="space-y-4">
+      <section ref={step2Ref} id="ds7-step-2" className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
-            <span className="w-6 h-6 rounded-full bg-[#2A9D8F] text-white flex items-center justify-center font-mono text-[11px] shadow-xs">
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] shadow-xs ${stepProgress >= 2 ? 'bg-[#2A9D8F] text-white font-bold' : 'bg-slate-200 text-slate-500'}`}>
               2
             </span>
-            <span>[Block 2] Interaktive Nachbesprechung &amp; Fall-Debriefing</span>
+            <span>Schritt 2: Gezielter Einsatz der 3 Modelle in der Pflegepraxis</span>
           </div>
-          <span className="text-xs text-[#2A9D8F] font-semibold">4 Reflexions-Dimensionen</span>
+
+          {stepProgress > 2 ? (
+            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-0.5 rounded-full flex items-center gap-1">
+              <Check className="w-3.5 h-3.5 text-emerald-600" />
+              Erledigt
+            </span>
+          ) : stepProgress === 2 ? (
+            <span className="text-[11px] font-bold text-[#E76F51] bg-[#E76F51]/10 border border-[#E76F51]/20 px-3 py-0.5 rounded-full animate-pulse">
+              Aktiver Schritt
+            </span>
+          ) : (
+            <span className="text-[11px] text-slate-400 flex items-center gap-1">
+              <Lock className="w-3.5 h-3.5" />
+              Gesperrt
+            </span>
+          )}
         </div>
 
-        <div className="bg-white border-2 border-[#264653]/20 rounded-2xl p-5 sm:p-6 card-soft-shadow space-y-5">
-          {/* Debrief Tabs Navigation */}
-          <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-3">
-            <button
-              onClick={() => { sounds.playClick(); setActiveDebriefTab('resonance'); }}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeDebriefTab === 'resonance'
-                  ? 'bg-[#264653] text-white shadow-sm'
-                  : 'bg-slate-100 hover:bg-slate-200 text-[#2B2D42]'
-              }`}
-            >
-              <HeartPulse className="w-3.5 h-3.5" />
-              <span>1. Emotionaler Resonanzraum</span>
-            </button>
+        {stepProgress < 2 ? (
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 card-soft-shadow">
+            <Lock className="w-6 h-6 text-slate-400 mx-auto" />
+            <h4 className="text-xs font-bold text-[#264653]">Schritt 2 noch gesperrt</h4>
+            <p className="text-[11px] text-[#2B2D42]/70 [text-wrap:pretty]">
+              Schließen Sie Schritt 1 oben ab, um die Modellverortung für Ihren Pflegealltag freizuschalten.
+            </p>
+          </div>
+        ) : (
+          <div className="bg-white border-2 border-[#264653]/20 rounded-2xl p-5 sm:p-6 card-soft-shadow space-y-5 animate-in fade-in duration-300">
+            <div className="p-4 bg-teal-50/70 border border-teal-200 rounded-xl space-y-2">
+              <h4 className="text-xs sm:text-sm font-bold text-teal-950 flex items-center gap-2">
+                <Scale className="w-4 h-4 text-teal-700" />
+                <span>Praxistransfer: Wo und wann setzen Sie die drei Modelle im Berufsalltag gezielt ein?</span>
+              </h4>
+              <p className="text-xs text-teal-900 leading-relaxed [text-wrap:pretty]">
+                Reflektieren Sie die Vor- und Nachteile der drei Dimensionen. In welchen konkreten Pflegesituationen ist welches Modell fachlich und ethisch begründet?
+              </p>
+            </div>
 
-            <button
-              onClick={() => { sounds.playClick(); setActiveDebriefTab('transfer'); }}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeDebriefTab === 'transfer'
-                  ? 'bg-[#264653] text-white shadow-sm'
-                  : 'bg-slate-100 hover:bg-slate-200 text-[#2B2D42]'
-              }`}
-            >
-              <Scale className="w-3.5 h-3.5" />
-              <span>2. PEF im Härtetest</span>
-            </button>
+            <div className="space-y-4">
+              {/* Modell 1: Paternalistisch */}
+              <div className="p-4.5 rounded-2xl bg-gradient-to-br from-blue-50/80 to-indigo-50/40 border-2 border-blue-200 space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center">
+                    <Stethoscope className="w-3.5 h-3.5" />
+                  </div>
+                  <h5 className="text-xs font-bold text-blue-950">
+                    1. Paternalistisches Modell – Wo setze ich es ein?
+                  </h5>
+                </div>
+                <p className="text-[11px] text-blue-900">
+                  <em>Fachkraft entscheidet zum Schutz / zur Gefahrenabwehr.</em> Wann ist dieses Modell im Alltag unvermeidlich?
+                </p>
+                <textarea
+                  rows={2}
+                  value={modelUsePat}
+                  onChange={(e) => setModelUsePat(e.target.value)}
+                  className="w-full bg-white border border-blue-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-blue-600 resize-y leading-relaxed"
+                />
+              </div>
 
-            <button
-              onClick={() => { sounds.playClick(); setActiveDebriefTab('caregiver'); }}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeDebriefTab === 'caregiver'
-                  ? 'bg-[#264653] text-white shadow-sm'
-                  : 'bg-slate-100 hover:bg-slate-200 text-[#2B2D42]'
-              }`}
-            >
-              <Users className="w-3.5 h-3.5" />
-              <span>3. Angehörigen-Überlastung</span>
-            </button>
+              {/* Modell 2: PEF */}
+              <div className="p-4.5 rounded-2xl bg-gradient-to-br from-emerald-50/80 to-teal-50/40 border-2 border-emerald-300 space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center">
+                    <Users className="w-3.5 h-3.5" />
+                  </div>
+                  <h5 className="text-xs font-bold text-emerald-950">
+                    2. Partizipative Entscheidungsfindung (PEF) – Wo setze ich es ein?
+                  </h5>
+                </div>
+                <p className="text-[11px] text-emerald-900">
+                  <em>Pflege &amp; Patient/Angehörige entscheiden gemeinsam als Partner auf Augenhöhe.</em> Wann ist PEF Ihr Standard-Leitbild?
+                </p>
+                <textarea
+                  rows={2}
+                  value={modelUsePef}
+                  onChange={(e) => setModelUsePef(e.target.value)}
+                  className="w-full bg-white border border-emerald-400 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-emerald-600 resize-y leading-relaxed"
+                />
+              </div>
 
-            <button
-              onClick={() => { sounds.playClick(); setActiveDebriefTab('manifesto'); }}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeDebriefTab === 'manifesto'
-                  ? 'bg-amber-500 text-slate-950 shadow-sm'
-                  : 'bg-slate-100 hover:bg-slate-200 text-[#2B2D42]'
-              }`}
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>4. Mein Pflege-Ethik-Manifest</span>
-            </button>
+              {/* Modell 3: Informationsmodell */}
+              <div className="p-4.5 rounded-2xl bg-gradient-to-br from-amber-50/80 to-orange-50/40 border-2 border-amber-300 space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-lg bg-amber-600 text-white flex items-center justify-center">
+                    <User className="w-3.5 h-3.5" />
+                  </div>
+                  <h5 className="text-xs font-bold text-amber-950">
+                    3. Informationsmodell (Informed Choice) – Wo setze ich es ein?
+                  </h5>
+                </div>
+                <p className="text-[11px] text-amber-900">
+                  <em>Pflege informiert neutral; Patient entscheidet vollkommen eigenverantwortlich.</em> In welchen Konstellationen ist dies passend?
+                </p>
+                <textarea
+                  rows={2}
+                  value={modelUseInf}
+                  onChange={(e) => setModelUseInf(e.target.value)}
+                  className="w-full bg-white border border-amber-400 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-amber-600 resize-y leading-relaxed"
+                />
+              </div>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => handleAdvanceStep(3)}
+                className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
+              >
+                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                <span>Schritt 2 bestätigen &amp; Weiter zu Schritt 3 (Top 3 Erkenntnisse &amp; Abschluss)</span>
+                <ArrowDown className="w-4 h-4 text-[#E76F51]" />
+              </button>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* ========================================================================= */}
+      {/* [SCHRITT 3] 3. TOP 3 ERKENNTNISSE ZUR ENTSCHEIDUNGSFINDUNG & ABSCHLUSS     */}
+      {/* ========================================================================= */}
+      <section ref={step3Ref} id="ds7-step-3" className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
+            <span className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] shadow-xs ${stepProgress >= 3 ? 'bg-amber-500 text-slate-950 font-bold' : 'bg-slate-200 text-slate-500'}`}>
+              3
+            </span>
+            <span>Schritt 3: Meine Top 3 Erkenntnisse zur Entscheidungsfindung &amp; Abschluss</span>
           </div>
 
-          {/* Tab 1: Emotionaler Resonanzraum */}
-          {activeDebriefTab === 'resonance' && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-2">
-                <h4 className="text-xs sm:text-sm font-bold text-emerald-950 flex items-center gap-2">
-                  <HeartPulse className="w-4 h-4 text-emerald-600" />
-                  <span>Murmelphase &amp; Gefühlsreflexion: Was bleibt im Gedächtnis?</span>
-                </h4>
-                <p className="text-xs text-emerald-900 leading-relaxed [text-wrap:pretty]">
-                  Tauschen Sie sich 5 Minuten zu zweit oder im Plenum aus: Welcher Augenblick aus der 7-teiligen Reise von Stephan und Heike hat Sie emotional am stärksten berührt?
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
-                  <strong className="text-[#264653] font-bold block">• Heikes unerschütterliche Loyalität:</strong>
-                  <span className="text-slate-700 leading-relaxed [text-wrap:pretty]">
-                    „Für mich war ein Leben ohne ihn nie eine Option.“ Wie bewerten Sie die Gratwanderung zwischen wahrer Liebe und existenzieller Selbstaufgabe?
-                  </span>
-                </div>
-
-                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
-                  <strong className="text-[#264653] font-bold block">• Stephans Kampf um Autonomie:</strong>
-                  <span className="text-slate-700 leading-relaxed [text-wrap:pretty]">
-                    Der mühsame Knopfdruck an der Kaffeemaschine, das Blinzeln und die Tränen beim Gehtraining: Wie verändert sich der Begriff „Lebensqualität“ durch diesen Fall?
-                  </span>
-                </div>
-              </div>
-            </div>
+          {stepProgress >= 3 && (
+            <span className="text-[11px] font-bold text-amber-900 bg-amber-100 border border-amber-300 px-3 py-0.5 rounded-full flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+              Abschlussphase
+            </span>
           )}
+        </div>
 
-          {/* Tab 2: PEF im Härtetest */}
-          {activeDebriefTab === 'transfer' && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="p-4 bg-teal-50/70 border border-teal-200 rounded-xl space-y-2">
-                <h4 className="text-xs sm:text-sm font-bold text-teal-950 flex items-center gap-2">
-                  <Scale className="w-4 h-4 text-teal-700" />
-                  <span>Transfer in die Pflegepraxis: Wann greift welches Modell?</span>
-                </h4>
-                <p className="text-xs text-teal-900 leading-relaxed [text-wrap:pretty]">
-                  Partizipative Entscheidungsfindung (PEF) ist das humanistische Leitbild. Doch wie verhält es sich in Akutsituationen oder bei chronischer Erschöpfung?
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
-                  <span className="px-2 py-0.5 rounded bg-slate-200 text-[#2B2D42] font-bold text-[10px] uppercase">
-                    Paternalismus
-                  </span>
-                  <p className="text-slate-700 leading-relaxed [text-wrap:pretty]">
-                    Gerechtfertigt in vitalen Akut-Notfällen (z. B. Reanimation, Not-OP), toxisch in der Langzeitpflege.
-                  </p>
-                </div>
-
-                <div className="p-3.5 bg-emerald-50 border-2 border-emerald-300 rounded-xl space-y-1">
-                  <span className="px-2 py-0.5 rounded bg-emerald-600 text-white font-bold text-[10px] uppercase">
-                    PEF (Partner-Modell)
-                  </span>
-                  <p className="text-emerald-950 font-medium leading-relaxed [text-wrap:pretty]">
-                    Fachwissen der Pflege + persönliche Werte des Patienten bilden eine gemeinsame Entscheidung.
-                  </p>
-                </div>
-
-                <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
-                  <span className="px-2 py-0.5 rounded bg-slate-200 text-[#2B2D42] font-bold text-[10px] uppercase">
-                    Informed Consent
-                  </span>
-                  <p className="text-slate-700 leading-relaxed [text-wrap:pretty]">
-                    Reine Informationsübergabe lässt schwerkranke Menschen und Angehörige oft orientierungslos zurück.
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Tab 3: Angehörigen-Überlastung */}
-          {activeDebriefTab === 'caregiver' && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="p-4 bg-amber-50/70 border border-amber-200 rounded-xl space-y-2">
-                <h4 className="text-xs sm:text-sm font-bold text-amber-950 flex items-center gap-2">
-                  <Users className="w-4 h-4 text-amber-700" />
-                  <span>Caregiver Burden: Wer pflegt die Pflegenden?</span>
-                </h4>
-                <p className="text-xs text-amber-900 leading-relaxed [text-wrap:pretty]">
-                  Heikes Zusammenbruch bei hohem Fieber und der unerbittliche 4-Stunden-Katheter-Rhythmus zeigen die Schattenseiten häuslicher Pflege.
-                </p>
-              </div>
-
-              <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs space-y-2">
-                <strong className="text-[#264653] font-bold block">
-                  Pflegerische Handlungsempfehlungen für Angehörige:
-                </strong>
-                <ul className="space-y-1.5 text-slate-700 list-disc list-inside">
-                  <li>Frühzeitige Einbindung von Verhinderungs- und Kurzzeitpflege ohne Schuldgefühle.</li>
-                  <li>Inanspruchnahme ambulanter Pflegedienste für nächtliche Prozeduren (z. B. ISK oder Absaugen).</li>
-                  <li>Regelmäßige Beratungseinsätze (§ 37.3 SGB XI) als partnerschaftliche Entlastungsgespräche nutzen.</li>
-                </ul>
-              </div>
-            </div>
-          )}
-
-          {/* Tab 4: Mein Pflege-Ethik-Manifest */}
-          {activeDebriefTab === 'manifesto' && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="p-4 bg-gradient-to-r from-amber-50 to-emerald-50 border border-amber-300 rounded-xl space-y-1.5">
+        {stepProgress < 3 ? (
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 text-center space-y-2 card-soft-shadow">
+            <Lock className="w-6 h-6 text-slate-400 mx-auto" />
+            <h4 className="text-xs font-bold text-[#264653]">Schritt 3 noch gesperrt</h4>
+            <p className="text-[11px] text-[#2B2D42]/70 [text-wrap:pretty]">
+              Schließen Sie Schritt 2 oben ab, um Ihre 3 Kern-Erkenntnisse festzuhalten und das Abschlusszertifikat freizuschalten.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="bg-white border-2 border-amber-400/50 rounded-2xl p-5 sm:p-6 card-soft-shadow space-y-5">
+              <div className="p-4 bg-gradient-to-r from-amber-50 to-emerald-50 border border-amber-300 rounded-xl space-y-2">
                 <h4 className="text-xs sm:text-sm font-bold text-[#264653] flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                  <span>Ihr persönliches Pflegerisches Ethik-Manifest</span>
+                  <Lightbulb className="w-4 h-4 text-amber-600" />
+                  <span>Eigene Synthese: Formulieren Sie Ihre 3 wichtigsten persönlichen Erkenntnisse</span>
                 </h4>
                 <p className="text-xs text-[#2B2D42] leading-relaxed [text-wrap:pretty]">
-                  Halten Sie hier Ihre 3 persönlichen Grundsätze für Ihre berufliche Pflegepraxis fest. Diese Leitsätze fließen in Ihr Abschlusszertifikat ein:
+                  Was haben Sie aus dem Fall Stefan &amp; Heike, den Simulationen und den theoretischen Modellen für Ihre Haltung und Handlungskompetenz gelernt?
                 </p>
               </div>
 
-              <div className="space-y-3 text-xs">
-                <div>
-                  <label className="font-bold text-[#264653] block mb-1">
-                    1. Grundsatz zur Patientenautonomie:
+              <div className="space-y-4 text-xs">
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <label className="font-bold text-[#264653] flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-[#264653] text-white flex items-center justify-center font-mono text-[10px]">1</span>
+                    <span>Erkenntnis 1 (zur Patientenautonomie &amp; Willensbildung):</span>
                   </label>
-                  <input
-                    type="text"
-                    value={manifesto.principle1}
-                    onChange={(e) => setManifesto({ ...manifesto, principle1: e.target.value })}
-                    className="w-full bg-[#F4F7F8] border border-slate-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-[#264653] focus:bg-white"
+                  <textarea
+                    rows={2}
+                    value={topInsights.insight1}
+                    onChange={(e) => setTopInsights({ ...topInsights, insight1: e.target.value })}
+                    className="w-full bg-white border border-slate-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-[#264653] resize-y leading-relaxed"
                   />
                 </div>
 
-                <div>
-                  <label className="font-bold text-[#264653] block mb-1">
-                    2. Grundsatz zur Partnerschaft mit Angehörigen:
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <label className="font-bold text-[#264653] flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-[#264653] text-white flex items-center justify-center font-mono text-[10px]">2</span>
+                    <span>Erkenntnis 2 (zur Zusammenarbeit mit Angehörigen &amp; Überlastungsschutz):</span>
                   </label>
-                  <input
-                    type="text"
-                    value={manifesto.principle2}
-                    onChange={(e) => setManifesto({ ...manifesto, principle2: e.target.value })}
-                    className="w-full bg-[#F4F7F8] border border-slate-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-[#264653] focus:bg-white"
+                  <textarea
+                    rows={2}
+                    value={topInsights.insight2}
+                    onChange={(e) => setTopInsights({ ...topInsights, insight2: e.target.value })}
+                    className="w-full bg-white border border-slate-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-[#264653] resize-y leading-relaxed"
                   />
                 </div>
 
-                <div>
-                  <label className="font-bold text-[#264653] block mb-1">
-                    3. Mein PEF-Leitmotiv im Pflegealltag:
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <label className="font-bold text-[#264653] flex items-center gap-2">
+                    <span className="w-5 h-5 rounded-full bg-[#264653] text-white flex items-center justify-center font-mono text-[10px]">3</span>
+                    <span>Erkenntnis 3 (zur Rolle &amp; Verantwortung der Pflegekraft):</span>
                   </label>
-                  <input
-                    type="text"
-                    value={manifesto.principle3}
-                    onChange={(e) => setManifesto({ ...manifesto, principle3: e.target.value })}
-                    className="w-full bg-[#F4F7F8] border border-slate-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-[#264653] focus:bg-white"
+                  <textarea
+                    rows={2}
+                    value={topInsights.insight3}
+                    onChange={(e) => setTopInsights({ ...topInsights, insight3: e.target.value })}
+                    className="w-full bg-white border border-slate-300 rounded-xl p-3 text-xs text-[#2B2D42] focus:outline-none focus:border-[#264653] resize-y leading-relaxed"
                   />
                 </div>
+              </div>
+            </div>
 
-                <div className="flex justify-end pt-2">
+            {/* Gamification Radar & Curriculum-Erfolg */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="bg-white border border-slate-200 rounded-2xl p-4.5 card-soft-shadow space-y-2 text-center">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <div className="text-lg font-bold text-[#264653]">7 / 7</div>
+                <div className="text-[11px] text-[#2B2D42]/70 font-medium">Doppelstunden abgeschlossen</div>
+              </div>
+
+              <div className="bg-white border border-slate-200 rounded-2xl p-4.5 card-soft-shadow space-y-2 text-center">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
+                  <Trophy className="w-5 h-5" />
+                </div>
+                <div className="text-lg font-bold text-[#264653]">{unlockedBadgesCount} / {badges.length}</div>
+                <div className="text-[11px] text-[#2B2D42]/70 font-medium">Badges &amp; Trophäen freigeschaltet</div>
+              </div>
+
+              <div className="bg-white border border-slate-200 rounded-2xl p-4.5 card-soft-shadow space-y-2 text-center">
+                <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center mx-auto">
+                  <Scale className="w-5 h-5" />
+                </div>
+                <div className="text-lg font-bold text-[#264653]">100% PEF</div>
+                <div className="text-[11px] text-[#2B2D42]/70 font-medium">Partizipations-Kompetenz</div>
+              </div>
+
+              <div className="bg-white border border-slate-200 rounded-2xl p-4.5 card-soft-shadow space-y-2 text-center">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center mx-auto">
+                  <Award className="w-5 h-5" />
+                </div>
+                <div className="text-lg font-bold text-[#264653]">Zertifiziert</div>
+                <div className="text-[11px] text-[#2B2D42]/70 font-medium">Abschluss-Zertifikat bereit</div>
+              </div>
+            </div>
+
+            {/* Feierlicher Abschluss & Zertifikat-Aufruf */}
+            <div className="bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white rounded-2xl p-6 sm:p-7 shadow-xl border border-[#264653] relative overflow-hidden space-y-5">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-amber-400" />
+                    <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
+                      Herzlichen Glückwunsch!
+                    </span>
+                  </div>
+                  <h3 className="text-base sm:text-lg font-bold text-white">
+                    Sie haben die curriculare Unterrichtsreihe erfolgreich gemeistert!
+                  </h3>
+                  <p className="text-xs text-slate-300 [text-wrap:pretty]">
+                    Öffnen Sie Ihr offizielles Zertifikat zur Anzeige und zum Druck oder vollenden Sie das Training.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 shrink-0">
                   <button
-                    onClick={handleSaveManifesto}
-                    className="px-5 py-2.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-sm"
+                    onClick={() => {
+                      sounds.playBadgeUnlock();
+                      setActiveModal('certificate');
+                    }}
+                    className="px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-amber-500/30 transition-all transform hover:scale-[1.02] cursor-pointer"
                   >
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>{manifestoSaved ? 'Manifest gespeichert' : 'Manifest speichern & im Zertifikat verankern'}</span>
+                    <Printer className="w-4 h-4" />
+                    <span>Abschluss-Zertifikat anzeigen &amp; drucken</span>
+                  </button>
+
+                  <button
+                    onClick={onFinishModule}
+                    className="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer border border-white/20"
+                  >
+                    <Star className="w-4 h-4 text-amber-400 fill-current" />
+                    <span>Training vollenden &amp; Zurück zur Map</span>
                   </button>
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* [BLOCK 3] GAMIFICATION-RADAR & CURRICULUM-GESAMTERFOLG                    */}
-      {/* ========================================================================= */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
-            <span className="w-6 h-6 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center font-mono text-[11px] shadow-xs font-bold">
-              3
-            </span>
-            <span>[Block 3] Gamification-Erfolg &amp; Kompetenz-Radar</span>
           </div>
-          <span className="text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-0.5 rounded-full">
-            Alle 7 Doppelstunden absolviert
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white border border-slate-200 rounded-2xl p-4.5 card-soft-shadow space-y-2 text-center">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto">
-              <CheckCircle2 className="w-5 h-5" />
-            </div>
-            <div className="text-lg font-bold text-[#264653]">7 / 7</div>
-            <div className="text-[11px] text-[#2B2D42]/70 font-medium">Doppelstunden abgeschlossen</div>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-4.5 card-soft-shadow space-y-2 text-center">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center mx-auto">
-              <Trophy className="w-5 h-5" />
-            </div>
-            <div className="text-lg font-bold text-[#264653]">{unlockedBadgesCount} / {badges.length}</div>
-            <div className="text-[11px] text-[#2B2D42]/70 font-medium">Badges &amp; Trophäen freigeschaltet</div>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-4.5 card-soft-shadow space-y-2 text-center">
-            <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center mx-auto">
-              <Scale className="w-5 h-5" />
-            </div>
-            <div className="text-lg font-bold text-[#264653]">100% PEF</div>
-            <div className="text-[11px] text-[#2B2D42]/70 font-medium">Partizipations-Kompetenz</div>
-          </div>
-
-          <div className="bg-white border border-slate-200 rounded-2xl p-4.5 card-soft-shadow space-y-2 text-center">
-            <div className="w-10 h-10 rounded-xl bg-purple-100 text-purple-800 flex items-center justify-center mx-auto">
-              <Award className="w-5 h-5" />
-            </div>
-            <div className="text-lg font-bold text-[#264653]">Zertifiziert</div>
-            <div className="text-[11px] text-[#2B2D42]/70 font-medium">Abschluss-Zertifikat bereit</div>
-          </div>
-        </div>
-      </section>
-
-      {/* ========================================================================= */}
-      {/* [BLOCK 4] FEIERLICHER ABSCHLUSS & ZERTIFIKAT-AUFRUF                       */}
-      {/* ========================================================================= */}
-      <section className="bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white rounded-2xl p-6 sm:p-7 shadow-xl border border-[#264653] relative overflow-hidden space-y-5">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-amber-400" />
-              <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                Herzlichen Glückwunsch!
-              </span>
-            </div>
-            <h3 className="text-base sm:text-lg font-bold text-white">
-              Sie haben die curriculare Unterrichtsreihe erfolgreich gemeistert!
-            </h3>
-            <p className="text-xs text-slate-300 [text-wrap:pretty]">
-              Öffnen Sie Ihr offizielles Zertifikat zur Anzeige und zum Druck oder kehren Sie zur Übersicht zurück.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <button
-              onClick={() => {
-                sounds.playBadgeUnlock();
-                setActiveModal('certificate');
-              }}
-              className="px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-lg shadow-amber-500/30 transition-all transform hover:scale-[1.02] cursor-pointer"
-            >
-              <Printer className="w-4 h-4" />
-              <span>Abschluss-Zertifikat anzeigen &amp; drucken</span>
-            </button>
-
-            <button
-              onClick={onFinishModule}
-              className="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-2 transition-colors cursor-pointer border border-white/20"
-            >
-              <Check className="w-4 h-4 text-emerald-400" />
-              <span>Zurück zur Gaming-Roadmap</span>
-            </button>
-          </div>
-        </div>
+        )}
       </section>
     </div>
   );

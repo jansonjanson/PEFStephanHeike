@@ -12,11 +12,11 @@ export const CHARACTER_AVATARS: { [key: string]: CharacterAvatar } = {
     name: 'Heike',
     role: 'Lebenspartnerin & pflegende Angehörige',
     imageUrl: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Heike%20Avatar.jpg?raw=true',
-    bio: 'Kämpft mit unendlicher Liebe und Loyalität um Stephans Lebensqualität und Würde, steht jedoch vor immensen existenziellen Entscheidungen.',
+    bio: 'Kämpft mit unendlicher Liebe und Loyalität um Stefans Lebensqualität und Würde, steht jedoch vor immensen existenziellen Entscheidungen.',
   },
   stephan: {
     id: 'stephan',
-    name: 'Stephan',
+    name: 'Stefan',
     role: 'Patient / Lebenspartner',
     imageUrl: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Stephan%20Rollstuhl%20Avatar.jpg?raw=true',
     bio: 'Vor dem Unfall passionierter Motorsportler; nach schwerem Schädel-Hirn-Trauma nonverbal, jedoch mit intaktem Verstand, Wahrnehmung und Lebenswillen.',
@@ -44,7 +44,7 @@ export const CHARACTER_AVATARS: { [key: string]: CharacterAvatar } = {
   },
   paar: {
     id: 'paar',
-    name: 'Heike & Stephan',
+    name: 'Heike & Stefan',
     role: 'Lebenspartnerschaft vor & nach dem Schicksalsschlag',
     imageUrl: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Heike%20Stephan%20Paar.jpg?raw=true',
     bio: 'Das Paar vor und nach dem schweren Umbruch – Symbol für Liebe, Resilienz und partnerschaftliche Entscheidungsfindung auf Augenhöhe.',

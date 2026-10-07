@@ -106,6 +106,10 @@ class SoundManager {
     this.playBadgeUnlock();
   }
 
+  public playUnlockLevel() {
+    this.playBadgeUnlock();
+  }
+
   public playError() {
     if (!this.enabled) return;
     try {

@@ -79,7 +79,7 @@ export const CertificateModal: React.FC = () => {
               Partnerschaftliche Entscheidungsfindung
             </h1>
             <p className="text-xs text-[#2B2D42]/70 mt-1">
-              Generalistische Pflegeausbildung • Fallstudie & Simulation „Stephan & Heike“
+              Generalistische Pflegeausbildung • Fallstudie & Simulation „Stefan & Heike“
             </p>
           </div>
 

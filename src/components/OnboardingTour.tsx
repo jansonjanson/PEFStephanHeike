@@ -29,7 +29,7 @@ interface TourStep {
 const TOUR_STEPS: TourStep[] = [
   {
     title: '1. Die Navigationsleiste & Lernwerkzeuge',
-    description: 'Auf der linken Leiste finden Sie die Navigation: Stundenplan (7 Doppelstunden), Mediathek mit allen Filmausschnitten & CNE Fachartikeln, Auszeichnungen, den Dozenten-Regieplan und den Admin-Bereich (PW: Janson).',
+    description: 'Auf der linken Leiste finden Sie die Navigation: Stundenplan (7 Doppelstunden), Mediathek mit allen Filmausschnitten & CNE Fachartikeln, Auszeichnungen, den Dozenten-Regieplan und den geschützten Admin-Bereich.',
     icon: Compass,
     targetId: 'tour-sidebar',
     actionRequired: 'close_dossier',
@@ -47,7 +47,7 @@ const TOUR_STEPS: TourStep[] = [
   },
   {
     title: '3. Nahtloser Gameloop-Ablauf (Workspace)',
-    description: 'Beim Klick auf eine Station öffnet sich die Einheit. Die Inhalte werden schrittweise von oben nach unten freigeschaltet: 1. Video – 2. Dokumentation – 3. Simulation – 4. Auswertung & Musterlösung.',
+    description: 'Beim Klick auf eine Station öffnet sich die Einheit. Die Inhalte werden schrittweise von oben nach unten freigeschaltet: 1. Video – 2. Dokumentation – 3. Simulation – 4. Auswertung & Besprechung.',
     icon: FileSpreadsheet,
     targetId: 'tour-dossier',
     actionRequired: 'open_dossier',
@@ -64,20 +64,20 @@ const TOUR_STEPS: TourStep[] = [
     tip: 'Erfassen Sie in den 13 ABEDL-Kategorien wichtige Beobachtungen, Einschränkungen und Ressourcen.',
   },
   {
-    title: '5. Flaschenhals-Simulation & Entscheidung',
-    description: 'In der Simulation treffen Sie als Pflegefachkraft existenzielle Entscheidungen. Wählen Sie zwischen dem paternalistischen Modell, der Partizipativen Entscheidungsfindung (PEF) und dem Informed Consent. Jede Wahl schaltet ein Passwort-Fragment frei!',
+    title: '5. Adventure-Simulation & Entscheidung',
+    description: 'In der Simulation treffen Sie als Pflegefachkraft existenzielle Entscheidungen. Wählen Sie zwischen verschiedenen pflegeethischen Haltungen und reflektieren Sie die Konsequenzen für Stefan und seine Familie.',
     icon: Gamepad2,
     actionRequired: 'open_dossier',
     preferredSide: 'left',
-    tip: 'Mit dem freigespielten Passwort entsperren Sie im Anschluss die offizielle Musterlösung.',
+    tip: 'Die getroffenen Entscheidungen spiegeln sich in Ihrem persönlichen Reflexionsprofil wider.',
   },
   {
-    title: '6. Auswertung, Admin-Zugang & Zertifikat',
-    description: 'Am Ende jeder Szene erfahren Sie, zu wie viel Prozent Sie partizipativ oder paternalistisch entschieden haben. Mit dem Admin-Passwort „Janson“ können Sie bei Bedarf alle Inhalte sofort freischalten.',
+    title: '6. Auswertung & Zertifikat',
+    description: 'Am Ende jeder Szene erfahren Sie, zu wie viel Prozent Sie partizipativ oder paternalistisch entschieden haben. Dozierende können bei Bedarf im Admin-Bereich alle Inhalte zentral freischalten.',
     icon: ShieldCheck,
     actionRequired: 'close_dossier',
     preferredSide: 'bottom',
-    tip: 'Viel Erfolg beim Lernen und Erproben der partizipativen Pflegeethik im Fall Stephan & Heike!',
+    tip: 'Viel Erfolg beim Lernen und Erproben der partizipativen Pflegeethik im Fall Stefan & Heike!',
   },
 ];
 
@@ -142,6 +142,7 @@ export const OnboardingTour: React.FC = () => {
     setStepIndex(0);
     unlockBadge('badge_onboarding');
     if (typeof window !== 'undefined') {
+      localStorage.setItem('pflege_app_stephan_heike_v2_tour_completed', 'true');
       localStorage.setItem('pflege_app_stephan_heike_v2_seen_tour', 'true');
     }
 

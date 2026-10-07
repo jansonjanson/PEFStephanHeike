@@ -4,7 +4,7 @@ export const INITIAL_BADGES: AchievementBadge[] = [
   {
     id: 'badge_onboarding',
     title: 'Startlinie überquert',
-    description: 'Onboarding abgeschlossen und den Fall Stephan & Heike kennengelernt.',
+    description: 'Onboarding abgeschlossen und den Fall Stefan & Heike kennengelernt.',
     icon: 'Flag',
     category: 'progress',
   },

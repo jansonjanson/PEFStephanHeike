@@ -1,8 +1,53 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { ZusatzdocData, UserModuleState, AchievementBadge } from '../types';
+import { ZusatzdocData, UserModuleState, AchievementBadge, PasswordBookEntry } from '../types';
 import { MODULES_DATA } from '../data/curriculumData';
 import { INITIAL_BADGES } from '../data/badgesData';
 import { sounds } from '../utils/soundEffects';
+
+export const LEVEL_PASSWORDS: { [targetModuleId: number]: { password: string; title: string; sourceModuleId: number; description: string } } = {
+  1: {
+    password: 'START',
+    title: 'DS 1: Präsenzauftakt & Emotionaler Schock',
+    sourceModuleId: 1,
+    description: 'Startpunkt der Lehrveranstaltung – standardmäßig freigeschaltet.',
+  },
+  2: {
+    password: 'THEORIE',
+    title: 'DS 2: Modelle der Entscheidung',
+    sourceModuleId: 1,
+    description: 'Freigespielt durch den erfolgreichen Abschluss von Doppelstunde 1.',
+  },
+  3: {
+    password: 'PARTIZIPATION',
+    title: 'DS 3: Ein Unfall mit schlimmen Folgen',
+    sourceModuleId: 2,
+    description: 'Freigespielt durch das Bestehen des Theorie-Wissenschecks in Doppelstunde 2.',
+  },
+  4: {
+    password: 'AUTONOMIE',
+    title: 'DS 4: Spezialklinik und das veränderte Zuhause',
+    sourceModuleId: 3,
+    description: 'Freigespielt durch das erfolgreiche Durchspielen von Fall-Adventure 1 in Doppelstunde 3.',
+  },
+  5: {
+    password: 'PARTNERSCHAFT',
+    title: 'DS 5: Komplikationen auf dem Weg der Besserung',
+    sourceModuleId: 4,
+    description: 'Freigespielt durch das erfolgreiche Durchspielen von Fall-Adventure 2 in Doppelstunde 4.',
+  },
+  6: {
+    password: 'KROHWINKEL',
+    title: 'DS 6: Umbauarbeiten & Katheter-Dilemma',
+    sourceModuleId: 5,
+    description: 'Freigespielt durch das erfolgreiche Durchspielen von Fall-Adventure 3 in Doppelstunde 5.',
+  },
+  7: {
+    password: 'FINALE',
+    title: 'DS 7: Finale Synthese & Auswertung',
+    sourceModuleId: 6,
+    description: 'Freigespielt durch die Pflegedokumentation und Fall-Adventure 4 in Doppelstunde 6.',
+  },
+};
 
 interface AppContextType {
   activeModuleId: number | null;
@@ -13,8 +58,8 @@ interface AppContextType {
   setActiveDrawerTab: (tab: 'akte' | 'simulation' | 'auswertung' | 'didaktik') => void;
   
   // Navigation & Modals
-  activeModal: 'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm';
-  setActiveModal: (modal: 'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm') => void;
+  activeModal: 'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm' | 'passwordBook';
+  setActiveModal: (modal: 'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm' | 'passwordBook') => void;
   isOnboardingActive: boolean;
   setIsOnboardingActive: (active: boolean) => void;
   
@@ -46,6 +91,10 @@ interface AppContextType {
   unlockModuleWithPassword: (moduleId: number, password: string) => boolean;
   markModuleCompleted: (moduleId: number) => void;
   
+  // Password Book
+  earnedPasswords: { [targetModuleId: number]: PasswordBookEntry };
+  awardPasswordForNextModule: (currentModuleId: number) => void;
+
   // Gamification & Badges
   badges: AchievementBadge[];
   unlockBadge: (badgeId: string) => void;
@@ -85,14 +134,33 @@ const defaultEmptyState = (): { [moduleId: number]: UserModuleState } => {
   return map;
 };
 
+const defaultInitialPasswords = (): { [targetModuleId: number]: PasswordBookEntry } => {
+  return {
+    1: {
+      moduleId: 1,
+      password: 'START',
+      unlockedAt: new Date().toISOString(),
+      sourceModuleId: 1,
+      title: 'DS 1: Präsenzauftakt',
+      description: 'Startpunkt der Lehrveranstaltung – dauerhaft verfügbar.',
+    },
+  };
+};
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [activeDrawerTab, setActiveDrawerTab] = useState<'akte' | 'simulation' | 'auswertung' | 'didaktik'>('akte');
-  const [activeModal, setActiveModal] = useState<'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm'>('none');
-  const [isOnboardingActive, setIsOnboardingActive] = useState<boolean>(true); // Start tutorial automatically on first launch
+  const [activeModal, setActiveModal] = useState<'none' | 'welcome' | 'namePrompt' | 'timetable' | 'media' | 'badges' | 'teacherGuide' | 'certificate' | 'admin' | 'resetConfirm' | 'passwordBook'>('none');
+  const [isOnboardingActive, setIsOnboardingActive] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const tourCompleted = localStorage.getItem(`${STORAGE_KEY}_tour_completed`);
+      return !tourCompleted;
+    }
+    return false;
+  });
   const [hasSeenIntro, setHasSeenIntro] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return !!localStorage.getItem(`${STORAGE_KEY}_seen_intro`);
@@ -110,12 +178,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
 
+  // Password Book State
+  const [earnedPasswords, setEarnedPasswords] = useState<{ [targetModuleId: number]: PasswordBookEntry }>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const saved = localStorage.getItem(`${STORAGE_KEY}_earned_passwords`);
+        if (saved) {
+          return { ...defaultInitialPasswords(), ...JSON.parse(saved) };
+        }
+      } catch {}
+    }
+    return defaultInitialPasswords();
+  });
+
+  // Save earned passwords to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem(`${STORAGE_KEY}_earned_passwords`, JSON.stringify(earnedPasswords));
+    } catch {}
+  }, [earnedPasswords]);
+
   // Success Banner Toast handler
   const showSuccessBanner = (message: string) => {
     setSuccessBanner(message);
     setTimeout(() => {
       setSuccessBanner((curr) => (curr === message ? null : curr));
-    }, 4500);
+    }, 5000);
   };
 
   // Save student name to local storage
@@ -184,6 +272,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     );
   };
 
+  // Award password for next module and add to password book
+  const awardPasswordForNextModule = (currentModuleId: number) => {
+    const nextModId = currentModuleId + 1;
+    if (nextModId > 7) return;
+
+    const pwdDef = LEVEL_PASSWORDS[nextModId];
+    if (!pwdDef) return;
+
+    sounds.playUnlockLevel();
+    setEarnedPasswords((prev) => {
+      const alreadyHave = prev[nextModId];
+      if (alreadyHave) return prev;
+
+      return {
+        ...prev,
+        [nextModId]: {
+          moduleId: nextModId,
+          password: pwdDef.password,
+          unlockedAt: new Date().toISOString(),
+          sourceModuleId: currentModuleId,
+          title: pwdDef.title,
+          description: pwdDef.description,
+        },
+      };
+    });
+
+    showSuccessBanner(`🔑 Neues Level-Passwort freigespielt: „${pwdDef.password}“ für Doppelstunde ${nextModId}! Im Passwortbuch gespeichert.`);
+    unlockBadge('badge_code_breaker');
+  };
+
   const openModule = (moduleId: number) => {
     sounds.playClick();
     setActiveModuleId(moduleId);
@@ -231,18 +349,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  const updateAbedl = (moduleId: number, abedlId: number, field: 'info' | 'p' | 'e' | 's' | 'r', val: string) => {
+  const updateAbedl = (
+    moduleId: number,
+    abedlId: number,
+    field: 'info' | 'p' | 'e' | 's' | 'r',
+    val: string
+  ) => {
     setModuleStates((prev) => {
       const current = prev[moduleId] || defaultEmptyState()[moduleId];
-      const currentAbedl = current.abedl || {};
-      const currentItem = currentAbedl[abedlId] || { info: '', pesr: { p: '', e: '', s: '', r: '' } };
+      const currentAbedl = current.abedl[abedlId] || {
+        info: '',
+        pesr: { p: '', e: '', s: '', r: '' },
+      };
 
-      let updatedItem = { ...currentItem };
+      let newAbedlObj = { ...currentAbedl };
       if (field === 'info') {
-        updatedItem.info = val;
+        newAbedlObj.info = val;
       } else {
-        updatedItem.pesr = {
-          ...updatedItem.pesr,
+        newAbedlObj.pesr = {
+          ...newAbedlObj.pesr,
           [field]: val,
         };
       }
@@ -252,8 +377,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         [moduleId]: {
           ...current,
           abedl: {
-            ...currentAbedl,
-            [abedlId]: updatedItem,
+            ...current.abedl,
+            [abedlId]: newAbedlObj,
           },
         },
       };
@@ -266,30 +391,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     optionId: string,
     stats: { pefScore: number; paternalisticScore: number; informedScore: number }
   ) => {
-    sounds.playSelectOption();
     setModuleStates((prev) => {
       const current = prev[moduleId] || defaultEmptyState()[moduleId];
-      const nextStats = {
-        pef: current.simulationStats.pef + stats.pefScore,
-        paternalistic: current.simulationStats.paternalistic + stats.paternalisticScore,
-        informed: current.simulationStats.informed + stats.informedScore,
-      };
+      const currentStats = current.simulationStats || { pef: 0, paternalistic: 0, informed: 0 };
 
       return {
         ...prev,
         [moduleId]: {
           ...current,
-          stepProgress: Math.max(current.stepProgress || 1, 4),
+          stepProgress: Math.max(current.stepProgress || 1, 3),
           simulationAnswers: {
             ...current.simulationAnswers,
             [stepId]: optionId,
           },
-          simulationStats: nextStats,
+          simulationStats: {
+            pef: currentStats.pef + stats.pefScore,
+            paternalistic: currentStats.paternalistic + stats.paternalisticScore,
+            informed: currentStats.informed + stats.informedScore,
+          },
         },
       };
     });
 
-    unlockBadge('badge_first_choice');
+    if (stats.pefScore > 0) {
+      unlockBadge('badge_empathie_profi');
+    }
   };
 
   const saveQuizScore = (moduleId: number, score: number, total: number) => {
@@ -304,21 +430,43 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         },
       };
     });
+
+    // When DS 2 Quiz is completed, award DS 3 password (PARTIZIPATION)
+    if (moduleId === 2) {
+      awardPasswordForNextModule(2);
+    }
   };
 
   const unlockModuleWithPassword = (moduleId: number, password: string): boolean => {
     const targetModule = MODULES_DATA.find((m) => m.id === moduleId);
     if (!targetModule) return false;
 
-    const cleanInput = password.trim().toUpperCase();
-    const expected = (targetModule.requiredPassword || '').trim().toUpperCase();
-    const fragmentExpected = (targetModule.simulation?.passwordFragment || '').trim().toUpperCase();
+    const cleanInput = password.trim().toUpperCase().replace(/[^A-ZÄÖÜß]/g, '');
+    const expected = (targetModule.requiredPassword || '').trim().toUpperCase().replace(/[^A-ZÄÖÜß]/g, '');
+    const fragmentExpected = (targetModule.simulation?.passwordFragment || '').trim().toUpperCase().replace(/[^A-ZÄÖÜß]/g, '');
 
     const isMatch = cleanInput === expected || cleanInput === fragmentExpected;
 
     if (isMatch) {
       sounds.playSuccess();
-      showSuccessBanner(`Musterlösung für Doppelstunde ${moduleId} erfolgreich entsperrt!`);
+      showSuccessBanner(`Doppelstunde ${moduleId} erfolgreich entsperrt!`);
+      
+      // Also register in password book
+      const pwdDef = LEVEL_PASSWORDS[moduleId];
+      if (pwdDef) {
+        setEarnedPasswords((prev) => ({
+          ...prev,
+          [moduleId]: {
+            moduleId,
+            password: pwdDef.password,
+            unlockedAt: new Date().toISOString(),
+            sourceModuleId: pwdDef.sourceModuleId,
+            title: pwdDef.title,
+            description: pwdDef.description,
+          },
+        }));
+      }
+
       setModuleStates((prev) => {
         const current = prev[moduleId] || defaultEmptyState()[moduleId];
         return {
@@ -341,31 +489,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     sounds.playSuccess();
     const nextModId = moduleId + 1;
 
+    // Award the password for the next level into the password book
+    awardPasswordForNextModule(moduleId);
+
     setModuleStates((prev) => {
       const current = prev[moduleId] || defaultEmptyState()[moduleId];
-      const nextModCurrent = prev[nextModId] || defaultEmptyState()[nextModId];
 
-      const updated = {
+      return {
         ...prev,
         [moduleId]: {
           ...current,
           completed: true,
         },
       };
-
-      // Auto-unlock next module
-      if (nextModId <= 7 && nextModCurrent) {
-        updated[nextModId] = {
-          ...nextModCurrent,
-          unlockedWithPassword: true,
-        };
-      }
-
-      return updated;
     });
 
     if (nextModId <= 7) {
-      showSuccessBanner(`Doppelstunde ${moduleId} abgeschlossen! Doppelstunde ${nextModId} ist jetzt freigeschaltet.`);
+      const pwdDef = LEVEL_PASSWORDS[nextModId];
+      showSuccessBanner(`Doppelstunde ${moduleId} abgeschlossen! Passwort für DS ${nextModId}: „${pwdDef?.password || ''}“ (im Passwortbuch gespeichert).`);
     } else {
       showSuccessBanner(`Herzlichen Glückwunsch! Alle 7 Doppelstunden wurden erfolgreich abgeschlossen.`);
     }
@@ -378,7 +519,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const clean = password.trim().toLowerCase();
     if (clean === 'janson') {
       sounds.playSuccess();
-      showSuccessBanner(`Admin-Modus aktiviert: Alle 7 Doppelstunden & Dozenten-Regiepläne freigeschaltet!`);
+      showSuccessBanner(`Admin-Modus aktiviert: Alle 7 Doppelstunden & Passwörter freigeschaltet!`);
 
       // Unlock all modules
       setModuleStates((prev) => {
@@ -394,6 +535,21 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         });
         return next;
       });
+
+      // Populate all passwords in password book
+      const allPwds: { [modId: number]: PasswordBookEntry } = {};
+      Object.entries(LEVEL_PASSWORDS).forEach(([modIdStr, val]) => {
+        const mId = Number(modIdStr);
+        allPwds[mId] = {
+          moduleId: mId,
+          password: val.password,
+          unlockedAt: new Date().toISOString(),
+          sourceModuleId: val.sourceModuleId,
+          title: val.title,
+          description: val.description,
+        };
+      });
+      setEarnedPasswords(allPwds);
 
       // Unlock all badges
       setBadges((prev) =>
@@ -416,6 +572,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const fresh = defaultEmptyState();
     setModuleStates(fresh);
     setBadges(INITIAL_BADGES);
+    setEarnedPasswords(defaultInitialPasswords());
     setIsAdminMode(false);
     setActiveModuleId(null);
     setIsDrawerOpen(false);
@@ -426,6 +583,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (typeof window !== 'undefined') {
       localStorage.removeItem(STORAGE_KEY);
       localStorage.removeItem(`${STORAGE_KEY}_badges`);
+      localStorage.removeItem(`${STORAGE_KEY}_earned_passwords`);
       localStorage.removeItem(`${STORAGE_KEY}_seen_tour`);
       localStorage.removeItem(`${STORAGE_KEY}_seen_intro`);
       localStorage.removeItem(`${STORAGE_KEY}_student_name`);
@@ -482,6 +640,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         saveQuizScore,
         unlockModuleWithPassword,
         markModuleCompleted,
+        earnedPasswords,
+        awardPasswordForNextModule,
         badges,
         unlockBadge,
         soundEnabled,

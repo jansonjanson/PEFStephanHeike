@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { useApp } from '../context/AppContext';
+import { useApp, LEVEL_PASSWORDS } from '../context/AppContext';
 import { MODULES_DATA } from '../data/curriculumData';
 import { ZusatzdocForm } from './ZusatzdocForm';
 import { AbedlForm } from './AbedlForm';
@@ -33,7 +33,11 @@ import {
   ChevronDown,
   ChevronUp,
   ChevronRight,
-  Star
+  Star,
+  HeartHandshake,
+  Copy,
+  Check,
+  BookMarked
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -55,6 +59,7 @@ export const DossierDrawer: React.FC = () => {
   const [showTeacherGuide, setShowTeacherGuide] = useState<boolean>(false);
   const [passwordInput, setPasswordInput] = useState<string>('');
   const [passwordError, setPasswordError] = useState<boolean>(false);
+  const [copiedRewardPassword, setCopiedRewardPassword] = useState<boolean>(false);
 
   // Section references for smooth auto-scroll
   const step2Ref = useRef<HTMLDivElement>(null);
@@ -383,13 +388,13 @@ export const DossierDrawer: React.FC = () => {
                     />
                     <img
                       src={CHARACTER_AVATARS.stephan.imageUrl}
-                      alt="Stephan"
+                      alt="Stefan"
                       className="w-11 h-11 rounded-full object-cover border-2 border-[#E76F51] shadow-sm"
                     />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-[#264653]">Heike (42) &amp; Stephan (48)</span>
+                      <span className="text-xs font-bold text-[#264653]">Heike (42) &amp; Stefan (48)</span>
                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-[#2B2D42] font-medium border border-slate-200">
                         {currentModule.locationName}
                       </span>
@@ -401,6 +406,18 @@ export const DossierDrawer: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      sounds.playClick();
+                      setActiveModal('welcome');
+                    }}
+                    className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer transform hover:scale-[1.02]"
+                    title="Fall-Einführung, Zitat und alle Charaktere anzeigen"
+                  >
+                    <HeartHandshake className="w-4 h-4 text-[#E76F51]" />
+                    <span>Fall-Einführung &amp; Charaktere</span>
+                  </button>
+
                   <span className="text-[11px] px-3 py-1 rounded-full bg-slate-100 text-slate-700 font-mono flex items-center gap-1.5 border border-slate-200">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     Gameloop aktiv
@@ -427,7 +444,7 @@ export const DossierDrawer: React.FC = () => {
                     <span className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] shadow-xs ${stepProgress >= 3 ? 'bg-[#264653] text-white' : 'bg-slate-200 text-slate-500'}`}>
                       3
                     </span>
-                    <span>Schritt 3: Simulation (Flaschenhals-Entscheidung &amp; Dialog)</span>
+                    <span>Schritt 3: Simulation (Adventure-Entscheidung &amp; Dialog)</span>
                   </div>
 
                   {stepProgress > 3 ? (
@@ -470,7 +487,7 @@ export const DossierDrawer: React.FC = () => {
                         className="px-5 py-2.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
                       >
                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                        <span>Entscheidung abgeschlossen – Weiter zur Gameloop-Auswertung &amp; Musterlösung</span>
+                        <span>Entscheidung abgeschlossen – Weiter zur Gameloop-Auswertung &amp; Besprechung</span>
                         <ArrowDown className="w-4 h-4 text-[#E76F51]" />
                       </button>
                     </div>
@@ -479,14 +496,14 @@ export const DossierDrawer: React.FC = () => {
               </section>
 
               {/* ------------------------------------------------------------------- */}
-              {/* SCHRITT 4: AUSWERTUNG & MUSTERLÖSUNG                                 */}
+              {/* SCHRITT 4: AUSWERTUNG & GEMEINSAME LIVE-BESPRECHUNG IM PLENUM        */}
               {/* ------------------------------------------------------------------- */}
               <section ref={step4Ref} className="space-y-4 pt-4 border-t-2 border-dashed border-slate-200">
                 <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
                   <span className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[11px] ${stepProgress >= 4 ? 'bg-amber-500 text-white font-bold' : 'bg-slate-200 text-slate-500'}`}>
                     4
                   </span>
-                  <span>Schritt 4: Auswertung, Gameloop-Statistik &amp; Musterlösung</span>
+                  <span>Schritt 4: Auswertung, Gameloop-Statistik &amp; Live-Besprechung</span>
                 </div>
 
                 {stepProgress < 4 ? (
@@ -494,7 +511,7 @@ export const DossierDrawer: React.FC = () => {
                     <Lock className="w-6 h-6 text-slate-400 mx-auto" />
                     <h4 className="text-xs font-bold text-[#264653]">Auswertung noch gesperrt</h4>
                     <p className="text-[11px] text-[#2B2D42]/70 [text-wrap:pretty]">
-                      Schließen Sie die Simulation in Schritt 3 ab, um die Auswertung und Musterlösung freizuschalten.
+                      Schließen Sie die Simulation in Schritt 3 ab, um die Auswertung und gemeinsame Besprechung freizuschalten.
                     </p>
                   </div>
                 ) : (
@@ -530,92 +547,114 @@ export const DossierDrawer: React.FC = () => {
                       </div>
                     </div>
 
-                    {/* PASSWORD PROMPT OR UNLOCKED MUSTERLÖSUNG */}
-                    {!isUnlocked ? (
-                      <div className="bg-gradient-to-br from-[#264653] to-[#1E3640] text-white rounded-2xl p-6 sm:p-7 shadow-xl space-y-4 border border-[#264653]">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
-                            <KeyRound className="w-5 h-5" />
-                          </div>
-                          <div>
-                            <h4 className="text-sm sm:text-base font-bold text-white">
-                              Dozenten-Passwort eingeben zur Freischaltung der Musterlösung
-                            </h4>
-                            <p className="text-xs text-slate-300">
-                              Geben Sie das im Unterricht oder der Simulation genannte Passwort ein (z. B. {currentModule.simulation?.passwordFragment || 'KROHWINKEL-1'}).
-                            </p>
-                          </div>
+                    {/* LIVE-BESPRECHUNG IM PLENUM */}
+                    <div className="bg-gradient-to-br from-[#264653] to-[#1E3640] text-white rounded-2xl p-6 sm:p-7 shadow-xl space-y-4 border border-[#264653]">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
+                          <Users className="w-5 h-5" />
                         </div>
-
-                        <form onSubmit={handlePasswordSubmit} className="flex flex-col sm:flex-row gap-3 pt-2">
-                          <input
-                            type="text"
-                            value={passwordInput}
-                            onChange={(e) => {
-                              setPasswordInput(e.target.value);
-                              setPasswordError(false);
-                            }}
-                            placeholder="Passwort hier eingeben..."
-                            className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-amber-400 focus:bg-white/20 font-mono uppercase"
-                          />
-                          <button
-                            type="submit"
-                            className="px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md transition-colors"
-                          >
-                            <Unlock className="w-4 h-4" />
-                            <span>Musterlösung entsperren</span>
-                          </button>
-                        </form>
-
-                        {passwordError && (
-                          <p className="text-xs text-rose-300 font-medium">
-                            Das eingegebene Passwort ist nicht korrekt. Bitte überprüfen Sie Ihre Eingabe oder fragen Sie Ihre Lehrkraft.
+                        <div>
+                          <h4 className="text-sm sm:text-base font-bold text-white">
+                            Gemeinsame Auswertung &amp; Live-Besprechung im Plenum
+                          </h4>
+                          <p className="text-xs text-slate-300">
+                            Wir besprechen die Ergebnisse, Anamnese-Erfassungen und ethischen Entscheidungen nun gemeinsam live im Kurs.
                           </p>
-                        )}
+                        </div>
                       </div>
-                    ) : (
-                      <div className="space-y-6 animate-in fade-in duration-300">
-                        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-3 text-xs text-emerald-900 font-bold">
-                          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                          <span>Musterlösung erfolgreich entsperrt! Vergleichen Sie Ihre Anamnese-Einträge.</span>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                        <div className="p-3.5 bg-white/10 rounded-xl border border-white/15 text-xs space-y-1">
+                          <span className="font-bold text-amber-300 block">1. ABEDL-Beobachtungen:</span>
+                          <p className="text-slate-200 text-[11px] leading-relaxed">
+                            Welche physischen und psychosozialen Ressourcen wurden erfasst?
+                          </p>
                         </div>
-
-                        {/* Musterlösung Zusatzdoc */}
-                        <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow space-y-4">
-                          <h4 className="text-xs font-bold text-[#264653] uppercase tracking-wider border-b border-slate-100 pb-2">
-                            Musterlösung: Entscheidungsprotokoll
-                          </h4>
-
-                          <div className="space-y-3 text-xs">
-                            <div className="bg-[#F7F9FA] p-3.5 rounded-xl border border-slate-200">
-                              <span className="font-bold text-[#264653] block mb-1">Wer war zu sehen / zu hören?</span>
-                              <p className="text-[#2B2D42]">{currentModule.sampleSolution.zusatzdoc.who}</p>
-                            </div>
-                            <div className="bg-[#F7F9FA] p-3.5 rounded-xl border border-slate-200">
-                              <span className="font-bold text-[#264653] block mb-1">Was ist passiert?</span>
-                              <p className="text-[#2B2D42]">{currentModule.sampleSolution.zusatzdoc.whatHappened}</p>
-                            </div>
-                            <div className="bg-[#F7F9FA] p-3.5 rounded-xl border border-slate-200">
-                              <span className="font-bold text-[#264653] block mb-1">Entscheidungen &amp; Dilemmata</span>
-                              <p className="text-[#2B2D42]">{currentModule.sampleSolution.zusatzdoc.decisionsMade}</p>
-                            </div>
-                          </div>
+                        <div className="p-3.5 bg-white/10 rounded-xl border border-white/15 text-xs space-y-1">
+                          <span className="font-bold text-amber-300 block">2. Entscheidungsdilemma:</span>
+                          <p className="text-slate-200 text-[11px] leading-relaxed">
+                            Welche Weichenstellung war für Stefan &amp; Heike existenziell?
+                          </p>
                         </div>
+                        <div className="p-3.5 bg-white/10 rounded-xl border border-white/15 text-xs space-y-1">
+                          <span className="font-bold text-amber-300 block">3. Praxistransfer:</span>
+                          <p className="text-slate-200 text-[11px] leading-relaxed">
+                            Wie lässt sich das PEF-Modell in ähnlichen Pflegesituationen anwenden?
+                          </p>
+                        </div>
+                      </div>
+                    </div>
 
-                        {/* Musterlösung ABEDL */}
-                        <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow space-y-4">
-                          <h4 className="text-xs font-bold text-[#264653] uppercase tracking-wider border-b border-slate-100 pb-2">
-                            Musterlösung: 13 ABEDL Schwerpunkte &amp; Beobachtungen
-                          </h4>
-
-                          <div className="space-y-3">
-                            {Object.entries(currentModule.sampleSolution.abedl).map(([key, val]) => (
-                              <div key={key} className="bg-[#F7F9FA] p-3.5 rounded-xl border border-slate-200 text-xs space-y-1.5">
-                                <span className="font-bold text-[#264653]">ABEDL Kategorie {key}:</span>
-                                <p className="text-[#2B2D42]">{val.info}</p>
+                    {/* Prominente Passwort-Belohnungsbox für das nächste Level */}
+                    {LEVEL_PASSWORDS[currentModule.id + 1] && currentModule.id < 7 && (
+                      <div className="p-5 rounded-2xl bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white border-2 border-emerald-400 shadow-xl space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="flex items-start gap-3">
+                            <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-[#E76F51] text-slate-950 flex items-center justify-center shadow-md shrink-0">
+                              <KeyRound className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-400 text-emerald-950 font-mono">
+                                  Level-Passwort freigespielt
+                                </span>
+                                <span className="text-xs text-emerald-200 flex items-center gap-1">
+                                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                                  Im Passwortbuch gespeichert
+                                </span>
                               </div>
-                            ))}
+                              <h4 className="text-sm font-bold text-white mt-1">
+                                Passwort für Doppelstunde {currentModule.id + 1}:
+                              </h4>
+                              <p className="text-xs text-slate-300">
+                                {LEVEL_PASSWORDS[currentModule.id + 1].title}
+                              </p>
+                            </div>
                           </div>
+
+                          <div className="flex items-center gap-2 self-start sm:self-center">
+                            <div className="px-4 py-2 rounded-xl bg-black/50 border-2 border-amber-400 font-mono text-base font-extrabold text-amber-300 tracking-wider flex items-center gap-2">
+                              <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+                              <span>{LEVEL_PASSWORDS[currentModule.id + 1].password}</span>
+                            </div>
+
+                            <button
+                              onClick={() => {
+                                const pwd = LEVEL_PASSWORDS[currentModule.id + 1].password;
+                                sounds.playSelectOption();
+                                if (navigator.clipboard) {
+                                  navigator.clipboard.writeText(pwd);
+                                }
+                                setCopiedRewardPassword(true);
+                                setTimeout(() => setCopiedRewardPassword(false), 3000);
+                              }}
+                              className="px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer"
+                              title="Passwort kopieren"
+                            >
+                              {copiedRewardPassword ? (
+                                <>
+                                  <Check className="w-4 h-4 text-emerald-800" />
+                                  <span>Kopiert!</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Copy className="w-4 h-4" />
+                                  <span>Kopieren</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="pt-2 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
+                          <span>Geben Sie dieses Passwort ein, wenn Sie Doppelstunde {currentModule.id + 1} auf der Map öffnen.</span>
+                          <button
+                            onClick={() => setActiveModal('passwordBook')}
+                            className="text-amber-300 hover:text-amber-200 font-bold flex items-center gap-1 underline cursor-pointer"
+                          >
+                            <BookMarked className="w-3.5 h-3.5" />
+                            <span>Passwortbuch öffnen</span>
+                          </button>
                         </div>
                       </div>
                     )}
