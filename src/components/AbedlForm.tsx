@@ -11,7 +11,17 @@ import {
   HeartPulse,
   Users,
   Compass,
-  FileCheck
+  FileCheck,
+  MessageSquare,
+  Activity,
+  Utensils,
+  Droplet,
+  Shirt,
+  Moon,
+  BookOpen,
+  UserCheck,
+  ShieldCheck,
+  Check
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -19,21 +29,149 @@ interface AbedlFormProps {
   moduleId: number;
 }
 
-// Visual color themes for ABEDL categories to avoid grey-on-grey
-const CATEGORY_THEMES: { [key: number]: { bg: string; border: string; accent: string; badgeBg: string; badgeText: string } } = {
-  1: { bg: 'bg-emerald-50/40', border: 'border-emerald-200', accent: 'bg-emerald-600', badgeBg: 'bg-emerald-100', badgeText: 'text-emerald-900' },
-  2: { bg: 'bg-teal-50/40', border: 'border-teal-200', accent: 'bg-teal-600', badgeBg: 'bg-teal-100', badgeText: 'text-teal-900' },
-  3: { bg: 'bg-cyan-50/40', border: 'border-cyan-200', accent: 'bg-cyan-600', badgeBg: 'bg-cyan-100', badgeText: 'text-cyan-900' },
-  4: { bg: 'bg-sky-50/40', border: 'border-sky-200', accent: 'bg-sky-600', badgeBg: 'bg-sky-100', badgeText: 'text-sky-900' },
-  5: { bg: 'bg-blue-50/40', border: 'border-blue-200', accent: 'bg-blue-600', badgeBg: 'bg-blue-100', badgeText: 'text-blue-900' },
-  6: { bg: 'bg-indigo-50/40', border: 'border-indigo-200', accent: 'bg-indigo-600', badgeBg: 'bg-indigo-100', badgeText: 'text-indigo-900' },
-  7: { bg: 'bg-violet-50/40', border: 'border-violet-200', accent: 'bg-violet-600', badgeBg: 'bg-violet-100', badgeText: 'text-violet-900' },
-  8: { bg: 'bg-purple-50/40', border: 'border-purple-200', accent: 'bg-purple-600', badgeBg: 'bg-purple-100', badgeText: 'text-purple-900' },
-  9: { bg: 'bg-fuchsia-50/40', border: 'border-fuchsia-200', accent: 'bg-fuchsia-600', badgeBg: 'bg-fuchsia-100', badgeText: 'text-fuchsia-900' },
-  10: { bg: 'bg-rose-50/40', border: 'border-rose-200', accent: 'bg-rose-600', badgeBg: 'bg-rose-100', badgeText: 'text-rose-900' },
-  11: { bg: 'bg-amber-50/40', border: 'border-amber-200', accent: 'bg-amber-600', badgeBg: 'bg-amber-100', badgeText: 'text-amber-900' },
-  12: { bg: 'bg-orange-50/40', border: 'border-orange-200', accent: 'bg-orange-600', badgeBg: 'bg-orange-100', badgeText: 'text-orange-900' },
-  13: { bg: 'bg-emerald-50/50', border: 'border-emerald-300', accent: 'bg-[#264653]', badgeBg: 'bg-[#264653]/15', badgeText: 'text-[#264653]' },
+// Soft, gentle, harmonized palette for the 13 ABEDL categories
+const CATEGORY_THEMES: {
+  [key: number]: {
+    bg: string;
+    border: string;
+    borderActive: string;
+    accent: string;
+    pillBg: string;
+    pillText: string;
+    icon: any;
+    area: string;
+  };
+} = {
+  1: {
+    bg: 'bg-[#F4FAF6]',
+    border: 'border-emerald-100',
+    borderActive: 'border-emerald-300',
+    accent: 'bg-emerald-600',
+    pillBg: 'bg-emerald-50 text-emerald-800 border border-emerald-200/60',
+    pillText: 'text-emerald-900',
+    icon: MessageSquare,
+    area: 'Kommunikation & Kognition',
+  },
+  2: {
+    bg: 'bg-[#F3FAF8]',
+    border: 'border-teal-100',
+    borderActive: 'border-teal-300',
+    accent: 'bg-teal-600',
+    pillBg: 'bg-teal-50 text-teal-800 border border-teal-200/60',
+    pillText: 'text-teal-900',
+    icon: Activity,
+    area: 'Mobilität & Bewegung',
+  },
+  3: {
+    bg: 'bg-[#F3F7FB]',
+    border: 'border-blue-100',
+    borderActive: 'border-blue-300',
+    accent: 'bg-blue-600',
+    pillBg: 'bg-blue-50 text-blue-800 border border-blue-200/60',
+    pillText: 'text-blue-900',
+    icon: HeartPulse,
+    area: 'Vitale Funktionen & Atmung',
+  },
+  4: {
+    bg: 'bg-[#FAF5FB]',
+    border: 'border-fuchsia-100',
+    borderActive: 'border-fuchsia-300',
+    accent: 'bg-fuchsia-600',
+    pillBg: 'bg-fuchsia-50 text-fuchsia-800 border border-fuchsia-200/60',
+    pillText: 'text-fuchsia-900',
+    icon: Sparkles,
+    area: 'Körperpflege & Hygiene',
+  },
+  5: {
+    bg: 'bg-[#FAF7F2]',
+    border: 'border-amber-100',
+    borderActive: 'border-amber-300',
+    accent: 'bg-amber-600',
+    pillBg: 'bg-amber-50 text-amber-800 border border-amber-200/60',
+    pillText: 'text-amber-900',
+    icon: Utensils,
+    area: 'Ernährung & PEG-Sonde',
+  },
+  6: {
+    bg: 'bg-[#F2F8FB]',
+    border: 'border-sky-100',
+    borderActive: 'border-sky-300',
+    accent: 'bg-sky-600',
+    pillBg: 'bg-sky-50 text-sky-800 border border-sky-200/60',
+    pillText: 'text-sky-900',
+    icon: Droplet,
+    area: 'Ausscheidung & Katheter',
+  },
+  7: {
+    bg: 'bg-[#F7F5FA]',
+    border: 'border-purple-100',
+    borderActive: 'border-purple-300',
+    accent: 'bg-purple-600',
+    pillBg: 'bg-purple-50 text-purple-800 border border-purple-200/60',
+    pillText: 'text-purple-900',
+    icon: Shirt,
+    area: 'Kleiden & Erscheinungsbild',
+  },
+  8: {
+    bg: 'bg-[#F8F9FA]',
+    border: 'border-slate-200',
+    borderActive: 'border-slate-300',
+    accent: 'bg-slate-700',
+    pillBg: 'bg-slate-100 text-slate-800 border border-slate-200',
+    pillText: 'text-slate-900',
+    icon: Moon,
+    area: 'Ruhe, Schlaf & 4h-Takt',
+  },
+  9: {
+    bg: 'bg-[#FAF6F2]',
+    border: 'border-orange-100',
+    borderActive: 'border-orange-300',
+    accent: 'bg-orange-600',
+    pillBg: 'bg-orange-50 text-orange-800 border border-orange-200/60',
+    pillText: 'text-orange-900',
+    icon: BookOpen,
+    area: 'Tagesstruktur & Beschäftigung',
+  },
+  10: {
+    bg: 'bg-[#FAF3F4]',
+    border: 'border-rose-100',
+    borderActive: 'border-rose-300',
+    accent: 'bg-rose-600',
+    pillBg: 'bg-rose-50 text-rose-800 border border-rose-200/60',
+    pillText: 'text-rose-900',
+    icon: UserCheck,
+    area: 'Rollenidentität & Würde',
+  },
+  11: {
+    bg: 'bg-[#FAF8F2]',
+    border: 'border-yellow-100',
+    borderActive: 'border-yellow-300',
+    accent: 'bg-yellow-600',
+    pillBg: 'bg-yellow-50 text-yellow-800 border border-yellow-200/60',
+    pillText: 'text-yellow-900',
+    icon: ShieldCheck,
+    area: 'Sicherheit & Fachwerkhaus-Stufen',
+  },
+  12: {
+    bg: 'bg-[#F3FAF8]',
+    border: 'border-teal-100',
+    borderActive: 'border-teal-300',
+    accent: 'bg-teal-700',
+    pillBg: 'bg-teal-50 text-teal-800 border border-teal-200/60',
+    pillText: 'text-teal-950',
+    icon: Users,
+    area: 'Familie & Young Carers',
+  },
+  13: {
+    bg: 'bg-[#F4F6F8]',
+    border: 'border-slate-200',
+    borderActive: 'border-[#264653]/40',
+    accent: 'bg-[#264653]',
+    pillBg: 'bg-[#264653]/10 text-[#264653] border border-[#264653]/20',
+    pillText: 'text-[#264653]',
+    icon: Compass,
+    area: 'Existenzielle Erfahrungen & Schicksal',
+  },
 };
 
 export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
@@ -64,36 +202,36 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
   ).length;
 
   return (
-    <div className="bg-white border-2 border-[#264653]/20 rounded-2xl p-5 sm:p-6 card-soft-shadow space-y-6">
+    <div className="bg-white border-2 border-[#264653]/20 rounded-3xl p-5 sm:p-6 card-soft-shadow space-y-6">
       {/* Header with warm care gradient */}
       <div className="border-b border-slate-200 pb-5 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-[#264653] to-[#2A9D8F] text-white flex items-center justify-center shadow-md">
-            <FileSpreadsheet className="w-5 h-5 text-white" />
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#264653] via-[#2A9D8F] to-[#1E3640] text-white flex items-center justify-center shadow-md">
+            <FileSpreadsheet className="w-6 h-6 text-white" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-[#264653] text-white">
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#264653] text-white">
                 Strukturmodell Anamnese
               </span>
               <span className="text-xs font-semibold text-[#2A9D8F]">
                 nach Monika Krohwinkel
               </span>
             </div>
-            <h3 className="text-sm sm:text-base font-bold text-[#264653] mt-0.5">
+            <h3 className="text-base sm:text-lg font-bold text-[#264653] mt-0.5">
               13 ABEDL Pflegeanamnese &amp; Informationssammlung
             </h3>
-            <p className="text-xs text-[#2B2D42]/70 [text-wrap:pretty]">
+            <p className="text-xs text-[#2B2D42]/75 [text-wrap:pretty]">
               Aktivitäten, Beziehungen und existenzielle Erfahrungen des Lebens – Erfassen Sie pflegerelevante Beobachtungen, Einschränkungen und Ressourcen.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <span className="text-xs font-mono bg-[#264653] text-white px-3.5 py-1.5 rounded-xl font-bold shadow-xs">
             {filledCount} von 13 erfasst
           </span>
-          <span className="text-[11px] px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-800 font-mono flex items-center gap-1.5 border border-emerald-200">
+          <span className="text-[11px] px-3 py-1 rounded-xl bg-emerald-50 text-emerald-800 font-mono flex items-center gap-1.5 border border-emerald-200 shadow-xs">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             Auto-Save aktiv
           </span>
@@ -101,61 +239,70 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
       </div>
 
       {/* Accordion Categories List */}
-      <div className="space-y-3">
+      <div className="space-y-3.5">
         {ABEDL_DEFINITIONS.map((cat) => {
           const isExpanded = !!expandedCategories[cat.id];
           const entry = abedlData[cat.id] || { info: '' };
           const hasContent = !!(entry.info && entry.info.trim().length > 0);
           const theme = CATEGORY_THEMES[cat.id] || CATEGORY_THEMES[1];
+          const IconComp = theme.icon || Info;
 
           return (
             <div
               key={cat.id}
-              className={`rounded-xl border-2 transition-all duration-200 overflow-hidden ${
+              className={`rounded-2xl border-2 transition-all duration-200 overflow-hidden ${
                 hasContent
-                  ? `${theme.border} ${theme.bg} shadow-sm`
-                  : 'border-slate-200 bg-[#F8FAFB] hover:border-slate-300'
+                  ? `${theme.borderActive} ${theme.bg} shadow-xs`
+                  : isExpanded
+                  ? `${theme.border} ${theme.bg}`
+                  : 'border-slate-200 bg-[#F9FAFB] hover:border-slate-300'
               }`}
             >
               {/* Category Header */}
               <button
                 onClick={() => toggleCategory(cat.id)}
                 className={`w-full text-left p-3.5 sm:p-4 flex items-center justify-between transition-colors cursor-pointer ${
-                  isExpanded ? 'bg-white/90 border-b border-slate-200' : 'hover:bg-white/60'
+                  isExpanded ? 'bg-white/80 border-b border-slate-200/80 backdrop-blur-xs' : 'hover:bg-white/60'
                 }`}
               >
-                <div className="flex items-center gap-3 sm:gap-3.5">
-                  <span
-                    className={`w-8 h-8 rounded-xl flex items-center justify-center font-mono text-xs font-bold shrink-0 shadow-xs ${
+                <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
+                  <div
+                    className={`w-9 h-9 rounded-xl flex items-center justify-center font-mono text-xs font-bold shrink-0 shadow-xs transition-transform ${
                       hasContent
-                        ? `${theme.accent} text-white`
-                        : 'bg-slate-200 text-[#2B2D42]'
+                        ? `${theme.accent} text-white scale-105`
+                        : 'bg-white border border-slate-300 text-[#2B2D42]'
                     }`}
                   >
-                    {cat.id}
-                  </span>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs sm:text-sm font-bold text-[#264653] block">
+                    <IconComp className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-mono font-bold text-slate-500">
+                        ABEDL {cat.id}
+                      </span>
+                      <span className="text-xs sm:text-sm font-bold text-[#264653] truncate">
                         {cat.name}
                       </span>
+                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${theme.pillBg} ${theme.pillText}`}>
+                        {theme.area}
+                      </span>
                       {hasContent && (
-                        <span className="hidden sm:inline-flex text-[10px] px-2 py-0.2 rounded-full bg-emerald-100 text-emerald-900 font-bold border border-emerald-300">
-                          Erfasst
+                        <span className="hidden sm:inline-flex text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-900 font-bold border border-emerald-300">
+                          ✓ Erfasst
                         </span>
                       )}
                     </div>
-                    <span className="text-[11px] text-[#2B2D42]/70 line-clamp-1">
+                    <span className="text-[11px] text-[#2B2D42]/70 line-clamp-1 mt-0.5">
                       {cat.desc}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-slate-500">
+                <div className="flex items-center gap-2 text-slate-500 shrink-0 ml-2">
                   {hasContent && (
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   )}
-                  <div className="w-6 h-6 rounded-lg bg-slate-100 flex items-center justify-center text-slate-600">
+                  <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600 shadow-xs">
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
                 </div>
@@ -163,15 +310,15 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
 
               {/* Category Body Form */}
               {isExpanded && (
-                <div className="p-4 sm:p-5 bg-white space-y-3.5 animate-in fade-in duration-200">
+                <div className="p-4 sm:p-5 bg-white/95 space-y-3.5 animate-in fade-in duration-200">
                   {/* Category Guide Box */}
-                  <div className={`p-3 rounded-xl border ${theme.border} ${theme.bg} text-xs text-[#2B2D42] flex items-start gap-2.5`}>
+                  <div className={`p-3.5 rounded-xl border ${theme.border} ${theme.bg} text-xs text-[#2B2D42] flex items-start gap-3 shadow-xs`}>
                     <Info className="w-4 h-4 text-[#264653] shrink-0 mt-0.5" />
                     <div>
                       <strong className="text-[#264653] block font-bold mb-0.5">
                         Pflegerischer Fokus für ABEDL {cat.id} ({cat.name}):
                       </strong>
-                      <span className="leading-relaxed [text-wrap:pretty]">{cat.desc}</span>
+                      <span className="leading-relaxed text-slate-800 [text-wrap:pretty]">{cat.desc}</span>
                     </div>
                   </div>
 
@@ -180,7 +327,7 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
                     <label className="text-xs font-bold text-[#264653] flex items-center justify-between">
                       <span>Ihre Erfassung &amp; pflegerelevanten Informationen:</span>
                       {hasContent ? (
-                        <span className="text-[10px] text-emerald-700 font-semibold font-mono">
+                        <span className="text-[10px] text-emerald-700 font-semibold font-mono bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                           Gespeichert ({entry.info.length} Zeichen)
                         </span>
                       ) : (
@@ -196,8 +343,8 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
                       placeholder={`Halten Sie pflegerelevante Beobachtungen, Befunde, Ressourcen und Einschränkungen im Fall Stefan & Heike zu "${cat.name}" fest...`}
                       className={`w-full rounded-xl p-3.5 text-xs sm:text-sm text-[#2B2D42] placeholder-slate-400 focus:outline-none transition-all resize-y leading-relaxed font-sans ${
                         hasContent
-                          ? 'bg-white border-2 border-emerald-500/50 focus:border-[#264653] focus:ring-2 focus:ring-[#264653]/15'
-                          : 'bg-[#F4F7F8] border border-slate-300 focus:border-[#264653] focus:bg-white focus:ring-2 focus:ring-[#264653]/15'
+                          ? 'bg-white border-2 border-emerald-500/60 focus:border-[#264653] focus:ring-2 focus:ring-[#264653]/15'
+                          : 'bg-[#F9FAFB] border border-slate-300 focus:border-[#264653] focus:bg-white focus:ring-2 focus:ring-[#264653]/15'
                       }`}
                     />
                   </div>

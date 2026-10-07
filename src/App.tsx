@@ -39,10 +39,10 @@ export default function App() {
         <OnboardingTour />
         <NamePromptModal />
         <WelcomeModal />
+        <PasswordBookModal />
         <MediaCenterModal />
         <TimetableModal />
         <BadgesModal />
-        <PasswordBookModal />
         <TeacherGuideModal />
         <CertificateModal />
         <AdminModal />

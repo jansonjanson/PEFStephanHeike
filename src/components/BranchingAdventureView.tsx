@@ -7,11 +7,18 @@ import {
   RotateCcw,
   CheckCircle2,
   ArrowRight,
+  ShieldAlert,
+  Compass,
   Scale,
+  Award,
+  BookOpen,
+  MessageSquareQuote,
   Check,
   Flag,
+  HelpCircle,
   KeyRound,
   Copy,
+  Unlock,
   BookMarked
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
@@ -31,8 +38,8 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
     moduleStates,
     recordSimulationChoice,
     awardPasswordForNextModule,
-    setActiveModal,
     showSuccessBanner,
+    setActiveModal,
   } = useApp();
 
   const [currentNodeId, setCurrentNodeId] = useState<string>(adventure.startNodeId);
@@ -44,22 +51,30 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
   const [chosenHistory, setChosenHistory] = useState<{ nodeId: string; option: AdventureOption }[]>([]);
   const [reachedEndingId, setReachedEndingId] = useState<string | null>(null);
   const [reflectionNote, setReflectionNote] = useState<string>('');
-  const [copiedPassword, setCopiedPassword] = useState<boolean>(false);
+  const [copiedKey, setCopiedKey] = useState<boolean>(false);
 
   const currentNode: AdventureNode | undefined = adventure.nodes[currentNodeId];
   const currentEnding: AdventureEnding | undefined = reachedEndingId
     ? adventure.endings[reachedEndingId]
     : undefined;
 
-  const nextModuleId = moduleId + 1;
-  const nextPasswordDef = LEVEL_PASSWORDS[nextModuleId];
+  const nextModulePasswordDef = LEVEL_PASSWORDS[moduleId + 1];
 
-  // Auto-award password when ending is reached
   useEffect(() => {
     if (reachedEndingId) {
       awardPasswordForNextModule(moduleId);
     }
-  }, [reachedEndingId, moduleId]);
+  }, [reachedEndingId, moduleId, awardPasswordForNextModule]);
+
+  const handleCopyPassword = (pwd: string) => {
+    sounds.playSelectOption();
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(pwd);
+    }
+    setCopiedKey(true);
+    showSuccessBanner(`Passwort „${pwd}“ für DS ${moduleId + 1} kopiert!`);
+    setTimeout(() => setCopiedKey(false), 3000);
+  };
 
   const handleSelectOption = (option: AdventureOption) => {
     sounds.playSelectOption();
@@ -99,17 +114,6 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
     setAccumulatedScores({ pat: 0, pef: 0, inf: 0 });
     setChosenHistory([]);
     setReachedEndingId(null);
-    setCopiedPassword(false);
-  };
-
-  const handleCopyPassword = (pwd: string) => {
-    sounds.playSelectOption();
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(pwd);
-    }
-    setCopiedPassword(true);
-    showSuccessBanner(`Passwort „${pwd}“ in die Zwischenablage kopiert!`);
-    setTimeout(() => setCopiedPassword(false), 3000);
   };
 
   // Determine avatar
@@ -120,7 +124,7 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
     if (nameLower.includes('stefan') || nameLower.includes('stephan')) return CHARACTER_AVATARS.stephan.imageUrl;
     if (nameLower.includes('leon')) return CHARACTER_AVATARS.sohn2_leon.imageUrl;
     if (nameLower.includes('lukas')) return CHARACTER_AVATARS.sohn3_lukas.imageUrl;
-    if (nameLower.includes('sohn') || nameLower.includes('philipp') || nameLower.includes('pascal')) return CHARACTER_AVATARS.sohn1.imageUrl;
+    if (nameLower.includes('sohn') || nameLower.includes('philipp')) return CHARACTER_AVATARS.sohn1.imageUrl;
     return CHARACTER_AVATARS.heike.imageUrl;
   };
 
@@ -132,31 +136,38 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
   return (
     <div className="space-y-6 text-[#2B2D42]">
       {/* Simulation Stage Header */}
-      <div className="bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white rounded-2xl p-5 sm:p-6 shadow-xl border border-[#264653] relative overflow-hidden space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
-          <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#E76F51] animate-ping" />
+      <div className="bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white rounded-3xl p-6 sm:p-7 shadow-xl border border-[#264653] relative overflow-hidden space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/15 pb-3">
+          <div className="flex items-center gap-2.5">
+            <span className="w-3 h-3 rounded-full bg-[#E76F51] animate-ping" />
             <span className="text-xs font-bold text-[#E76F51] uppercase tracking-wider">
               Interaktives Fall-Adventure • Doppelstunde {moduleId}
             </span>
           </div>
-          <span className="text-[11px] font-mono text-slate-300 bg-white/10 px-2.5 py-0.5 rounded-full font-bold border border-white/10">
+          <span className="text-xs font-mono text-slate-200 bg-white/15 px-3 py-1 rounded-full font-bold border border-white/20 shadow-xs">
             {adventure.roleProfile}
           </span>
         </div>
 
-        <div>
-          <h2 className="text-base sm:text-lg font-bold text-white [text-wrap:balance]">
+        <div className="space-y-1.5">
+          <h2 className="text-lg sm:text-2xl font-bold text-white [text-wrap:balance]">
             {adventure.title}
           </h2>
-          <p className="text-xs text-slate-300 mt-1 leading-relaxed [text-wrap:pretty]">
-            <strong className="text-amber-300">Zentrale Leitfrage:</strong> {adventure.leitfrage}
+          <p className="text-sm sm:text-base text-slate-200 leading-relaxed [text-wrap:pretty]">
+            <strong className="text-amber-300 font-bold">Zentrale Leitfrage:</strong> {adventure.leitfrage}
           </p>
         </div>
 
-        <div className="p-3 bg-white/5 rounded-xl border border-white/10 text-xs text-slate-200 leading-relaxed [text-wrap:pretty]">
-          <strong className="text-white block mb-0.5 font-bold">Ausgangslage:</strong>
-          {adventure.ausgangslage}
+        {/* Ausgangslage: deutlich größer & komfortabel lesbar */}
+        <div className="p-4 sm:p-5 bg-white/10 rounded-2xl border border-white/20 text-sm sm:text-base text-slate-100 leading-relaxed [text-wrap:pretty] space-y-1.5 shadow-inner">
+          <div className="flex items-center gap-2">
+            <span className="text-[11px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-mono">
+              Ausgangslage zu Beginn der Simulation
+            </span>
+          </div>
+          <p className="text-sm sm:text-[15px] sm:leading-relaxed text-slate-100 font-sans">
+            {adventure.ausgangslage}
+          </p>
         </div>
       </div>
 
@@ -164,27 +175,27 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
       {/* ACTIVE NODE (DIALOGUE & ACTION CHOICES)                                   */}
       {/* ========================================================================= */}
       {!reachedEndingId && currentNode && (
-        <div className="space-y-5 animate-in fade-in duration-300">
+        <div className="space-y-6 animate-in fade-in duration-300">
           {/* Node Dialogue Box */}
-          <div className="bg-white border-2 border-[#264653]/30 rounded-2xl p-5 sm:p-6 card-soft-shadow space-y-4">
+          <div className="bg-white border-2 border-[#264653]/30 rounded-3xl p-6 sm:p-7 card-soft-shadow space-y-5">
             {/* Header: Node Title & Speaker */}
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3.5">
                 <img
                   src={getAvatarUrl()}
                   alt={currentNode.speaker}
-                  className="w-13 h-13 rounded-2xl object-cover border-2 border-[#264653] shadow-md bg-slate-100"
+                  className="w-14 h-14 rounded-2xl object-cover border-2 border-[#264653] shadow-md bg-slate-100"
                 />
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-sm font-bold text-[#264653]">
+                    <h3 className="text-base sm:text-lg font-bold text-[#264653]">
                       {currentNode.speaker}
                     </h3>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-[#2B2D42] border border-slate-200 font-medium">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-slate-100 text-[#2B2D42] border border-slate-200 font-semibold">
                       {currentNode.speakerRole}
                     </span>
                   </div>
-                  <span className="text-[11px] text-slate-500 font-mono block">
+                  <span className="text-xs text-slate-500 font-mono block mt-0.5">
                     {currentNode.title}
                   </span>
                 </div>
@@ -193,7 +204,7 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
               {chosenHistory.length > 0 && (
                 <button
                   onClick={handleRestart}
-                  className="text-xs text-slate-500 hover:text-[#264653] flex items-center gap-1 font-semibold p-1.5 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                  className="text-xs text-slate-500 hover:text-[#264653] flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors"
                   title="Szenario von Beginn an neu starten"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -202,73 +213,93 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
               )}
             </div>
 
-            {/* Scene Setting */}
-            <div className="p-3.5 bg-slate-50 border-l-4 border-[#264653] rounded-r-xl text-xs text-[#2B2D42] leading-relaxed [text-wrap:pretty]">
-              <strong className="text-[#264653] block mb-0.5">Szene:</strong>
-              {currentNode.sceneDescription}
+            {/* Scene Setting: Groß und hervorragend lesbar */}
+            <div className="p-4.5 sm:p-5 bg-gradient-to-r from-slate-50 via-amber-50/20 to-slate-50 rounded-2xl border-2 border-slate-200/90 text-sm sm:text-base text-[#2B2D42] leading-relaxed shadow-xs space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">
+                Situationsbeschreibung &amp; Szenerie:
+              </span>
+              <p className="font-medium [text-wrap:pretty]">
+                {currentNode.sceneDescription}
+              </p>
             </div>
 
-            {/* Spoken Dialogue */}
-            <div className="p-4 bg-[#F7F9FA] rounded-2xl border border-slate-200 space-y-2">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-                Direkte Aussage von {currentNode.speaker}:
-              </span>
-              <p className="text-sm font-serif italic text-[#1E3640] leading-relaxed [text-wrap:pretty]">
+            {/* Speech Bubble: Groß & klar lesbar */}
+            <div className="p-5 sm:p-6 bg-gradient-to-r from-slate-50 via-white to-slate-50/50 rounded-2xl border-l-4 border-[#264653] shadow-xs space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-[#264653]">
+                <MessageSquareQuote className="w-5 h-5 text-[#E76F51]" />
+                <span className="uppercase tracking-wider">O-Ton / Gesprochener Dialog:</span>
+              </div>
+              <p className="text-base sm:text-lg font-serif text-[#2B2D42] font-medium leading-relaxed [text-wrap:pretty]">
                 {currentNode.dialogueText}
               </p>
             </div>
 
             {/* Dilemma Prompt */}
-            <div className="pt-2">
-              <h4 className="text-xs font-bold text-[#264653] uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-[#E76F51]" />
-                <span>{currentNode.dilemmaPrompt}</span>
-              </h4>
+            <div className="pt-2 flex items-center gap-2.5 text-xs sm:text-sm font-bold text-[#264653] uppercase tracking-wider">
+              <Compass className="w-5 h-5 text-[#E76F51]" />
+              <span>{currentNode.dilemmaPrompt}</span>
             </div>
 
-            {/* Options List */}
-            <div className="space-y-3 pt-1">
+            {/* Action Cards (Options) */}
+            <div className="space-y-3.5 pt-1">
               {currentNode.options.map((opt, idx) => {
-                const optColors = [
+                const optionLetter = String.fromCharCode(65 + idx); // 'A', 'B', 'C'
+                
+                // Dynamic colorful styles per card position (pure visual appeal, not tied to fixed model)
+                const cardColorStyles = [
                   {
-                    border: 'border-blue-200 hover:border-blue-400 hover:bg-blue-50/40',
-                    badge: 'bg-blue-100 text-blue-900 border border-blue-200',
+                    border: 'border-indigo-200 hover:border-indigo-500 bg-indigo-50/30 hover:bg-indigo-50/70',
+                    badge: 'bg-indigo-600 text-white',
+                    title: 'text-indigo-950',
+                    handlungsBg: 'bg-indigo-100/60 border-indigo-200/80',
+                    arrow: 'group-hover:text-indigo-600',
                   },
                   {
-                    border: 'border-emerald-200 hover:border-emerald-400 hover:bg-emerald-50/40',
-                    badge: 'bg-emerald-100 text-emerald-900 border border-emerald-200',
+                    border: 'border-teal-200 hover:border-teal-500 bg-teal-50/30 hover:bg-teal-50/70',
+                    badge: 'bg-teal-600 text-white',
+                    title: 'text-teal-950',
+                    handlungsBg: 'bg-teal-100/60 border-teal-200/80',
+                    arrow: 'group-hover:text-teal-600',
                   },
                   {
-                    border: 'border-amber-200 hover:border-amber-400 hover:bg-amber-50/40',
-                    badge: 'bg-amber-100 text-amber-900 border border-amber-200',
+                    border: 'border-amber-200 hover:border-amber-500 bg-amber-50/30 hover:bg-amber-50/70',
+                    badge: 'bg-amber-600 text-white',
+                    title: 'text-amber-950',
+                    handlungsBg: 'bg-amber-100/60 border-amber-200/80',
+                    arrow: 'group-hover:text-amber-600',
                   },
                 ][idx % 3];
 
-                const cleanLabel = opt.label.split('[')[0].trim();
+                // Clean label by removing model references
+                const cleanedTitle = opt.label
+                  .replace(/\s*\([^)]*(paternalistisch|pef|informationsmodell|informed|pat|inf|reale annäherung|der reale weg)[^)]*\)/gi, '')
+                  .trim();
 
                 return (
                   <button
                     key={opt.id}
                     onClick={() => handleSelectOption(opt)}
-                    className={`w-full text-left p-4 rounded-2xl border-2 transition-all bg-white shadow-xs hover:shadow-md cursor-pointer group space-y-2.5 ${optColors.border}`}
+                    className={`w-full text-left p-4.5 sm:p-5 rounded-2xl border-2 ${cardColorStyles.border} transition-all transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer shadow-xs space-y-2.5 group`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full font-mono ${optColors.badge}`}>
-                        {cleanLabel}
-                      </span>
-                      <span className="text-[11px] font-bold text-[#264653] group-hover:text-[#E76F51] flex items-center gap-1">
-                        <span>Auswählen</span>
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                      </span>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2.5">
+                        <span className={`w-6 h-6 rounded-lg ${cardColorStyles.badge} font-bold text-xs flex items-center justify-center shadow-xs`}>
+                          {optionLetter}
+                        </span>
+                        <span className={`text-xs sm:text-sm font-bold ${cardColorStyles.title}`}>
+                          {cleanedTitle.startsWith('Option') ? cleanedTitle : `Option ${optionLetter}: ${cleanedTitle}`}
+                        </span>
+                      </div>
+                      <ArrowRight className={`w-4 h-4 text-slate-400 ${cardColorStyles.arrow} transition-colors`} />
                     </div>
 
-                    <p className="text-xs sm:text-[13px] text-[#2B2D42] font-medium leading-relaxed [text-wrap:pretty]">
+                    <p className="text-sm sm:text-base text-[#2B2D42] font-serif leading-relaxed [text-wrap:pretty]">
                       {opt.quote}
                     </p>
 
                     {opt.actionText && (
-                      <p className="text-[11px] text-slate-500 italic border-t border-slate-100 pt-1.5">
-                        Handlung: {opt.actionText}
+                      <p className={`text-xs text-slate-700 ${cardColorStyles.handlungsBg} p-2.5 rounded-xl border font-sans leading-relaxed`}>
+                        <strong className="text-[#264653]">Handlungsansatz:</strong> {opt.actionText}
                       </p>
                     )}
                   </button>
@@ -280,7 +311,7 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
       )}
 
       {/* ========================================================================= */}
-      {/* ENDING SCREEN WITH PROMINENT PASSWORD REWARD BOX                         */}
+      {/* REACHED ENDING SCENARIO & COMPREHENSIVE PEDAGOGICAL EVALUATION            */}
       {/* ========================================================================= */}
       {reachedEndingId && currentEnding && (
         <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -318,7 +349,7 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
 
               <button
                 onClick={handleRestart}
-                className="text-xs text-slate-500 hover:text-[#264653] flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors cursor-pointer"
+                className="text-xs text-slate-500 hover:text-[#264653] flex items-center gap-1.5 font-bold px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Szenario erneut spielen</span>
@@ -344,78 +375,6 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
                 {currentEnding.reflectionText}
               </p>
             </div>
-
-            {/* ========================================================================= */}
-            {/* PROMINENTE PASSWORT-BELOHNUNGSBOX (IMMER HERVORRAGEND SICHTBAR)             */}
-            {/* ========================================================================= */}
-            {nextPasswordDef && nextModuleId <= 7 && (
-              <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#264653] via-[#1E3640] to-[#15272E] text-white border-2 border-emerald-400/80 shadow-xl relative overflow-hidden space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-[#E76F51] text-slate-950 flex items-center justify-center shadow-lg shrink-0">
-                      <KeyRound className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-400 text-emerald-950 font-mono">
-                          Level-Passwort freigespielt
-                        </span>
-                        <span className="text-xs text-emerald-200 flex items-center gap-1 font-medium">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                          Im Passwortbuch gespeichert
-                        </span>
-                      </div>
-                      <h4 className="text-sm sm:text-base font-bold text-white mt-1">
-                        Passwort für Doppelstunde {nextModuleId}:
-                      </h4>
-                      <p className="text-xs text-slate-300">
-                        {nextPasswordDef.title}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Password Badge & Copy Button */}
-                  <div className="flex items-center gap-2 self-start sm:self-center">
-                    <div className="px-5 py-2.5 rounded-2xl bg-black/50 border-2 border-amber-400 font-mono text-base sm:text-lg font-extrabold text-amber-300 tracking-wider flex items-center gap-2 shadow-inner">
-                      <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
-                      <span>{nextPasswordDef.password}</span>
-                    </div>
-
-                    <button
-                      onClick={() => handleCopyPassword(nextPasswordDef.password)}
-                      className="px-4 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-md transition-all cursor-pointer transform hover:scale-105"
-                      title="Passwort in die Zwischenablage kopieren"
-                    >
-                      {copiedPassword ? (
-                        <>
-                          <Check className="w-4 h-4 text-emerald-800" />
-                          <span>Kopiert!</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4" />
-                          <span>Kopieren</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="pt-3 border-t border-white/15 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-300">
-                  <span>
-                    Geben Sie <strong>{nextPasswordDef.password}</strong> beim Klick auf Doppelstunde {nextModuleId} ein, um das nächste Level zu betreten.
-                  </span>
-
-                  <button
-                    onClick={() => setActiveModal('passwordBook')}
-                    className="text-amber-300 hover:text-amber-200 font-bold flex items-center gap-1 cursor-pointer underline"
-                  >
-                    <BookMarked className="w-3.5 h-3.5" />
-                    <span>Zum Passwortbuch</span>
-                  </button>
-                </div>
-              </div>
-            )}
 
             {/* ========================================================================= */}
             {/* AUSWERTUNG & DIMENSIONEN (PAT vs. PEF vs. INF)                            */}
@@ -487,6 +446,73 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
               />
             </div>
 
+            {/* ========================================================================= */}
+            {/* HERVORGEHOBENES PASSWORT FÜR DAS NÄCHSTE LEVEL                            */}
+            {/* ========================================================================= */}
+            {nextModulePasswordDef && (
+              <div className="p-4 sm:p-5 bg-gradient-to-br from-amber-500/10 via-emerald-500/10 to-[#264653]/10 border-2 border-amber-400/80 rounded-2xl shadow-md space-y-3 animate-in fade-in zoom-in-95 duration-300">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center font-bold shadow-md shrink-0">
+                      <KeyRound className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-900 border border-amber-500/40">
+                          Neuer Level-Schlüssel freigeschaltet!
+                        </span>
+                        <span className="text-[11px] text-emerald-800 font-semibold flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                          Im Passwortbuch gespeichert
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-[#264653] mt-0.5">
+                        Passwort für {nextModulePasswordDef.title}
+                      </h4>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="px-4 py-2 bg-white rounded-xl border-2 border-amber-400 font-mono font-black text-base text-[#264653] tracking-widest shadow-inner select-all">
+                      {nextModulePasswordDef.password}
+                    </div>
+                    <button
+                      onClick={() => handleCopyPassword(nextModulePasswordDef.password)}
+                      className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all shadow-xs cursor-pointer ${
+                        copiedKey
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-[#264653] hover:bg-[#1E3640] text-white'
+                      }`}
+                      title="Passwort kopieren"
+                    >
+                      {copiedKey ? (
+                        <>
+                          <Check className="w-4 h-4 text-emerald-200" />
+                          <span>Kopiert</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4" />
+                          <span>Kopieren</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      onClick={() => setActiveModal('passwordBook')}
+                      className="px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-950 border border-amber-300 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                      title="Zum Passwortbuch"
+                    >
+                      <BookMarked className="w-4 h-4 text-amber-700" />
+                      <span className="hidden sm:inline">Passwortbuch</span>
+                    </button>
+                  </div>
+                </div>
+                <p className="text-xs text-[#2B2D42]/80 leading-relaxed">
+                  Dieses Passwort schaltet die nächste Doppelstunde <strong>DS {moduleId + 1}</strong> frei. Es wurde automatisch in Ihr <strong>Passwortbuch</strong> übertragen.
+                </p>
+              </div>
+            )}
+
             {/* Bottom Actions */}
             <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100">
               <span className="text-[11px] text-slate-500">
@@ -496,11 +522,11 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
               {onProceedToStep4 && (
                 <button
                   onClick={onProceedToStep4}
-                  className="px-6 py-3.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
+                  className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 font-black text-xs flex items-center gap-2.5 shadow-lg shadow-amber-500/35 ring-4 ring-amber-300/60 animate-pulse transition-all cursor-pointer transform hover:scale-[1.02]"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-slate-950" />
                   <span>Entscheidung abschließen &amp; weiter zu Schritt 4 (Auswertung &amp; Besprechung)</span>
-                  <ArrowRight className="w-4 h-4 text-[#E76F51]" />
+                  <ArrowRight className="w-4 h-4 text-slate-950" />
                 </button>
               )}
             </div>

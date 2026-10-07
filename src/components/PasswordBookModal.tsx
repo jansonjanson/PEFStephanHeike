@@ -11,8 +11,7 @@ import {
   Check,
   Sparkles,
   ArrowRight,
-  BookMarked,
-  ShieldCheck
+  BookMarked
 } from 'lucide-react';
 import { sounds } from '../utils/soundEffects';
 
@@ -109,7 +108,7 @@ export const PasswordBookModal: React.FC = () => {
               sounds.playClick();
               setActiveModal('none');
             }}
-            className="w-9 h-9 rounded-xl hover:bg-white/20 text-white/80 hover:text-white flex items-center justify-center transition-colors"
+            className="w-9 h-9 rounded-xl hover:bg-white/20 text-white/80 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -292,7 +291,7 @@ export const PasswordBookModal: React.FC = () => {
           <span>Passwörter bleiben auch nach dem Neuladen der App gespeichert.</span>
           <button
             onClick={() => setActiveModal('none')}
-            className="px-4 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-[#2B2D42] font-bold text-xs transition-colors"
+            className="px-4 py-1.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-[#2B2D42] font-bold text-xs transition-colors cursor-pointer"
           >
             Schließen
           </button>

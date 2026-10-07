@@ -279,11 +279,19 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
           <div className="pt-2 flex justify-end">
             <button
               onClick={handleConfirmAbedl}
-              className="px-6 py-3.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
+              className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${
+                isAbedlConfirmed
+                  ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-md'
+                  : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/35 ring-4 ring-amber-300/60 animate-pulse'
+              }`}
             >
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-              <span>13 ABEDL Pflegeanamnese bestätigen und weiter zur Entscheidungsanalyse (Block 3B)</span>
-              <ArrowDown className="w-4 h-4 text-[#E76F51]" />
+              <CheckCircle2 className={`w-4 h-4 ${isAbedlConfirmed ? 'text-emerald-300' : 'text-slate-950'}`} />
+              <span>
+                {isAbedlConfirmed
+                  ? '✓ 13 ABEDL Pflegeanamnese bestätigt (Erneut bestätigen)'
+                  : '13 ABEDL Pflegeanamnese bestätigen und weiter zur Entscheidungsanalyse (Block 3B)'}
+              </span>
+              <ArrowDown className={`w-4 h-4 ${isAbedlConfirmed ? 'text-emerald-200' : 'text-slate-950'}`} />
             </button>
           </div>
         </div>
@@ -458,11 +466,19 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
 
               <button
                 onClick={handleConfirmDecisionInput}
-                className="px-6 py-3.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
+                className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${
+                  isDecisionConfirmed
+                    ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-md'
+                    : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/35 ring-4 ring-amber-300/60 animate-pulse'
+                }`}
               >
-                <FileCheck2 className="w-4 h-4 text-emerald-400" />
-                <span>[Block 4] 3 Entscheidungsebenen bestätigen &amp; Auswertung freischalten</span>
-                <ArrowDown className="w-4 h-4 text-[#E76F51]" />
+                <FileCheck2 className={`w-4 h-4 ${isDecisionConfirmed ? 'text-emerald-300' : 'text-slate-950'}`} />
+                <span>
+                  {isDecisionConfirmed
+                    ? '✓ [Block 4] 3 Entscheidungsebenen bestätigt (Erneut prüfen)'
+                    : '[Block 4] 3 Entscheidungsebenen bestätigen & Auswertung freischalten'}
+                </span>
+                <ArrowDown className={`w-4 h-4 ${isDecisionConfirmed ? 'text-emerald-200' : 'text-slate-950'}`} />
               </button>
             </div>
           </div>
@@ -674,10 +690,14 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
 
           <button
             onClick={onProceedToSimulation}
-            className="px-6 py-3.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.02]"
+            className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.02] ${
+              isDecisionConfirmed
+                ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/35 ring-4 ring-amber-300/60 animate-pulse'
+                : 'bg-[#264653] hover:bg-[#1E3640] text-white shadow-md'
+            }`}
           >
             <span>Weiter zur Simulation (Adventure)</span>
-            <ArrowRight className="w-4 h-4 text-[#E76F51]" />
+            <ArrowRight className={`w-4 h-4 ${isDecisionConfirmed ? 'text-slate-950' : 'text-[#E76F51]'}`} />
           </button>
         </div>
       </section>

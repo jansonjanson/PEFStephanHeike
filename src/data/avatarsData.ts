@@ -23,7 +23,7 @@ export const CHARACTER_AVATARS: { [key: string]: CharacterAvatar } = {
   },
   sohn1: {
     id: 'sohn1',
-    name: 'Pascal',
+    name: 'Philipp',
     role: 'Sohn (jüngster)',
     imageUrl: 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Sohn%201%20Avatar.jpg?raw=true',
     bio: 'Erlebt die veränderte Familiensituation und unterstützt Heike bei den alltäglichen Herausforderungen.',

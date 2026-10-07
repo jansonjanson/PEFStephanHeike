@@ -158,9 +158,9 @@ export const TheoryModuleView: React.FC<TheoryModuleViewProps> = ({ moduleId, qu
               <div>
                 <button
                   onClick={handleConfirmRead}
-                  className="px-6 py-3.5 rounded-2xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2.5 mx-auto shadow-md transition-all cursor-pointer transform hover:scale-[1.02]"
+                  className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 font-black text-xs flex items-center gap-2.5 mx-auto shadow-lg shadow-amber-500/35 ring-4 ring-amber-300/60 animate-pulse transition-all cursor-pointer transform hover:scale-[1.02]"
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <CheckCircle2 className="w-4 h-4 text-slate-950" />
                   <span>Ich habe den Fachartikel vollständig gelesen (Zusammenfassung aufklappen)</span>
                 </button>
               </div>
@@ -203,11 +203,19 @@ export const TheoryModuleView: React.FC<TheoryModuleViewProps> = ({ moduleId, qu
               <div className="pt-4 border-t border-slate-100 flex justify-end">
                 <button
                   onClick={handleCompleteStep1}
-                  className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
+                  className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${
+                    stepProgress > 1
+                      ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-md'
+                      : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/35 ring-4 ring-amber-300/60 animate-pulse'
+                  }`}
                 >
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Schritt 1 abgeschlossen – Weiter zu Schritt 2: Modellvergleich &amp; Visualisierungen</span>
-                  <ArrowDown className="w-4 h-4 text-[#E76F51]" />
+                  <CheckCircle2 className={`w-4 h-4 ${stepProgress > 1 ? 'text-emerald-300' : 'text-slate-950'}`} />
+                  <span>
+                    {stepProgress > 1
+                      ? '✓ Schritt 1 abgeschlossen – Weiter zu Schritt 2: Modellvergleich'
+                      : 'Lektüreauftrag bestätigen – Weiter zu Schritt 2: Modellvergleich & Visualisierungen'}
+                  </span>
+                  <ArrowDown className={`w-4 h-4 ${stepProgress > 1 ? 'text-emerald-200' : 'text-slate-950'}`} />
                 </button>
               </div>
             </div>
@@ -398,11 +406,19 @@ export const TheoryModuleView: React.FC<TheoryModuleViewProps> = ({ moduleId, qu
             <div className="pt-4 border-t border-slate-100 flex justify-end">
               <button
                 onClick={handleCompleteStep2}
-                className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
+                className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${
+                  stepProgress >= 3
+                    ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-md'
+                    : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/35 ring-4 ring-amber-300/60 animate-pulse'
+                }`}
               >
-                <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                <span>Modellvergleich &amp; Grafiken verstanden – Weiter zu Schritt 3: Wissens-Quiz</span>
-                <ArrowDown className="w-4 h-4 text-[#E76F51]" />
+                <CheckCircle2 className={`w-4 h-4 ${stepProgress >= 3 ? 'text-emerald-300' : 'text-slate-950'}`} />
+                <span>
+                  {stepProgress >= 3
+                    ? '✓ Schritt 2 abgeschlossen – Weiter zum Wissens-Quiz'
+                    : 'Modellvergleich & Grafiken verstanden – Weiter zu Schritt 3: Wissens-Quiz'}
+                </span>
+                <ArrowDown className={`w-4 h-4 ${stepProgress >= 3 ? 'text-emerald-200' : 'text-slate-950'}`} />
               </button>
             </div>
           </div>
