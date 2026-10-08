@@ -243,7 +243,7 @@ export const FinalEvaluationView: React.FC<FinalEvaluationViewProps> = ({
             />
           </div>
 
-          <div className="pt-2 flex justify-end">
+          <div className="pt-2 flex justify-start">
             <button
               onClick={() => handleAdvanceStep(2)}
               className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
@@ -370,7 +370,7 @@ export const FinalEvaluationView: React.FC<FinalEvaluationViewProps> = ({
               </div>
             </div>
 
-            <div className="pt-2 flex justify-end">
+            <div className="pt-2 flex justify-start">
               <button
                 onClick={() => handleAdvanceStep(3)}
                 className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] active:bg-[#15272E] text-white font-bold text-xs flex items-center gap-2 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"

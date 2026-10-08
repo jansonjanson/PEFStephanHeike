@@ -513,12 +513,8 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
               </div>
             )}
 
-            {/* Bottom Actions */}
-            <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100">
-              <span className="text-[11px] text-slate-500">
-                Entscheidungs-Adventure erfolgreich durchgespielt!
-              </span>
-
+            {/* Bottom Actions (linksbündig ausgerichtet zur Vermeidung von Kollisionen mit Netlify-Badge) */}
+            <div className="pt-3 flex flex-wrap items-center justify-start gap-4 border-t border-slate-100">
               {onProceedToStep4 && (
                 <button
                   onClick={onProceedToStep4}
@@ -529,6 +525,10 @@ export const BranchingAdventureView: React.FC<BranchingAdventureViewProps> = ({
                   <ArrowRight className="w-4 h-4 text-slate-950" />
                 </button>
               )}
+
+              <span className="text-[11px] text-slate-500 font-medium">
+                Entscheidungs-Adventure erfolgreich durchgespielt!
+              </span>
             </div>
           </div>
         </div>

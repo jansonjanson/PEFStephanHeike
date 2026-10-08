@@ -276,7 +276,7 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
           <AbedlForm moduleId={module.id} />
 
           {/* Confirmation Button for Step 3A */}
-          <div className="pt-2 flex justify-end">
+          <div className="pt-2 flex justify-start">
             <button
               onClick={handleConfirmAbedl}
               className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${
@@ -452,18 +452,7 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
             {/* ========================================================================= */}
             {/* [BLOCK 4] BUTTON: EINGABE BESTÄTIGEN & AUSWERTUNG FREISCHALTEN             */}
             {/* ========================================================================= */}
-            <div className="pt-3 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100">
-              <div className="text-[11px] text-[#2B2D42]/70">
-                {isDecisionConfirmed ? (
-                  <span className="text-emerald-700 font-bold flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    Auswertung freigeschaltet – siehe Synopse &amp; Expertenabgleich unten in Block 5!
-                  </span>
-                ) : (
-                  <span>Klicken Sie auf Bestätigen, um den pädagogischen Expertenabgleich (Block 5) freizuschalten.</span>
-                )}
-              </div>
-
+            <div className="pt-3 flex flex-wrap items-center justify-start gap-4 border-t border-slate-100">
               <button
                 onClick={handleConfirmDecisionInput}
                 className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${
@@ -480,6 +469,17 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
                 </span>
                 <ArrowDown className={`w-4 h-4 ${isDecisionConfirmed ? 'text-emerald-200' : 'text-slate-950'}`} />
               </button>
+
+              <div className="text-[11px] text-[#2B2D42]/70">
+                {isDecisionConfirmed ? (
+                  <span className="text-emerald-700 font-bold flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    Auswertung freigeschaltet – siehe Synopse &amp; Expertenabgleich unten in Block 5!
+                  </span>
+                ) : (
+                  <span>Klicken Sie auf Bestätigen, um den pädagogischen Expertenabgleich (Block 5) freizuschalten.</span>
+                )}
+              </div>
             </div>
           </div>
         )}
@@ -675,19 +675,7 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
       {/* [BLOCK 6] WEITERLEITUNG / ÜBERLEITUNG: ZUM VERZWEIGUNGS-SZENARIO           */}
       {/* ========================================================================= */}
       <section className="pt-2 border-t border-slate-200">
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow flex flex-wrap items-center justify-between gap-4">
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
-              <span className="w-6 h-6 rounded-full bg-[#264653] text-white flex items-center justify-center font-mono text-[11px] shadow-xs">
-                6
-              </span>
-              <span>[Block 6] Überleitung zum Verzweigungs-Szenario</span>
-            </div>
-            <p className="text-xs text-[#2B2D42]/70 [text-wrap:pretty]">
-              Treten Sie nun in die Chat-Simulation ein und erproben Sie die 3 Entscheidungsmodelle (Paternalistisch, PEF, Informed Consent).
-            </p>
-          </div>
-
+        <div className="bg-white border border-slate-200 rounded-2xl p-5 card-soft-shadow flex flex-wrap items-center justify-start gap-4">
           <button
             onClick={onProceedToSimulation}
             className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.02] ${
@@ -699,6 +687,18 @@ export const DecisionMomentsWorkflow: React.FC<DecisionMomentsWorkflowProps> = (
             <span>Weiter zur Simulation (Adventure)</span>
             <ArrowRight className={`w-4 h-4 ${isDecisionConfirmed ? 'text-slate-950' : 'text-[#E76F51]'}`} />
           </button>
+
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#264653] uppercase tracking-wider">
+              <span className="w-6 h-6 rounded-full bg-[#264653] text-white flex items-center justify-center font-mono text-[11px] shadow-xs">
+                6
+              </span>
+              <span>[Block 6] Überleitung zum Verzweigungs-Szenario</span>
+            </div>
+            <p className="text-xs text-[#2B2D42]/70 [text-wrap:pretty]">
+              Treten Sie nun in die Chat-Simulation ein und erproben Sie die 3 Entscheidungsmodelle (Paternalistisch, PEF, Informed Consent).
+            </p>
+          </div>
         </div>
       </section>
     </div>

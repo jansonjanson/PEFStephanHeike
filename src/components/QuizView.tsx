@@ -314,7 +314,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ moduleId, questions }) => {
           </div>
           <p className="leading-relaxed">{chosenOpt?.explanation || 'Beachte die Schlüsselunterschiede in Bezug auf Informationskontrolle und Verantwortung.'}</p>
 
-          <div className="pt-2 flex justify-end">
+          <div className="pt-2 flex justify-start">
             <button
               onClick={handleNext}
               className="px-4 py-2 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-1.5 shadow-sm transition-all cursor-pointer"

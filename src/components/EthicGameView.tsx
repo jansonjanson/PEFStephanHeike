@@ -59,7 +59,7 @@ const RULES_DATA = [
 ];
 
 export const EthicGameView: React.FC<EthicGameViewProps> = ({ onComplete }) => {
-  const [activeTab, setActiveTab] = useState<'game' | 'overview' | 'rules'>('game');
+  const [activeTab, setActiveTab] = useState<'game' | 'overview' | 'rules'>('overview');
   const [unlockedStep, setUnlockedStep] = useState<number>(1);
 
   const handleUnlockNext = (nextStep: number) => {
@@ -165,7 +165,7 @@ export const EthicGameView: React.FC<EthicGameViewProps> = ({ onComplete }) => {
               ))}
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-start pt-2">
               <button
                 onClick={() => { sounds.playClick(); setActiveTab('rules'); }}
                 className="px-4 py-2 rounded-xl bg-[#264653] text-white text-xs font-bold flex items-center gap-1.5 hover:bg-[#1E3640] cursor-pointer"
@@ -206,7 +206,7 @@ export const EthicGameView: React.FC<EthicGameViewProps> = ({ onComplete }) => {
               ))}
             </div>
 
-            <div className="flex justify-end pt-2">
+            <div className="flex justify-start pt-2">
               <button
                 onClick={() => { sounds.playClick(); setActiveTab('game'); }}
                 className="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold flex items-center gap-2 shadow-sm cursor-pointer"
@@ -335,7 +335,7 @@ export const EthicGameView: React.FC<EthicGameViewProps> = ({ onComplete }) => {
             </div>
 
             {unlockedStep === 1 && (
-              <div className="pt-2 flex justify-end border-t border-slate-100">
+              <div className="pt-2 flex justify-start border-t border-slate-100">
                 <button
                   onClick={() => handleUnlockNext(2)}
                   className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
@@ -427,7 +427,7 @@ export const EthicGameView: React.FC<EthicGameViewProps> = ({ onComplete }) => {
               </div>
 
               {unlockedStep === 2 && (
-                <div className="pt-2 flex justify-end border-t border-slate-100">
+                <div className="pt-2 flex justify-start border-t border-slate-100">
                   <button
                     onClick={() => handleUnlockNext(3)}
                     className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
@@ -523,7 +523,7 @@ export const EthicGameView: React.FC<EthicGameViewProps> = ({ onComplete }) => {
               </div>
 
               {unlockedStep === 3 && (
-                <div className="pt-2 flex justify-end border-t border-slate-100">
+                <div className="pt-2 flex justify-start border-t border-slate-100">
                   <button
                     onClick={() => handleUnlockNext(4)}
                     className="px-6 py-3 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2.5 shadow-md transition-all cursor-pointer transform hover:scale-[1.01]"
@@ -623,7 +623,7 @@ export const EthicGameView: React.FC<EthicGameViewProps> = ({ onComplete }) => {
               </div>
 
               {/* Completion Button to advance to DS 2 */}
-              <div className="pt-3 border-t border-slate-200 flex justify-end">
+              <div className="pt-3 border-t border-slate-200 flex justify-start">
                 <button
                   onClick={onComplete}
                   className="px-7 py-3.5 rounded-2xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs shadow-lg flex items-center gap-2 cursor-pointer transition-all transform hover:scale-[1.02]"

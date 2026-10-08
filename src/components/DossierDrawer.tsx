@@ -347,7 +347,7 @@ export const DossierDrawer: React.FC = () => {
             <div className="space-y-6">
               <TheoryModuleView moduleId={2} quizQuestions={currentModule.quiz || []} />
 
-              <div className="pt-4 border-t border-slate-200 flex justify-end">
+              <div className="pt-4 border-t border-slate-200 flex justify-start">
                 <button
                   onClick={handleFinishLevelAndReturnToMap}
                   className="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-xs shadow-lg shadow-amber-500/30 flex items-center gap-2 cursor-pointer transition-all transform hover:scale-[1.02]"
@@ -481,7 +481,7 @@ export const DossierDrawer: React.FC = () => {
                     />
 
                     {/* Bestätigungsbutton für Schritt 3 */}
-                    <div className="pt-3 border-t border-slate-100 flex justify-end">
+                    <div className="pt-3 border-t border-slate-100 flex justify-start">
                       <button
                         onClick={() => proceedToStep(4)}
                         className="px-5 py-2.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"

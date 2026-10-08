@@ -249,7 +249,7 @@ export const Sidebar: React.FC = () => {
               <BookOpenCheck className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="text-sm font-bold tracking-wide">PFLEGE-LERNAPP</h2>
+              <h2 className="text-xs sm:text-sm font-bold tracking-wide">CE08 – U2 Partnerschaftliche Entscheidungsfindung</h2>
               <p className="text-[11px] text-white/80 font-medium">Fall Stefan & Heike</p>
             </div>
           </div>

@@ -252,17 +252,17 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
               key={cat.id}
               className={`rounded-2xl border-2 transition-all duration-200 overflow-hidden ${
                 hasContent
-                  ? `${theme.borderActive} ${theme.bg} shadow-xs`
+                  ? `${theme.borderActive} ${theme.bg} shadow-xs ring-1 ring-emerald-500/30`
                   : isExpanded
-                  ? `${theme.border} ${theme.bg}`
-                  : 'border-slate-200 bg-[#F9FAFB] hover:border-slate-300'
+                  ? `${theme.borderActive} ${theme.bg} shadow-xs`
+                  : `${theme.border} ${theme.bg} hover:shadow-xs hover:brightness-[0.98]`
               }`}
             >
               {/* Category Header */}
               <button
                 onClick={() => toggleCategory(cat.id)}
                 className={`w-full text-left p-3.5 sm:p-4 flex items-center justify-between transition-colors cursor-pointer ${
-                  isExpanded ? 'bg-white/80 border-b border-slate-200/80 backdrop-blur-xs' : 'hover:bg-white/60'
+                  isExpanded ? 'bg-white/80 border-b ' + theme.border + ' backdrop-blur-xs' : 'hover:bg-white/40'
                 }`}
               >
                 <div className="flex items-center gap-3 sm:gap-3.5 min-w-0">
@@ -270,20 +270,20 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
                     className={`w-9 h-9 rounded-xl flex items-center justify-center font-mono text-xs font-bold shrink-0 shadow-xs transition-transform ${
                       hasContent
                         ? `${theme.accent} text-white scale-105`
-                        : 'bg-white border border-slate-300 text-[#2B2D42]'
+                        : `${theme.pillBg} ${theme.pillText} border ${theme.border}`
                     }`}
                   >
                     <IconComp className="w-4 h-4" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-mono font-bold text-slate-500">
+                      <span className="text-xs font-mono font-bold text-[#264653]/70">
                         ABEDL {cat.id}
                       </span>
                       <span className="text-xs sm:text-sm font-bold text-[#264653] truncate">
                         {cat.name}
                       </span>
-                      <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${theme.pillBg} ${theme.pillText}`}>
+                      <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full ${theme.pillBg} ${theme.pillText} shadow-2xs`}>
                         {theme.area}
                       </span>
                       {hasContent && (
@@ -292,7 +292,7 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
                         </span>
                       )}
                     </div>
-                    <span className="text-[11px] text-[#2B2D42]/70 line-clamp-1 mt-0.5">
+                    <span className="text-[11px] text-[#2B2D42]/75 line-clamp-1 mt-0.5">
                       {cat.desc}
                     </span>
                   </div>
@@ -302,7 +302,7 @@ export const AbedlForm: React.FC<AbedlFormProps> = ({ moduleId }) => {
                   {hasContent && (
                     <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   )}
-                  <div className="w-7 h-7 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600 shadow-xs">
+                  <div className={`w-7 h-7 rounded-lg bg-white/90 border ${theme.border} flex items-center justify-center ${theme.pillText} shadow-xs`}>
                     {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                   </div>
                 </div>

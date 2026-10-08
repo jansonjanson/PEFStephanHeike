@@ -200,7 +200,7 @@ export const TheoryModuleView: React.FC<TheoryModuleViewProps> = ({ moduleId, qu
               </div>
 
               {/* Bestätigungsbutton für Schritt 1 */}
-              <div className="pt-4 border-t border-slate-100 flex justify-end">
+              <div className="pt-4 border-t border-slate-100 flex justify-start">
                 <button
                   onClick={handleCompleteStep1}
                   className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${
@@ -403,7 +403,7 @@ export const TheoryModuleView: React.FC<TheoryModuleViewProps> = ({ moduleId, qu
             </div>
 
             {/* Bestätigungsbutton für Schritt 2 */}
-            <div className="pt-4 border-t border-slate-100 flex justify-end">
+            <div className="pt-4 border-t border-slate-100 flex justify-start">
               <button
                 onClick={handleCompleteStep2}
                 className={`px-6 py-3.5 rounded-xl text-xs font-black flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${

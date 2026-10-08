@@ -283,8 +283,8 @@ export const RoadmapMap: React.FC = () => {
       })()}
       </div>
 
-      {/* Bottom Floating Legend Bar */}
-      <div className="absolute bottom-4 left-20 right-4 z-20 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
+      {/* Bottom Floating Legend Bar (links ausgerichtet, um Kollision mit Netlify-Logo rechts unten zu vermeiden) */}
+      <div className="absolute bottom-4 left-20 right-36 z-20 flex flex-wrap items-center justify-start gap-3 pointer-events-none">
         <div className="bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl px-4 py-2.5 shadow-md flex items-center gap-4 text-xs pointer-events-auto">
           <span className="text-[#2B2D42]/70 font-semibold">Legende:</span>
           <div className="flex items-center gap-1.5">
