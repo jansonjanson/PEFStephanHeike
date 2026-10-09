@@ -484,11 +484,15 @@ export const DossierDrawer: React.FC = () => {
                     <div className="pt-3 border-t border-slate-100 flex justify-start">
                       <button
                         onClick={() => proceedToStep(4)}
-                        className="px-5 py-2.5 rounded-xl bg-[#264653] hover:bg-[#1E3640] text-white font-bold text-xs flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                        className={`px-5 py-3 rounded-xl font-black text-xs flex items-center gap-2.5 transition-all cursor-pointer transform hover:scale-[1.01] ${
+                          stepProgress >= 4
+                            ? 'bg-emerald-700 hover:bg-emerald-800 text-white shadow-md'
+                            : 'bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:from-amber-600 hover:to-amber-500 text-slate-950 shadow-lg shadow-amber-500/35 ring-4 ring-amber-300/60 animate-pulse'
+                        }`}
                       >
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                        <CheckCircle2 className={`w-4 h-4 ${stepProgress >= 4 ? 'text-emerald-300' : 'text-slate-950'}`} />
                         <span>Entscheidung abgeschlossen – Weiter zur Gameloop-Auswertung &amp; Besprechung</span>
-                        <ArrowDown className="w-4 h-4 text-[#E76F51]" />
+                        <ArrowDown className={`w-4 h-4 ${stepProgress >= 4 ? 'text-emerald-200' : 'text-slate-950'}`} />
                       </button>
                     </div>
                   </div>

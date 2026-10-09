@@ -111,7 +111,7 @@ interface AppContextType {
 }
 
 const STORAGE_KEY = 'pflege_app_stephan_heike_v2';
-const DEFAULT_MAP_URL = 'https://github.com/jansonjanson/PEFStephanHeike/blob/main/Map.jpg?raw=true';
+const DEFAULT_MAP_URL = '/images/Map.jpg';
 
 const defaultEmptyState = (): { [moduleId: number]: UserModuleState } => {
   const map: { [moduleId: number]: UserModuleState } = {};
@@ -216,18 +216,45 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   // Load from local storage
   const [moduleStates, setModuleStates] = useState<{ [moduleId: number]: UserModuleState }>(() => {
+    const defaults = defaultEmptyState();
     if (typeof window !== 'undefined') {
       try {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
-          return { ...defaultEmptyState(), ...parsed };
+          const merged: { [moduleId: number]: UserModuleState } = { ...defaults };
+          Object.keys(defaults).forEach((idKey) => {
+            const numId = Number(idKey);
+            if (parsed[numId]) {
+              merged[numId] = {
+                ...defaults[numId],
+                ...parsed[numId],
+                zusatzdoc: {
+                  ...defaults[numId].zusatzdoc,
+                  ...(parsed[numId].zusatzdoc || {}),
+                },
+                abedl: {
+                  ...defaults[numId].abedl,
+                  ...(parsed[numId].abedl || {}),
+                },
+                simulationAnswers: {
+                  ...defaults[numId].simulationAnswers,
+                  ...(parsed[numId].simulationAnswers || {}),
+                },
+                simulationStats: {
+                  ...defaults[numId].simulationStats,
+                  ...(parsed[numId].simulationStats || {}),
+                },
+              };
+            }
+          });
+          return merged;
         }
       } catch (e) {
         console.error('Failed to load local storage state:', e);
       }
     }
-    return defaultEmptyState();
+    return defaults;
   });
 
   const [badges, setBadges] = useState<AchievementBadge[]>(() => {
