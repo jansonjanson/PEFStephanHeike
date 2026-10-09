@@ -115,7 +115,7 @@ export const TheoryModuleView: React.FC<TheoryModuleViewProps> = ({ moduleId, qu
 
             <div className="flex flex-wrap items-center gap-2">
               <a
-                href="https://github.com/jansonjanson/PEFStephanHeike/raw/main/Informationen%20teilen%20gemeinsam%20entscheiden_Thieme.pdf"
+                href="/docs/Informationen%20teilen%20gemeinsam%20entscheiden_Thieme.pdf"
                 download="Informationen_teilen_gemeinsam_entscheiden_Thieme.pdf"
                 target="_blank"
                 rel="noopener noreferrer"

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Users, AlertCircle, CheckCircle, Scale, ExternalLink, FileText } from 'lucide-react';
+import { Users, AlertCircle, CheckCircle, Scale, ExternalLink, FileText, Download } from 'lucide-react';
 
 interface ZusatzdocFormProps {
   moduleId: number;
@@ -40,15 +40,16 @@ export const ZusatzdocForm: React.FC<ZusatzdocFormProps> = ({ moduleId }) => {
 
         <div className="flex items-center gap-2">
           <a
-            href="https://github.com/jansonjanson/PEFStephanHeike/blob/main/3.%20Entscheidungsidentifikation.docx"
+            href="/docs/3.%20Entscheidungsidentifikation.docx"
+            download="3. Entscheidungsidentifikation.docx"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[11px] px-3 py-1 rounded-full bg-[#264653]/10 hover:bg-[#264653]/20 text-[#264653] font-semibold border border-[#264653]/20 flex items-center gap-1.5 transition-colors"
-            title="Original-Vorlage '3. Entscheidungsidentifikation.docx' auf GitHub öffnen"
+            className="text-[11px] px-3 py-1 rounded-full bg-[#264653]/10 hover:bg-[#264653]/20 text-[#264653] font-semibold border border-[#264653]/20 flex items-center gap-1.5 transition-colors cursor-pointer"
+            title="Word-Vorlage '3. Entscheidungsidentifikation.docx' herunterladen"
           >
             <FileText className="w-3.5 h-3.5 text-[#E76F51]" />
-            <span>Vorlage (.docx)</span>
-            <ExternalLink className="w-3 h-3" />
+            <span>Vorlage herunterladen (.docx)</span>
+            <Download className="w-3 h-3" />
           </a>
 
           <span className="text-[11px] px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-mono flex items-center gap-1.5 border border-slate-200">
